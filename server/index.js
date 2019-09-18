@@ -8,6 +8,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
+const { csvReader } = require("./modules/common/util/csv-parser");
+
 // const multer = require("multer");
 // const {
 //   fileFilter,
@@ -53,6 +55,7 @@ mongoose
     const port = process.env.PORT;
     console.warn("Listening at port:", port);
     app.listen(process.env.PORT);
+    csvReader("../data/Datasheets/teachers.csv", data => console.log(data));
     /* HTTPs
     // https
     //   .createServer(
