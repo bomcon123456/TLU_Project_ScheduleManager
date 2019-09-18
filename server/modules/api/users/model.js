@@ -30,8 +30,8 @@ const userSchema = new Schema(
       default: ""
     },
     avatarURL: {
-      type: String
-      // default: `${process.env.ASSET_DIR}/1_62_100_v0.jpg`
+      type: String,
+      default: `${process.env.ASSET_DIR}/1_0_100_v0.jpg`
     },
     role: {
       type: Number,
@@ -42,7 +42,7 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Division"
     },
-    birthday: { type: Date }
+    birthday: { type: Date, default: "6/9/1969" }
   },
   { timestamps: { createdAt: "createdAt" } }
 );
