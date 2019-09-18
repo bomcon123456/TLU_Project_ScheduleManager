@@ -4,12 +4,13 @@ const bcrypt = require("bcryptjs");
 
 const userSchema = new Schema(
   {
+    _id: { type: String },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     name: { type: String, required: true },
     email: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
       validate: {
         validator: function(value) {
