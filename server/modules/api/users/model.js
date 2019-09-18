@@ -32,6 +32,15 @@ const userSchema = new Schema(
       type: String
       // default: `${process.env.ASSET_DIR}/1_62_100_v0.jpg`
     },
+    role: {
+      type: Number,
+      min: 0,
+      max: 4
+    },
+    division: {
+      type: Schema.Types.ObjectId,
+      ref: "Division"
+    },
     birthday: { type: Date }
   },
   { timestamps: { createdAt: "createdAt" } }
