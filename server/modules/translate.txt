@@ -1,0 +1,3 @@
+faculty -> Khoa
+division -> Ngành
+department -> Bộ môn
