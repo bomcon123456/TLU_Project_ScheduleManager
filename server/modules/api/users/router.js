@@ -27,3 +27,5 @@ router.get("/", userController.getUserNames);
 router.get("/:userId", userController.getUser);
 
 router.post("/", createUserBodyValidator, userController.createUser);
+
+module.exports = router;

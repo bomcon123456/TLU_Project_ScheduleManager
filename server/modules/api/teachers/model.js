@@ -5,9 +5,9 @@ const teacherSchema = new Schema(
   {
     _id: { type: String },
     name: { type: String, required: true },
-    division: {
+    department: {
       type: Schema.Types.ObjectId,
-      ref: "Division",
+      ref: "Department",
       required: true
     }
   },
