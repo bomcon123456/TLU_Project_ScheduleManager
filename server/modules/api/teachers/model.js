@@ -3,11 +3,12 @@ const Schema = mongoose.Schema;
 
 const teacherSchema = new Schema(
   {
+    _id: { type: String },
     name: { type: String, required: true },
-    schoolId: { type: String, required: true, unique: true },
     division: {
       type: Schema.Types.ObjectId,
-      ref: "Division"
+      ref: "Division",
+      required: true
     }
   },
   { timestamps: { createdAt: "createdAt" } }

@@ -18,6 +18,10 @@ const roomSchema = new Schema(
           max: 10
         }
       }
+    },
+    roomType: {
+      type: String,
+      enum: ["LT", "TH", "TC"]
     }
   },
   { timestamps: { createdAt: "createdAt" } }

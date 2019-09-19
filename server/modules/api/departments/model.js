@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const groups = require("../../common/constants/groups");
-const semesters = require("../../common/constants/semesters");
+const { groups } = require("../../common/constants/groups");
 
 const departmentSchema = new Schema(
   {
@@ -13,11 +12,6 @@ const departmentSchema = new Schema(
           group: {
             type: String,
             enum: groups,
-            required: true
-          },
-          semester: {
-            type: String,
-            enum: semesters,
             required: true
           },
           courses: {

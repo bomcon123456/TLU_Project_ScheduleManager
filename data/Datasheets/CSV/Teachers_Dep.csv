@@ -1,0 +1,280 @@
+schoolID,name,depId
+CAN001,Trần Thị Ngọc Lan,BMAN
+CAN002,Phạm Đức Thành,BMAN
+CAN003,Hoàng Bích Hà,BMAN
+CAN005,Ngô Thị Thanh Huyền,BMAN
+CAN006,Nguyễn Đức Toàn,BMAN
+CAN007,Trần Bá Huy,BMAN
+CAN008,Nguyễn Tuấn Linh,BMAN
+CDL001,Trịnh Xuân Dũng,BMDL
+CDL002,Nguyễn Văn Bình,BMDL
+CDL004,Phạm Trần Thăng Long,BMDL
+CDL005,Bùi Cẩm Phượng,BMDL
+CDL006,Nguyễn Đức Khoa,BMDL
+CDL007,Phùng Đức Thiện,BMDL
+CDL008,Mai Tiến Dũng,BMDL
+CDL010,Đỗ Thiện Dụng,BMDL
+CDL011,Nguyễn Thị Thanh Hương,BMDL
+CGP001,Vũ Công Hoan,BMTC
+CGP002,Bùi Văn Phương,BMTC
+CGP003,Phạm Trung Tự,BMTC
+CGP004,Nguyễn Ngọc Dũng,BMTC
+CGP005,Nguyễn Minh Hải,BMTC
+CGP006,Hoàng Đình Hôm,BMTC
+CGP007,Nguyễn Hữu Lăng,BMTC
+CGP008,Vũ Thị Huệ,BMTC
+CGP009,Phạm Thị Trang,BMTC
+CGS004,Nguyễn Vũ Lê,BMCS
+CGS005,Nguyễn Đình Tài,BMCS
+CGS006,Bùi Thúc Vịnh,BMCS
+CGS007,Lê Thị Ninh,BMCS
+CGS009,Ngô Mạnh Toan,BMCS
+CNE001,Trần Thị Phương Thu,BMTA
+CNE003,Cao Thị Tô Hoài,BMTA
+CNE004,Trần Thị Hải Bình,BMTA
+CNE005,Đặng Thị Kim Chung,BMTA
+CNE006,Nguyễn Thị Kiều Dung,BMTA
+CNE007,Hoàng Thị Thu Dung,BMTA
+CNE008,Đỗ Thu Hằng,BMTA
+CNE009,Lê Thị Hòa,BMTA
+CNE011,Nguyễn Thị Hải Oanh,BMTA
+CNE012,Hoàng Kim Thúy,BMTA
+CNE013,Phạm Hồng Vân,BMTA
+CNE014,Phạm Thái Sơn,BMTA
+CNE015,Đỗ Thị Hồng Hà,BMTA
+CNE017,Phí Thị Thu Trang,BMTA
+CNE018,Nguyễn Vân Khánh,BMTA
+CNE019,Lê Thị Tuyền,BMTA
+CNE020,Nguyễn Văn Độ,BMTA
+CNE021,Tô Hoài An,BMTA
+CNE022,Trần Thị Phượng,BMTA
+CNE027,Lê Thị Hoài Thương,BMTA
+CNE028,Mai Lan,BMTA
+CNE033,Trần Thị Thanh Hương,BMTA
+CNE035,Lê Thị Phượng,BMTA
+CNE040,Phạm Hoàng Uyên,BMTA
+CNE041,Nguyễn Thị Kim Phương,BMTA
+CNE046,Ngô Hữu Hoàng,BMTA
+CNE048,Nguyễn Hải Yến,BMTA
+CNE050,Ngô Huy Tú,BMTA
+CNE051,Trần Thị Mai Phương,BMTA
+CNE052,Nguyễn Minh Lý,BMTA
+CNE053,Hoàng Mai Phương,BMTA
+CNE054,Nguyễn Ngọc Anh,BMTA
+CNE055,Mai Xuân Thể,BMTA
+CNF001,Phan Thị Liên Châu,BMTP
+CNF003,Nguyễn Thị Thu Hà,BMTP
+CNF004,Võ Thị Hải Đường,BMTF
+CNJ001,Đỗ Thị Phượng,BMTN
+CNJ003,Vũ Thị Kim Chi,BMTN
+CNJ004,Đặng Thị Minh,BMTN
+CNJ005,Hoàng Thị Hường,BMTN
+CNJ007,Trương Phương Thúy,BMTN
+CNJ008,Nguyễn Thùy Linh,BMTN
+CNJ018,Hứa Thùy Trang,BMTN
+CNJ020,Nguyễn Quỳnh Trang,BMTN
+CNJ021,Nguyễn Huyền Ngọc,BMTN
+CNJ024,Trần Dung Hạnh,BMTN
+CNJ025,Vũ Thị Thu Hương,BMTN
+CNJ031,Vũ Ngọc Anh,BMTN
+CNJ034,Nguyễn Thùy Linh,BMTN
+CNJ035,Trần Thị Lan Hương,BMTN
+CNJ036,Đinh Huyền Phương,BMTN
+CNJ037,Mori Yasuaki,BMTN
+CNJ038,Đinh Trung Hiếu,BMTN
+CNJ039,Nabeta Naoko,BMTN
+CNK003,Đinh Mai Thu Thủy,BMTH
+CNK005,Vương Thị Năm,BMTH
+CNK006,Lee Kye Sun,BMTH
+CNK007,Nghiêm Thùy Linh,BMTH
+CNK009,Nguyễn Thị Hồng,BMTH
+CNK010,Lee Dong Koan,BMTH
+CNK012,Nguyễn Thị Tô Vân,BMTH
+CNK013,Hoàng Thị Thanh Hoa,BMTH
+CNK014,Vũ Hoàng Hà,BMTH
+CNZ001,Lý Hoàng Anh,BMTT
+CNZ002,Nguyễn Thị Trung Thu,BMTT
+CNZ004,Nguyễn Thùy Linh,BMTT
+CNZ005,Nguyễn Lê Minh,BMTT
+CQ,Bộ môn Kinh tế,BMKQ
+CQA001,Đoàn Thị Hồng Nhung,BMKQ
+CQA002,Nguyễn Thanh Huyền,BMKQ
+CQA003,Đào Diệu Hằng,BMKQ
+CQA004,Nguyễn Thanh Thủy,BMKQ
+CQA005,Vũ Thị Kim Lan,BMKQ
+CQA007,Nguyễn Thu Hoài,BMKQ
+CQA008,Phạm Thị Hoa,BMKQ
+CQA009,Nguyễn Thị Đông,BMKQ
+CQA012,Nguyễn Trung Thùy Linh,BMKQ
+CQB001,Ngô Thị Quyên,BMKQ
+CQB002,Ngô Khánh Huyền,BMKQ
+CQB005,Nguyễn Thị Thúy,BMKQ
+CQB006,Phạm Thị Bảo Oanh,BMKQ
+CQB007,Lê Thị Hà Thu,BMKQ
+CQB010,Chu Thị Thu Thủy,BMKQ
+CQB013,Nguyễn Thị Vân Nga,BMKQ
+CQB015,Nguyễn Hồng Nga,BMKQ
+CQB017,Đỗ Trường Sơn,BMKQ
+CQB019,Lê Thanh Nhàn,BMKQ
+CQB022,Nguyễn Thị Tuyết,BMKQ
+CQB024,Nguyễn Thị Thu Trang,BMKQ
+CQB026,Thân Thế Sơn Tùng,BMKQ
+CQE001,Trần Thị Thùy Linh,BMKQ
+CQE002,Nguyễn Phương Mai,BMKQ
+CQE004,Lê Thị Kim Chung,BMKQ
+CQE005,Nguyễn Thị Thanh Thảo,BMKQ
+CQE006,Trần Đình Toàn,BMKQ
+CQE008,Vũ Đức Hiếu,BMKQ
+CQE019,Nguyễn Thị Phương,BMKQ
+CQE021,Lê Việt Đức,BMKQ
+CQH006,Trần Văn Tiến,BMKQ
+CQH010,Trương Việt Dũng,BMKQ
+CQM001,Vũ Lệ Hằng,BMKQ
+CQM002,Vũ Thị Tuyết,BMKQ
+CQM004,Vương Thị Thanh Trì,BMKQ
+CQM006,Phạm Long Châu,BMKQ
+CQM007,Trương Đức Thao,BMKQ
+CQM008,Lê Thị Hạnh,BMKQ
+CQM009,Nguyễn Bảo Tuấn,BMKQ
+CQM010,Nguyễn Thị Thùy Trang,BMKQ
+CQM011,Lê Huyền Trang,BMKQ
+CQM014,Nguyễn Thị Liên Hương,BMKQ
+CQM015,Nguyễn Duy Thành,BMKQ
+CQM016,Nguyễn Tường Minh,BMKQ
+CSD001,Phạm Duy Tường,BMSD
+CSD005,Phạm Thị Diệp,BMSD
+CSD006,Phạm Thị Thu Hương,BMSD
+CSD007,Nguyễn Minh Trang,BMSD
+CSN001,Hà Thị Huyền,BMSN
+CSN003,Nguyễn Thị Như Mai,BMSN
+CSN006,Đỗ Quang Tuyển,BMSN
+CSN011,Lê Thị Bình,BMSN
+CSN012,Vũ Dũng,BMSN
+CSN017,Lê Đức Sang,BMSN
+CSN018,Hoàng Văn Ngoạn,BMSN
+CSN020,Phạm Thành Đồng,BMSN
+CSN021,Nguyễn Thị Thùy Trang,BMSN
+CSN022,Thái Thị Thanh Huyền,BMSN
+CSN024,Bùi Ngọc Tiến,BMSN
+CSN029,Vũ Thị Vinh,BMSN
+CSN030,Nguyễn Khánh Huyền,BMSN
+CSN031,Hoàng Thị Thanh,BMSN
+CSP002,Nguyễn Văn Dịp,BMYT
+CSP008,Hồ Thị Minh Lý,BMYT
+CSP012,Dương Hoàng Ân,BMYT
+CSP013,Hà Minh Trang,BMYT
+CSP014,Ngô Thị Thu Hiền,BMYT
+CSP016,Đào Xuân Vinh,BMYT
+CSP020,Trần Thị Thanh Huệ,BMYT
+CTI003,Phạm Thị Kim Hoa,BMTI
+CTI006,Hà Thu Giang,BMTI
+CTI008,Mai Thuý Nga,BMTI
+CTI009,Đậu Hải Phong,BMTI
+CTI010,Nguyễn Mạnh Hùng,BMTI
+CTI011,Nguyễn Đức Dân,BMTI
+CTI014,Trần Thị Huệ,BMTI
+CTI015,Đinh Thu Khánh,BMTI
+CTI017,Cao Minh Khánh,BMTI
+CTI018,Phạm Phương Thanh,BMTI
+CTI019,Trần Quang Duy,BMTI
+CTI022,Cao Kim Ánh,BMTI
+CTI025,Nguyễn Thiện Luận,BMTI
+CTI030,Hoàng Trọng Minh,BMTI
+CTI035,Bùi Trường Giang,BMTI
+CTI036,Vũ Đức Thi,BMTI
+CTM003,Bùi Huy Hiền,BMTM
+CTM004,Nguyễn Hồng Châu,BMTM
+CTM005,Nguyễn Thị Nhung,BMTM
+CTM006,Ngô Thị Thanh Nga,BMTM
+CTM007,Phan Thanh Hồng,BMTM
+CTM008,Nguyễn Lâm Tùng,BMTM
+CTM009,Đỗ Thị Thuý Hằng,BMTM
+CTM010,Hoàng Ngọc Tùng,BMTM
+CTM011,Dương Thị Hương,BMTM
+CTM012,Trần Minh Nguyệt,BMTM
+CTM013,Nhâm Ngọc Tần,BMTM
+CTM016,Lê Thị Yên Hồng,BMTM
+CTM017,Lê Thị Hường,BMTM
+CTM021,Nguyễn Công Sứ,BMTM
+CTM022,Phạm Bảo Khuê,BMTM
+CTM024,Nguyễn Quốc Tuấn,BMTM
+CTM036,Nguyễn Thị Trà My,BMTM
+CTM037,Nguyễn Đức Hoàn,BMTM
+CTM038,Đỗ Ngọc Diệp,BMTM
+CXV003,Trần Tiến Khôi,BMXV
+CXV004,Nguyễn Thị Hoa,BMXV
+CXV006,Nguyễn Thị Hải,BMXV
+CXV014,Nguyễn Văn Lịch,BMXV
+CXV015,Vũ Linh Chi,BMXV
+CXV016,Nguyễn Cảnh Toàn,BMXV
+CXV023,Trần Thị Thùy Dương,BMXV
+CXW005,Đặng Cảnh Khanh,BMXW
+CXW016,Nguyễn Thị Kim Dung,BMXW
+CXW022,Nguyễn Thị Hải,BMXW
+CXW023,Nguyễn Vinh Quang,BMXW
+CXW026,Nguyễn Nguyên Ngọc,BMXW
+MAN002,Mai Thị Xuân Hương,BMAN
+MAN003,Phạm Thanh Hà,BMAN
+MAN005,Lưu Quang Minh,BMAN
+MAN006,Đoàn Thị Thúy Trang,BMAN
+MAN007,Nguyễn Văn Thuấn,BMAN
+MAN008,Nguyễn Văn Thái,BMAN
+MAN009,Trần Tuấn Hòa,BMAN
+MAN010,Nguyễn Như Cường,BMAN
+MAN011,Nguyễn Thanh Giang,BMAN
+MAN012,Nguyễn Văn Quang,BMAN
+MAN013,Cao Sỹ Anh  Tùng,BMAN
+MAN014,Nguyễn Quang Linh,BMAN
+MDL001,Trần Quốc Hưng,BMDL
+MDL007,Trần Thu Nga,BMDL
+MGS002,Đỗ Quang Ân,BMCS
+MGS004,Chu Văn Đức,BMCS
+MGS019,Hoàng Thái,BMCS
+MGS025,Nguyễn Ngọc Lan,BMCS
+MGS026,Lưu Song Hà,BMCS
+MGS027,Trịnh Thị Thu Hằng,BMCS
+MNE027,Mark Thomas Runco,BMTA
+MNE033,Rashmi Dash,BMTA
+MNE055,Mai Xuân Thể,BMTA
+MNE071,Tạ Tuấn Sơn,BMTA
+MNE073,Đinh Thị Phương Anh,BMTA
+MNE074,CHANGE PARKER,BMTA
+MNF006,Trương Thị Nguyệt,BMTP
+MNJ001,Vũ Minh Chi,BMTN
+MNJ017,Fukuda Yasuo,BMTN
+MNJ030,Đỗ Hoàng Ngân,BMTN
+MNJ040,Đinh Thị Ngọc Linh ,BMTN
+MNK005,Lee Hye Young,BMTH
+MNK006,Yang Jae Sik,BMTH
+MNK012,Jang  HoJeong,BMTH
+MNK015,Heo SuJung,BMTH
+MNK016,Trang Minh Thắng,BMTH
+MNK017,Lee SuJung,BMTH
+MNK019,Yu Do Ib,BMTH
+MNK020,Hà Minh Thành,BMTH
+MNZ003,Phạm Ngọc Hàm,BMTT
+MNZ004,Nguyễn Văn Đổng,BMTT
+MNZ013,Nguyễn Thị Lệ Quyên,BMTT
+MNZ015,Nguyễn Mạnh  Toàn,BMTT
+MNZ020,Tang Li Chun,BMTT
+MNZ023,Trần Thị Quỳnh Anh,BMTT
+MNZ024,Nguyễn Văn Minh,BMTT
+MQE021,Nguyễn Thị Huế,BMKQ
+MSN038,Lê Thị Tài,BMSN
+MSN068,Nguyễn Thị  Dèo,BMSN
+MSN076,Đặng Thị Hải  Vân,BMSN
+MSN092,Nguyễn Văn Lâm,BMSN
+MSN110,Tạ Anh Tuấn,BMSN
+MTI001,Đặng Văn Đức,BMTI
+MTI007,Huỳnh Thúc Cước,BMTI
+MTI019,Trần Vĩnh Đức,BMTI
+MTI021,Khuất Hoàng Huệ Anh,BMTI
+MTI023,Lê Minh  Tuấn,BMTI
+MTI024,Hà Thị Thu Lan,BMTI
+MTI028,Trịnh Quang Đức,BMTI
+MTI032,Nguyễn Việt Hải,BMTI
+MTI035,Lưu Thị Mai Hương,BMTI
+MTI036,Trần Mạnh Trường,BMTI
+MXV015,Trần Đức Thanh,BMXV
+MXW052,Nguyễn Thị Hoài An,BMXW
+MXW056,Trần Hoàng Thị Diễm Ngọc,BMXW

@@ -1,4 +1,4 @@
-Name,ID
+ID,Name
 BMAN,Bộ môn Âm nhạc
 BMDL,Bộ môn Du lịch
 BMTC,Bộ môn  Giáo dục thể chất
@@ -14,3 +14,5 @@ BMYT,Bộ môn  Y tế công cộng
 BMTI,Bộ môn Tin
 BMTM,Bộ môn Toán
 BMCS,Bộ môn  Cơ sở
+BMXV,Bộ môn Việt Nam học
+BMXW,Bộ môn Công tác xã hội
