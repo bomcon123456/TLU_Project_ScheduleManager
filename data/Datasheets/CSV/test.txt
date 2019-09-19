@@ -1,0 +1,10 @@
+AC, BA, BK, EC, FN, MK, -> BMKQ
+AE, EL, ES, GE -> BMTA
+AJ, GJ -> BMTN
+AK, GK -> BMTH
+AZ, GZ -> BMTT
+AN -> BMAN
+CF,IM, IN, IP, IS, MI -> BMTI
+MA -> BMTM
+HM -> BMSN
+NA -> BMYT

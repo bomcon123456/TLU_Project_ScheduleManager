@@ -6,10 +6,6 @@ const courseSchema = new Schema({
   name: { type: String, required: true },
   credits: { type: Number, required: true },
   department: { type: Schema.Types.ObjectId, ref: "Department" },
-  division: {
-    type: Schema.Types.ObjectId,
-    ref: "Division"
-  },
   length: {
     type: {
       theory: {
