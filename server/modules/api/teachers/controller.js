@@ -9,6 +9,9 @@ const getTeachers = (req, res, next) => {
         message: "fetch_teachers_successful",
         data: data
       });
+    })
+    .catch(err => {
+      next(err);
     });
 };
 
@@ -17,10 +20,18 @@ const getTeacher = (req, res, next) => {
   return Teacher.findById(teacherId)
     .populate("department", "name")
     .then(data => {
+      if (!data) {
+        const err = new Error("fetch_teacher_failed");
+        err.statusCode = 404;
+        throw err;
+      }
       res.status(200).json({
         message: "fetch_teacher_successful",
         data: data
       });
+    })
+    .catch(err => {
+      next(err);
     });
 };
 
