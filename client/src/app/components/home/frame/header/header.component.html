@@ -1,0 +1,29 @@
+<div fxFlex="row" fxLayoutAlign="center center" fxLayoutGap="10px" class="header">
+
+  <img mat-card-image src="../../../../assets/TL.png" class="logo overlay color">
+
+  <div class="user-menu">
+    <button mat-button [matMenuTriggerFor]="menu" class="user-button">
+      <label style="margin: 10px">Thang Long University</label>
+      <img class="jim"
+        src="https://a57.foxnews.com/media2.foxnews.com/BrightCove/694940094001/2018/06/21/931/524/694940094001_5800293009001_5800284148001-vs.jpg?ve=1&tl=1"
+        alt="">
+    </button>
+    <mat-menu #menu="matMenu" yPosition="below" xPosition="before">
+      <button mat-menu-item class="item-menu">
+        <mat-icon class="item-icon">eco</mat-icon>
+        <span>Something</span>
+      </button>
+      <button mat-menu-item class="item-menu">
+        <mat-icon class="item-icon">account_circle</mat-icon>
+        <span>Profile</span>
+      </button>
+      <button mat-menu-item (click)="logout()" class="item-menu">
+        <mat-icon class="item-icon">exit_to_app</mat-icon>
+        <span>Log out</span>
+      </button>
+    </mat-menu>
+  </div>
+
+
+</div>
