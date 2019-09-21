@@ -36,6 +36,7 @@ const get = (req, res, next) => {
     });
 };
 
+// @TODO: support file
 const post = (req, res, next) => {
   const { name, capacity, location, roomType } = req.body;
   room = new Room({

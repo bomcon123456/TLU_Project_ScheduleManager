@@ -42,6 +42,7 @@ const get = (req, res, next) => {
 };
 
 // @TODO: Create new User after add teacher.
+// @TODO: support file
 const post = (req, res, next) => {
   const { name, department } = req.body;
   generateTeacherId(department)
