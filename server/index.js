@@ -9,6 +9,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const teacherRoutes = require("./modules/api/teachers/routes");
+const roomRoutes = require("./modules/api/rooms/routes");
+// const teacherRoutes = require("./modules/api/teachers/routes");
 
 // const multer = require("multer");
 // const {
@@ -37,6 +39,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/api/teachers", teacherRoutes);
+app.use("/api/rooms", roomRoutes);
 
 // Error-handling Middleware
 app.use((error, req, res, next) => {

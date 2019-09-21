@@ -22,10 +22,10 @@ const createUserBodyValidator = [
     .isLength({ min: 6 })
 ];
 
-router.get("/", userController.getUserNames);
+router.get("/", userController.getAll);
 
-router.get("/:userId", userController.getUser);
+router.get("/:userId", userController.get);
 
-router.post("/", createUserBodyValidator, userController.createUser);
+router.post("/", createUserBodyValidator, userController.post);
 
 module.exports = router;

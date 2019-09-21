@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 
 const userSchema = new Schema(
   {
-    _id: { type: String },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     name: { type: String, required: true },
@@ -35,14 +34,13 @@ const userSchema = new Schema(
     },
     role: {
       type: Number,
-      min: 0,
-      max: 4
+      min: 0
     },
     division: {
       type: Schema.Types.ObjectId,
       ref: "Division"
     },
-    birthday: { type: Date, default: "6/9/1969" }
+    birthday: { type: Date, default: "2/9/1990" }
   },
   { timestamps: { createdAt: "createdAt" } }
 );

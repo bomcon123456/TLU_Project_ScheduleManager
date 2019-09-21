@@ -1,7 +1,11 @@
 const Room = require("./model");
 
 const getAll = (req, res, next) => {
+  const page = req.query.page || 1;
+  const size = req.query.size || 5;
   Room.find()
+    .skip((page - 1) * size)
+    .limit(size)
     .then(data => {
       res.status(200).json({
         message: "fetched_rooms_successfully",
@@ -56,18 +60,18 @@ const post = (req, res, next) => {
 const put = (req, res, next) => {
   const id = req.params.id;
   const { name, capacity, location, roomType } = req.body;
-  Room.findById(_id)
+  Room.findById(id)
     .then(theRoom => {
-      theRoom.name = name;
-      theRoom.capacity = capacity;
-      theRoom.location = location;
-      theRoom.roomType = roomType;
+      theRoom.name = name || theRoom.name;
+      theRoom.capacity = capacity || theRoom.capacity;
+      theRoom.location = location || theRoom.location;
+      theRoom.roomType = roomType || theRoom.roomType;
       theRoom.save();
     })
     .then(data => {
       res.status(200).json({
         message: "update_room_successfully",
-        id: data._id
+        id: id
       });
     })
     .catch(err => {
@@ -78,14 +82,15 @@ const put = (req, res, next) => {
 const deleteOne = (req, res, next) => {
   const id = req.params.id;
   Room.findByIdAndDelete(id)
-    .then((err, data) => {
-      if (err) {
+    .then(data => {
+      if (!data) {
         const error = new Error("delete_room_failed");
         error.statusCode = 406;
         throw error;
       }
       res.status(200).json({
-        message: "delete_room_successfully"
+        message: "delete_room_successfully",
+        id: id
       });
     })
     .catch(err => {
