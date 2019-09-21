@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 
 const teacherRoutes = require("./modules/api/teachers/routes");
 const roomRoutes = require("./modules/api/rooms/routes");
+const courseRoutes = require("./modules/api/courses/routes");
 // const teacherRoutes = require("./modules/api/teachers/routes");
 
 // const multer = require("multer");
@@ -40,6 +41,7 @@ app.use((req, res, next) => {
 // Routes
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/rooms", roomRoutes);
+app.use("/api/courses", courseRoutes);
 
 // Error-handling Middleware
 app.use((error, req, res, next) => {
@@ -59,6 +61,8 @@ mongoose
     const port = process.env.PORT;
     console.warn("Listening at port:", port);
     app.listen(process.env.PORT);
+    const { coursesCSV } = require("./modules/common/util/csv-util");
+    // coursesCSV();
     /* HTTPs
     // https
     //   .createServer(

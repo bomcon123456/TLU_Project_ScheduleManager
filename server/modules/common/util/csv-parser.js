@@ -1,4 +1,5 @@
 const csv = require("csv-parser");
+const parse = require("csv-parse");
 const fs = require("fs");
 
 exports.csvReader = (path, cb) => {
@@ -9,4 +10,9 @@ exports.csvReader = (path, cb) => {
     .on("end", () => {
       cb(results);
     });
+};
+
+exports.csvParser = (path, cb) => {
+  let parser = parse({ delimiter: "," }, cb);
+  fs.createReadStream(path).pipe(parser);
 };
