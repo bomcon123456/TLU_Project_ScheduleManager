@@ -2,15 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const courseSchema = new Schema({
-  _id: { type: String, required: true, unique: true },
+  _id: { type: String, required: true },
   name: { type: String, required: true },
   credits: { type: Number, required: true },
   department: { type: Schema.Types.ObjectId, ref: "Department" },
   length: {
     type: {
       theory: {
-        type: Number,
-        required: true
+        type: Number
       },
       practice: {
         type: Number
@@ -19,7 +18,7 @@ const courseSchema = new Schema({
     required: true
   },
   coursePrerequisites: {
-    type: [{ type: { type: Schema.Types.ObjectId, ref: "Course" } }],
+    type: [{ type: String, ref: "Course" }],
     default: []
   },
   creditPrerequisites: {
