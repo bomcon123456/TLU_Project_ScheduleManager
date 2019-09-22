@@ -36,10 +36,10 @@ export class LeftMenuComponent implements OnInit {
 
     setTimeout(() => {
       this.linkText = this.sideNavState;
-    }, 150)
+    }, 200)
     this._sidenavService.sideNavState$.next(this.sideNavState)
 
-    return this.sideNavState;
+    // return this.sideNavState;
   }
 
 }

@@ -20,7 +20,7 @@
 .header .user-menu .user-button {
   height: 70px;
   &:hover {
-    color: rgb(245, 115, 173)
+    color: #ec407a;
   }
 }
 
@@ -36,10 +36,10 @@
 }
 
 .item-menu:hover {
-  color: rgb(245, 115, 173) !important;
+  color: #ec407a !important;
 
   .item-icon {
-    color: rgb(245, 115, 173) !important;
+    color: #ec407a !important;
   }
 }
 

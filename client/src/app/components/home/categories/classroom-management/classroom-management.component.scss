@@ -47,5 +47,13 @@ th.mat-sort-header-sorted {
   width: 100px !important;
 }
 
+.add-button {
+  float: right;
+  margin: 40px 0px 20px;
+
+  &:hover {
+    background-color: #5c6bc0
+  }
+}
 
 

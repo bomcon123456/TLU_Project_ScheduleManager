@@ -1,0 +1,59 @@
+table {
+  width: 100%;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.search {
+  margin: 40px 0px 20px;
+  max-width: 300px;
+}
+
+.spinner-loading {
+  width: 100%;
+  text-align: center;
+  margin: 200px auto;
+}
+
+.actions-icon {
+  padding: 0 8px;
+  min-width: 32px;
+  height: 41px;
+  // &:hover {
+  //   color: rgb(245, 115, 173);
+  // }
+  .edit-icon {
+    color: #64b5f6;
+    &:hover {
+      color: #2979ff;
+    }
+  }
+  .delete-icon {
+    color: #e57373;
+    &:hover {
+      color: #f44336;
+    }
+  }
+}
+
+.actions-width {
+  width: 100px !important;
+}
+
+.add-button {
+  float: right;
+  margin: 40px 0px 20px;
+
+  &:hover {
+    background-color: #5c6bc0
+  }
+}
+
+

@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { ClassroomDialogComponent } from '../../home-components/classroom-dialog/classroom-dialog.component';
+import { ClassroomDialogComponent } from './classroom-dialog/classroom-dialog.component';
 import { ClassroomElement } from '../../interface/dialog-data';
 
 /**
@@ -15,10 +15,15 @@ import { ClassroomElement } from '../../interface/dialog-data';
   styleUrls: ['./classroom-management.component.scss']
 })
 export class ClassroomManagementComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'id', 'name', 'chairs', 'address', 'type', 'multi', 'actions'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
-  isLoading = true;
-  action: string;
+
+  public displayedColumns: string[] = ['position', 'id', 'name', 'capacity', 'location', 'roomType', 'multi', 'actions'];
+  public dataSource = new MatTableDataSource(ELEMENT_DATA);
+
+  private isLoading = true;
+  private action: string;
+  private width: string;
+  private height: string;
+
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -41,19 +46,30 @@ export class ClassroomManagementComponent implements OnInit {
 
   openDialog(action, obj): void {
     this.action = obj.action = action;
+
+    if ( this.action != 'delete' ) {
+      this.width = '780px';
+      this.height = '475px';
+    }
+    else {
+      this.width = '460px';
+      this.height = '230px';
+    }
+
     const dialogRef = this.dialog.open(ClassroomDialogComponent, {
-      width: '700px',
-      height: '450px',
+      width: this.width,
+      height: this.height,
       data: obj
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (!result) return;
-      if (this.action == 'Thêm') {
+      if ( !result || result.event == 'cancel' ) return;
+
+      if (this.action == 'add') {
         this.addRowData(result.data);
-      } else if (this.action == 'Sửa') {
+      } else if (this.action == 'edit') {
         this.updateRowData(result.data);
-      } else if (this.action == 'Xóa') {
+      } else if (this.action == 'delete') {
         this.deleteRowData(result.data);
       }
     });
@@ -81,24 +97,24 @@ export class ClassroomManagementComponent implements OnInit {
 }
 
 const ELEMENT_DATA: ClassroomElement[] = [
-  { id: 'RM001', name: 'Hydrogen', chairs: 20, address: 'H', type: '1', multi: true},
-  { id: 'RM002', name: 'Helium', chairs: 30, address: 'He', type: '1' , multi: false},
-  { id: 'RM003', name: 'Lithium', chairs: 40, address: 'Li', type: '1' , multi: true},
-  { id: 'RM004', name: 'Beryllium', chairs: 50, address: 'Be', type: '1' , multi: true},
-  { id: 'RM005', name: 'Boron', chairs: 50, address: 'B', type: '1' , multi: true},
-  { id: 'RM006', name: 'Carbon', chairs: 40, address: 'C', type: '1' , multi: false},
-  { id: 'RM007', name: 'Nitrogen', chairs: 30, address: 'N', type: '1' , multi: true},
-  { id: 'RM008', name: 'Oxygen', chairs: 20, address: 'O', type: '1' , multi: true},
-  { id: 'RM009', name: 'Fluorine', chairs: 20, address: 'F', type: '1' , multi: true},
-  { id: 'RM010', name: 'Neon', chairs: 30, address: 'Ne', type: '1' , multi: false},
-  { id: 'RM011', name: 'Sodium', chairs: 40, address: 'Na', type: '1' , multi: true},
-  { id: 'RM012', name: 'Magnesium', chairs: 50, address: 'Mg', type: '1' , multi: true},
-  { id: 'RM013', name: 'Aluminum', chairs: 50, address: 'Al', type: '1' , multi: false},
-  { id: 'RM014', name: 'Silicon', chairs: 40, address: 'Si', type: '1' , multi: true},
-  { id: 'RM015', name: 'Phosphorus', chairs: 30, address: 'P', type: '1' , multi: true},
-  { id: 'RM016', name: 'Sulfur', chairs: 20, address: 'S', type: '1' , multi: true},
-  { id: 'RM017', name: 'Chlorine', chairs: 20, address: 'Cl', type: '1' , multi: false},
-  { id: 'RM018', name: 'Argon', chairs: 30, address: 'Ar', type: '1' , multi: true},
-  { id: 'RM019', name: 'Potassium', chairs: 40, address: 'K', type: '1' , multi: true},
-  { id: 'RM020', name: 'Calcium', chairs: 50, address: 'Ca', type: '1' , multi: false},
+  { id: 'RM001', name: 'Hydrogen', capacity: 20, location: { building: 'B', floor: '4' }, roomType: '1', multi: true},
+  { id: 'RM002', name: 'Helium', capacity: 30, location: { building: 'B', floor: '4' }, roomType: '1' , multi: false},
+  { id: 'RM003', name: 'Lithium', capacity: 40, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM004', name: 'Beryllium', capacity: 50, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM005', name: 'Boron', capacity: 50, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM006', name: 'Carbon', capacity: 40, location: { building: 'B', floor: '4' }, roomType: '1' , multi: false},
+  { id: 'RM007', name: 'Nitrogen', capacity: 30, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM008', name: 'Oxygen', capacity: 20, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM009', name: 'Fluorine', capacity: 20, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM010', name: 'Neon', capacity: 30, location: { building: 'B', floor: '4' }, roomType: '1' , multi: false},
+  { id: 'RM011', name: 'Sodium', capacity: 40, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM012', name: 'Magnesium', capacity: 50, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM013', name: 'Aluminum', capacity: 50, location: { building: 'B', floor: '4' }, roomType: '1' , multi: false},
+  { id: 'RM014', name: 'Silicon', capacity: 40, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM015', name: 'Phosphorus', capacity: 30, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM016', name: 'Sulfur', capacity: 20, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM017', name: 'Chlorine', capacity: 20, location: { building: 'B', floor: '4' }, roomType: '1' , multi: false},
+  { id: 'RM018', name: 'Argon', capacity: 30, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM019', name: 'Potassium', capacity: 40, location: { building: 'B', floor: '4' }, roomType: '1' , multi: true},
+  { id: 'RM020', name: 'Calcium', capacity: 50, location: { building: 'B', floor: '4' }, roomType: '1' , multi: false},
 ];

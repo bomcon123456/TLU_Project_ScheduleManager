@@ -13,10 +13,9 @@ import { SubjectManagementComponent } from './categories/subject-management/subj
 import { SemesterManagementComponent } from './categories/semester-management/semester-management.component';
 import { SidenavService } from 'src/app/services/sidenav.service';
 import { MatButtonModule } from '@angular/material/button';
-import { ClassroomDialogComponent } from './home-components/classroom-dialog/classroom-dialog.component';
-import { DeleteDialogComponent } from './home-components/delete-dialog/delete-dialog.component';
-import { SubjectDialogComponent } from './home-components/subject-dialog/subject-dialog.component';
-import { SemesterDialogComponent } from './home-components/semester-dialog/semester-dialog.component';
+import { ClassroomDialogComponent } from './categories/classroom-management/classroom-dialog/classroom-dialog.component';
+import { SubjectDialogComponent } from './categories/subject-management/subject-dialog/subject-dialog.component';
+import { SemesterDialogComponent } from './categories/semester-management/semester-dialog/semester-dialog.component';
 
 
 @NgModule({
@@ -36,11 +35,17 @@ import { SemesterDialogComponent } from './home-components/semester-dialog/semes
     SubjectManagementComponent,
     SemesterManagementComponent,
     ClassroomDialogComponent,
-    DeleteDialogComponent,
     SubjectDialogComponent,
     SemesterDialogComponent
   ],
-  entryComponents: [ClassroomDialogComponent, ClassroomManagementComponent],
+  entryComponents: [
+    ClassroomDialogComponent,
+    SubjectDialogComponent,
+    SemesterDialogComponent,
+    ClassroomManagementComponent,
+    SubjectManagementComponent,
+    SemesterManagementComponent
+  ],
   providers: [SidenavService]
 })
 export class HomeModule { }

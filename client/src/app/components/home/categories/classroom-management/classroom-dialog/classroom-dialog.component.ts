@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PeriodicElement } from '../../interface/dialog-data';
+import { ClassroomElement } from '../../../interface/dialog-data';
 
 @Component({
   selector: 'app-classroom-dialog',
@@ -10,14 +10,34 @@ import { PeriodicElement } from '../../interface/dialog-data';
 export class ClassroomDialogComponent {
 
   action: string;
-  local_data: PeriodicElement;
+  local_data: ClassroomElement;
 
   constructor(
     public dialogRef: MatDialogRef<ClassroomDialogComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: PeriodicElement) {
-      console.log(data);
-      this.local_data = { ...data };
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: ClassroomElement) {
+      // console.log(data);
+      this.local_data = {
+        id: '',
+        name: '',
+        capacity: null,
+        location: {
+          building: '',
+          floor: ''
+        },
+        roomType: '',
+        multi: false,
+      }
+
+      if (data.id) {
+        this.local_data = { ...data };
+      }
+      else {
+        this.local_data.action = 'add'
+      }
+
       this.action = this.local_data.action;
+      console.log(this.local_data);
+
      }
 
   doAction() {
@@ -26,9 +46,12 @@ export class ClassroomDialogComponent {
     let newData = {
       id: this.local_data.id,
       name: this.local_data.name,
-      chairs: this.local_data.chairs,
-      address: this.local_data.address,
-      type: this.local_data.type,
+      capacity: this.local_data.capacity,
+      location: {
+        building: this.local_data.location.building,
+        floor: this.local_data.location.floor
+      },
+      roomType: this.local_data.roomType,
       multi: this.local_data.multi
     }
     console.log(newData);
@@ -37,7 +60,7 @@ export class ClassroomDialogComponent {
   }
 
   closeDialog() {
-    this.dialogRef.close({ event: 'Cancel' });
+    this.dialogRef.close({ event: 'cancel' });
   }
 
   onChange(event) {

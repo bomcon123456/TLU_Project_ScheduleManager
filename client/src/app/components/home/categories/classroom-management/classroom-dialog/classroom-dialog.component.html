@@ -1,0 +1,47 @@
+<h1 mat-dialog-title>
+  <strong *ngIf="action == 'add'">Thêm phòng học mới</strong>
+  <strong *ngIf="action == 'edit'">Chỉnh sửa thông tin phòng học</strong>
+  <strong *ngIf="action == 'delete'">Xoá phòng học</strong>
+</h1>
+<div mat-dialog-content *ngIf="action != 'delete'; else elseTemplate" style="overflow: unset">
+  <div class="example-container">
+    <mat-form-field>
+      <input placeholder="Mã phòng" matInput [(ngModel)]="local_data.id">
+    </mat-form-field>
+    <mat-form-field>
+      <input placeholder="Tên phòng" matInput [(ngModel)]="local_data.name">
+    </mat-form-field>
+    <mat-label class="location-label">Địa điểm</mat-label>
+    <mat-form-field class="location">
+      <input placeholder="Tòa nhà" matInput [(ngModel)]="local_data.location.building">
+    </mat-form-field>
+    <mat-form-field class="location">
+      <input placeholder="Tầng" matInput [(ngModel)]="local_data.location.floor">
+    </mat-form-field>
+    <mat-form-field>
+      <input placeholder="Số lượng sinh viên tối đa" type="number" matInput [(ngModel)]="local_data.capacity">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Chọn loại phòng</mat-label>
+      <mat-select [(value)]="local_data.type">
+        <mat-option>None</mat-option>
+        <mat-option value="1">1</mat-option>
+        <mat-option value="2">2</mat-option>
+        <mat-option value="3">3</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-checkbox [checked]='local_data.multi' (change)="onChange($event)" labelPosition='before'>Dùng được cho nhiều môn</mat-checkbox>
+  </div>
+</div>
+<div mat-dialog-content>
+  <ng-template #elseTemplate>
+    <label>Bạn chắc chắn muốn xóa phòng này?</label><br>
+    <b>{{local_data.id}}</b> - <b>{{local_data.name}}</b>
+  </ng-template>
+</div>
+<div mat-dialog-actions style="float: right; margin: 25px 15px 0px">
+  <button mat-stroked-button *ngIf="action == 'add'" color="primary" (click)="doAction()">Thêm</button>
+  <button mat-stroked-button *ngIf="action == 'edit'" color="primary" (click)="doAction()">Sửa</button>
+  <button mat-stroked-button *ngIf="action == 'delete'" color="warn" (click)="doAction()">Xóa</button>
+  <button mat-stroked-button (click)="closeDialog()" mat-flat-button>Hủy bỏ</button>
+</div>
