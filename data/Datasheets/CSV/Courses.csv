@@ -1,0 +1,744 @@
+﻿id,schoolId,name,credits,prerequisites,theory,pratice
+AC201,AC201,Nguyên lý kế toán,3,40,45,
+AC210,AC210,Kế toán doanh nghiệp,3,AC201,45,
+AC211,AC211,Kế toán tài chính 1,3,AC201,45,
+AC212,AC212,Kế toán tài chính 2,3,AC211,45,
+AC231,AC231,Kế toán Mỹ 1,3,AC211,45,
+AC314,AC314,Kế toán máy,2,AC212,15,30
+AC315,AC315,Kế toán công,2,AC211,30,
+AC316,AC316,Kế toán tài chính 3,3,AC212,45,
+AC317,AC317,Tỗ chức hạch toán kế toán,3,AC316,45,
+AC322,AC322,Kế toán ngân hàng,3,"AC210,BK201",45,
+AC333,AC333,Kế toán Mỹ 2,3,AC231,45,
+AC335,AC335,Kế toán công ty,2,AC212,30,
+AC341,AC341,Kế toán quản trị,3,"AC210 , AC212",45,
+AC344,AC344,Phân tích hoạt động kinh doanh,2,"AC210 , AC212",30,
+AC362,AC362,Lý thuyết kiểm toán,2,AC212,30,
+AC363,AC363,Kiểm toán báo cáo tài chính,2,AC362,30,
+AC418,AC418,Lập và phân tích báo cáo tài chính,3,AC316,45,
+AC490,AC490,CĐTN ngành Kế toán,3,"124 ,AC317,TT499",45,
+AC499,AC499,KLTN ngành Kế toán,6,"124 ,AC317,TT499",90,
+AD204,AD204,Ẳm thực Việt Nam,4,,60,60
+AD212,AD212,Phưong pháp hùng biện và các thủ thuật tranh biện,3,36,45,45
+AD213,AD213,Hát - Nhạc,3,36,45,45
+AD214,AD214,Nâng cao chất lượng giọng hát,3,AD213,,45
+AD215,AD215,ứng dụng PowerPoint,3,"IM201 , IM202",45,45
+AD216,AD216,Tâm lý và kỹ năng giao tiếp với người cao tuổi,3,50,45,45
+AD312,AD312,Bóng đá,4,,60,
+AD313,AD313,Bóng đá nâng cao,4,AD312,60,
+AD314,AD314,Nhảy hiện đại,4,,60,
+AD315,AD315,Nhảy hiện đại nâng cao,4,AD314,60,
+AD414,AD414,TOEIC,2,GE305,54,
+AE211,AE211,"Đất nước học Anh, Mỹ",4,GE244,60,
+AE300,AE300,Lý thuyết dịch,2,GE246,30,
+AE301,AE301,Dịch viết 1,3,AE300,45,45
+AE313,AE313,"Vãn học Anh, Mỹ",4,GE244,60,
+AE320,AE320,Kỹ năng giao tiếp,2,GE246,30,
+AE322,AE322,Thư tín thương mại 1,2,AE320,30,
+AE323,AE323,Thư tín thương mại 2,2,"AE321 , AE322",30,
+AE402,AE402,Dịch viết 2,3,AE301,45,
+AE403,AE403,Dịch viết 3,3,AE402,45,
+AE405,AE405,Dịch nói 1,3,AE301,45,45
+AE406,AE406,Dịch nói 2,3,AE405,45,
+AE408,AE408,Tiếng Anh báo chí,2,GE353,30,
+AE415,AE415,Giao tiếp giữa các nền văn hoá,2,AE211,30,
+AE426,AE426,Tiếng Anh kinh tế 1,3,"AE323 , AE324",45,
+AE427,AE427,Tiếng Anh kinh tế 2,3,"AE426A , AE426",45,
+AE449,AE449,CĐTN: Ngôn ngữ và văn hoá,3,110,45,
+AE450,AE450,CĐTN: Ngữ pháp tiếng Anh,3,110,45,
+AE499,AE499,KLTN ngành Ngôn ngữ Anh,6,120,90,
+AF200,AF200,Mỹ học,2,PS200,30,
+AJ201,AJ201,Ngữ pháp tiếng Nhật 1,2,"GJ242,GJ240",30,
+AJ214,AJ214,Văn hóa Nhật Bản 1,2,GJ163,30,
+AJ304,AJ304,Ngữ pháp tiếng Nhật 2,2,AJ201,30,
+AJ311,AJ311,Đất nước học Nhật Bản,2,GJ340,30,
+AJ313,AJ313,Văn minh Nhật Bản,2,AJ311,30,
+AJ315,AJ315,Văn bản tiếng Nhật,3,GJ243,45,
+AJ400,AJ400,Văn học Nhật Bản,2,GJ341,30,
+AJ404,AJ404,Tiếng Nhật giao tiếp doanh nghiệp,2,GJ340,30,
+AJ407,AJ407,Kỹ thuật giảng dạy tiếng Nhật,2,PJ422,36,36
+AJ410,AJ410,Trích giảng văn học Nhật,2,AJ400,30,
+AJ413,AJ413,Lịch sử Nhật Bản,2,AJ311,30,
+AJ415,AJ415,Văn hóa Nhật Bản 2,2,"AJ214,GJ342",30,
+AJ428A,AJ428A,CĐTN: Tiếng Nhật trong xuất nhập khẩu,3,110,45,
+AJ428B,AJ428B,CĐTN: Quản trị sản xuất trong các doanh nghiệp Nhật Bản,3,110,45,
+AJ448A,AJ448A,CĐTN: Tâm lý học trong giáo dục tiếng Nhật,3,110,45,
+AJ448B,AJ448B,CĐTN: Phương pháp đánh giá trong giáo dục tiếng Nhật,3,110,45,
+AJ449A,AJ449A,CĐTN: Cấu trúc và thành phần câu tiếng Nhật,3,110,45,
+AJ449B,AJ449B,CĐTN: Nhật Bản từ góc nhìn đa văn hóa,3,110,45,
+AJ452,AJ452,Kỹ năng giao tiếp tiếng Nhật,2,GJ340,36,36
+AJ461,AJ461,Tiếng Nhật truyền thông,3,GJ341,45,
+AJ499,AJ499,KLTN ngành Ngôn ngữ Nhật,6,110,90,
+AK200,AK200,Lý thuyết dịch,2,GK241,30,
+AK216,AK216,Ngữ âm và từ vựng tiếng Hàn,2,GK241,30,
+AK301,AK301,Dịch viết 1,3,GK242,45,
+AK302,AK302,Dịch viết 2,2,AK301,30,
+AK303,AK303,Dịch viết 3,2,AK302,30,
+AK305,AK305,Dịch nói 1,3,GK242,45,
+AK306,AK306,Dịch nói 2,2,AK305,30,
+AK307,AK307,Dịch nói 3,2,AK306,30,
+AK311,AK311,Tìm hiểu về xã hội Hàn Quốc,2,GK242,30,
+AK312,AK312,Vãn học Hàn Quốc,2,GK242,30,
+AK313,AK313,Tìm hiểu về văn hóa - lịch sử Hàn Quốc,3,GK242,45,
+AK318,AK318,Tiếng Hàn cao cấp 1,4,AK216,108,
+AK319,AK319,Tiếng Hàn cao cấp 2,4,AK318,108,
+AK320,AK320,Tiếng Hàn cao cấp 3,3,AK319,81,
+AK321,AK321,Tiếng Hàn cao cấp 4,3,AK320,81,
+AK448,AK448,CĐTN: Hoạt động kinh doanh của doanh nghiệp Hàn Quốc tại Việt Nam,3,110,45,
+AK449,AK449,CĐTN: Văn hóa trong ngôn ngữ Hàn,3,110,45,
+AN101,AN101,Lý thuyết Âm nhạc,3,,45,
+AN111,AN111,Ký xướng âm 1,4,,60,
+AN121,AN121,Piano cơ bản,4,,60,
+AN131,AN131,Kỹ thuật thanh nhạc 1,4,,60,
+AN141,AN141,Kỹ thuật biểu diễn (vũ đạo) 1,4,,60,
+AN201,AN201,Tính năng nhạc cụ,2,,30,
+AN211,AN211,Phân tích âm nhạc,3,,45,
+AN212,AN212,Ký xướng âm 2,4,AN111,60,
+AN222,AN222,Piano úng dụng 1,4,AN121,60,
+AN232,AN232,Kỹ thuật thanh nhạc 2,4,AN131,60,
+AN234,AN234,Thanh nhạc ứng dụng 1,4,,60,
+AN235,AN235,Thanh nhạc ứng dụng 2,4,AN234,60,
+AN236,AN236,Kỹ thuật thanh nhạc (chuyên sâu),3,AN131,45,
+AN237,AN237,Thanh nhạc ứng dụng (chuyên sâu),2,AN234,30,
+AN242,AN242,Kỹ thuật biểu diễn (vũ đạo) 2,4,AN141,60,
+AN245,AN245,Vũ đạo (chuyên sâu),2,AN141,30,
+AN251,AN251,Thực hành biểu diễn 1,4,,60,
+AN252,AN252,Guitar,2,,30,
+AN253,AN253,Trống,2,,30,
+AN301,AN301,Hòa thanh,2,,30,
+AN303,AN303,Phối khí 1,2,,30,
+AN311,AN311,Sáng tác ca khúc 1,3,,45,
+AN323,AN323,Piano úng dụng 2,4,AN222,60,
+AN333,AN333,Kỹ thuật thanh nhạc 3,4,AN232,60,
+AN352,AN352,Thực hành biểu diễn 2,4,AN251,60,
+AN402,AN402,Hòa thanh ứng dụng,2,AN301,30,
+AN404,AN404,Phối khí 2,2,AN303,30,
+AN412,AN412,Sáng tác cakhúc2,3,AN311,45,
+AN413,AN413,Kỹ thuật Phòng thu,3,,45,
+AN434,AN434,Kỹ thuật thanh nhạc 4,4,AN333,60,
+AN453,AN453,Chương trình tốt nghiệp,4,AN352,80,
+AZ200,AZ200,Lý thuyết dịch,2,GZ242,30,
+AZ216,AZ216,Ngữ âm và từ vựng tiếng Trung,3,GZ243,45,
+AZ301,AZ301,Dịch viết 1,2,AZ200,30,
+AZ302,AZ302,Dịch viết 2,2,AZ301,30,
+AZ303,AZ303,Dịch viết 3,2,AZ302,30,
+AZ305,AZ305,Dịch nói 1,2,AZ200,30,
+AZ306,AZ306,Dịch nói 2,2,AZ305,30,
+AZ307,AZ307,Dịch nói 3,2,AZ305,30,
+AZ311,AZ311,Đất nước học Trung Quốc,2,GZ243,30,
+AZ312,AZ312,Văn học Trung Quốc,2,GZ243,30,
+AZ313,AZ313,Văn hóa Trung Quốc,2,GZ243,30,
+AZ318,AZ318,Ngữ pháp tiếng Trung,3,GZ243,45,
+AZ458,AZ458,CĐTN: Hợp tác kinh tế thương mại Việt Nam - Trung,3,110,45,
+AZ459,AZ459,CĐTN: Ngôn ngữ văn hóa Trung Quốc,3,110,45,
+BA101,BA101,Quản trị học,2,27,30,
+BA102,BA102,Quản trị học đại cưong,3,"EC101 , EC102",45,
+BA211,BA211,Quản trị sản xuất và tác nghiệp,3,,45,
+BA217,BA217,Quản trị nguồn nhân lực trong du lịch,3,,45,45
+BA222,BA222,Phân tích và lập dự án,3," , FN211",45,
+BA236,BA236,Quản trị kinh doanh điểm đến,3,,45,45
+BA301,BA301,Quản trị hành chính công,2,BA101,30,
+BA313,BA313,Quản trị chiến lược,3,"BA101 , BA102",45,
+BA314,BA314,Quản trị nguồn nhân lực,3,EC102,45,
+BA315,BA315,Văn hóa doanh nghiệp và đạo đức kinh doanh,3,BA314,45,
+BA316,BA316,Quản lý nguồn nhân lực y tế,2,BA101,30,
+BA322,BA322,Quản lý dự án,2,FN211,30,
+BA326,BA326,Thưong mại quốc tế,3,"50 , FN211",45,
+BA327,BA327,Quản trị chất lượng,3,BA212,45,
+BA328,BA328,Hành vi tổ chức,3,"BA101 , BA102",45,
+BA332,BA332,Quản trị kinh doanh lữ hành,3,TR111,45,45
+BA333,BA333,Quản trị kinh doanh khách sạn,3,TR111,45,45
+BA334,BA334,Quản trị kinh doanh nhà hàng,3,TR111,45,45
+BA335,BA335,Quản trị cung ứng các DV cho hoạt động lữ hành,3,BA332,45,45
+BA338,BA338,Quản trị chế biến các món ăn,3,BA334,45,45
+BA339,BA339,Quản trị kinh doanh các sự kiện,3,TR111,45,45
+BA342,BA342,Quản trị các dịch vụ bổ trợ trong khách sạn,3,BA333,45,45
+BA343,BA343,Quản trị các loại tiệc,3,BA334,45,45
+BA344,BA344,Quản trị kinh doanh đồ uống,3,,45,45
+BA414,BA414,Kỹ năng lãnh đạo,2,BA328,30,
+BA420,BA420,Quản trị rủi ro trong kinh doanh,3,BA313,45,
+BA425,BA425,CĐTN: Quản lý dự án trong ỵ tế,3,"100,PH204,PH334",45,
+BA490,BA490,CĐTN chuyên ngành Quản trị doanh nghiệp,3,"124 ,BA314,TT499",45,
+BA499,BA499,KLTN chuyên ngành Quản trị doanh nghiệp,6,"124 ,BA314,TT499",90,
+BK201,BK201,Ngân hàng thương mại 1,3,FN211,45,
+BK302,BK302,Ngân hàng thương mại 2,3,BK201,45,
+BK311,BK311,Ngân hàng trung ương,2,BK302,30,
+BK312,BK312,Ngân hàng phát triển,3,BK302,45,
+BK321,BK321,Thanh toán quốc tế,3,FN201,45,
+BK322,BK322,Công nghệ thông tin ngân hàng,2,BK302,30,
+BK325,BK325,Xuất nhập khấu,2,BK321,30,
+BK326,BK326,Thanh toán quốc tế trong du lịch,2,AC201,30,
+BK405,BK405,Quản trị rủi ro tín dụng của ngân hàng thương mại,3,BK302,45,
+BK418,BK418,Quản trị rủi ro hoạt động của ngân hàng thương mại,3,BK302,45,
+BK490,BK490,CĐTN chuyên ngành Ngân hàng,3,"124, BK302,TT499",45,
+BK499,BK499,KLTN chuyên ngành Ngân hàng,6,"124 , BK302,TT499",90,
+CF201,CF201,Lý thuyết thuật toán,3,MI201,36,18
+CF211,CF211,Phân tích và thiết kế thuật toán,2,CS121,18,18
+CF212,CF212,Cấu trúc dữ liệu,3,CS122,27,36
+CF231,CF231,Lý thuyết thông tin và mã hóa,2,MA231,18,18
+CF301,CF301,Ngôn ngữ hình thức và Otomat,3,MI201,45,45
+CF302,CF302,"Văn phạm, ngôn ngữ hình thức, otomat và chương trình dịch",3,MI201,36,18
+CF320,CF320,Tín hiệu và hệ thống,3,MA300,45,45
+CF321,CF321,Xử lý tín hiệu số,3,"MA300,CF320",45,45
+CF415,CF415,Chuyên đề cấu trúc dữ liệu và thuật toán 1,4,"MI201,CF212",60,
+CF416,CF416,Chuyên đề cấu trúc dữ liệu và thuật toán 2,3,CF415,45,
+CF425,CF425,Chuyên đề xử lý tín hiệu ảnh,4,"MI321,MA340",60,
+CF426,CF426,Chuyên đề xử lý tín hiệu âm thanh,3,CF425,45,
+CJ401,CJ401,Văn hoá doanh nghiệp Nhật Bản,2,GJ3405,30,
+CS100,CS100,Tin đại cưong,2,,18,24
+CS110,CS110,Kỹ thuật số,2,MA101,18,18
+CS121,CS121,Ngôn ngữ lập trình,3,,27,36
+CS122,CS122,Lập trình hướng đối tượng,3,CS121,27,36
+CS212,CS212,Kiến trúc máy tính,3,"CS110,CS122",45,45
+CS223,CS223,Lập trình Java,3,CS122,45,45
+CS224,CS224,Lập trình .Net,3,IS222,45,45
+CS311,CS311,Lập trình ứng dụng di động,2,CS122,18,18
+CS312,CS312,Lập trình hệ thống,3,CS212,45,45
+CS315,CS315,Nguyên lý hệ điều hành,3,CS212,45,45
+CS316,CS316,Hệ điều hành Unix,3,CS212,45,45
+CS325,CS325,Lập trình PHP,3,IS222,45,45
+CS425,CS425,Một số vấn đề hiện đại trong khoa học máy tính,2,90,18,18
+CS499,CS499,KLTN ngành Khoa học máy tính,6,120,30,120
+EC101,EC101,Kinh tế học đại cương,3,,45,
+EC102,EC102,Nhập môn kinh tế học,2,,30,
+EC103,EC103,Lịch sử các học thuyết kinh tế,2,,30,
+EC204,EC204,Kinh tế vi mô,3,EC101,45,
+EC205,EC205,Kinh tế vĩ mô,3,EC101,45,
+EC221,EC221,Luật kinh tế,2,SH131,30,
+EC226,EC226,Kinh tế công cộng,2,EC101,30,
+EC227,EC227,Quản lý tài chính và kinh tế ỵ tế,2,BA101,30,
+EC311,EC311,Mô hình kinh tế,2,"EC202, EC203",30,
+EC312,EC312,Kinh tế lượng,3,MA231,27,36
+EC314,EC314,Kinh tế quốc tế,2,"EC204,EC205",30,
+EC315,EC315,Nhập môn kinh tế quốc tế,2,EC102,30,
+EC327,EC327,Kinh tế ỵ tế,3,EC101,45,
+EC490,EC490,CĐTN: Kinh tế học,3,"124 ,TT499",45,
+EJ331,EJ331,Giáo dục Nhật Bản,2,GJ342,30,
+EK211,EK211,Kinh tế Hàn Quốc,2,50,30,
+EL321,EL321,Ngữ pháp,3,GE244,45,
+EL322,EL322,Ngữ âm,2,EL321,30,
+EL323,EL323,Từ vụng và ngữ nghĩa,2,EL321,30,
+EL401,EL401,Ngôn ngữ học đối chiếu,2,AE211,30,
+EL425,EL425,Ngữ dụng,2,"EL321,VL100",30,
+EL426,EL426,Phân tích diễn ngôn,2,GE352,30,
+EM315,EM315,Nhập môn Marketing,3,AE427,45,
+FN201,FN201,Lý thuyết tài chính tiền tệ,3,48,45,
+FN211,FN211,Tài chính doanh nghiệp,3,"FN201,AC201",45,
+FN212,FN212,Quản trị tài chính doanh nghiệp 1,3,FN211,45,
+FN221,FN221,Tài chính công,2,FN201,30,
+FN224,FN224,Thuế,3,FN221,45,
+FN261,FN261,Tài chính quốc tế,3,FN201,45,
+FN313,FN313,Quản trị tài chính doanh nghiệp 2,3,FN212,45,
+FN331,FN331,Thị trường chứng khoán,3,FN211,45,
+FN333,FN333,Quản trị rủi ro tài chính,3,FN261,45,
+FN335,FN335,Bảo hiễm,3,FN211,45,
+FN418,FN418,Phân tích tài chính doanh nghiệp,2,FN212,30,
+FN436,FN436,Định giá tài sản,3,FN313,45,
+FN438,FN438,Đầu tư tài chính,3,"FN313,FN331",45,
+FN490,FN490,CĐTN chuyên ngành Tài chính,3,"124 ,FN313,TT499",45,
+FN499,FN499,KLTN chuyên ngành Tài chính,6,"124 ,FN313,TT499",90,
+GE101,GE101,Tiếng Anh sơ cấp 1,2,,54,
+GE102,GE102,Tiếng Anh sơ cấp 2,2,GE101,54,
+GE103,GE103,Tiếng Anh sơ cấp 3,2,"GE102,GE101",54,
+GE141,GE141,English 1,4,,108,
+GE142,GE142,English 2,4,GE141,108,
+GE143,GE143,English 3,4,GE142,108,
+GE201,GE201,Tiếng Anh sơ trung cấp 1,2,"GE103,GE102",54,
+GE202,GE202,Tiếng Anh sơ trung cấp 2,2,"GE201,GE103",54,
+GE203,GE203,Kỹ năng giao tiếp tiếng Anh 1,2,"GE202,GE201",54,
+GE204,GE204,Kỹ năng giao tiếp tiếng Anh 2,2,"GE203, GE202",54,
+GE205,GE205,Tiếng Anh sơ trung cấp 3,2,"GE202,GE201",54,
+GE244,GE244,English 4,4,GE143,108,
+GE245,GE245,English 5,4,GE244,108,
+GE246,GE246,English 6,4,GE245,108,
+GE301,GE301,Tiếng Anh trung cấp 1,2,"GE205,GE202",54,
+GE303,GE303,Tiếng Anh trung cấp 2,2,"GE301,GE205",54,
+GE305,GE305,Tiếng Anh trung cấp 3,2,"GE303,GE301",54,
+GE351,GE351,English 7,3,GE246,81,
+GE352,GE352,English 8,3,GE351,81,
+GE353,GE353,English 9,2,GE352,54,
+GF101,GF101,Tiếng Pháp 1,2,,54,
+GF102,GF102,Tiếng Pháp 2,2,GF101,54,
+GI101,GI101,Tiếng Ý 1,2,,54,
+GI102,GI102,Tiếng Ý 2,2,GI101,54,
+GJ101,GJ101,Tiếng Nhật 1,2,,54,
+GJ102,GJ102,Tiếng Nhật 2,2,GJ101,54,
+GJ161,GJ161,Tiếng Nhật sơ cấp 1,3,,81,
+GJ162,GJ162,Tiếng Nhật sơ cấp 2,3,GJ161,81,
+GJ163,GJ163,Tiếng Nhật sơ cấp 3,4,"GJ162, GJ161",108,
+GJ171,GJ171,"Kỹ năng nghe, nói, đọc, viết Nhật 1",2,,54,
+GJ172,GJ172,"Kỹ năng nghe, nói, đọc, viết Nhật 2",2,GJ171,54,
+GJ173,GJ173,"Kỹ năng nghe, nói, đọc, viết Nhật 3",2,"GJ172, GJ171",54,
+GJ240,GJ240,Tiếng Nhật trung cấp 1,4,"GJ163, GJ162",108,
+GJ242,GJ242,Tiếng Nhật trung cấp 2,4,"GJ240, GJ163",108,
+GJ243,GJ243,Tiếng Nhật trung cấp 3,4,"GJ242,GJ240",108,
+GJ340,GJ340,Tiếng Nhật trung cấp 4,4,"GJ243,GJ242",108,
+GJ341,GJ341,Tiếng Nhật cao cấp 1,3,"GJ340,GJ243",81,
+GJ342,GJ342,Tiếng Nhật cao cấp 2,3,"GJ341,GJ340",81,
+GJ441,GJ441,Tiếng Nhật cao cấp 3,3,"GJ342,GJ341",81,
+GK101,GK101,Tiếng Hàn 1,2,,54,
+GK102,GK102,Tiếng Hàn 2,2,GK101,54,
+GK131,GK131,Tiếng Hàn sơ cấp 1,2,,54,
+GK142,GK142,Tiếng Hàn sơ cấp 2,2,GK131,54,
+GK151,GK151,"Kỹ năng nghe, nói, đọc Hàn 1",3,,81,
+GK152,GK152,"Kỹ năng nghe, nói, đọc Hàn 2",3,GK151,81,
+GK153,GK153,"Kỹ năng nghe, nói, đọc Hàn 3",3,GK152,81,
+GK241,GK241,Tiếng Hàn ừung cấp 1,3,GK142,81,
+GK242,GK242,Tiếng Hàn trung cấp 2,3,GK241,81,
+GK251,GK251,"Kỹ năng nghe, nói, đọc Hàn 4",3,GK153,81,
+GK252,GK252,"Kỹ năng nghe, nói, đọc Hàn 5",3,GK251,81,
+GK253,GK253,"Kỹ năng nghe, nói, đọc Hàn 6",3,GK252,81,
+GZ101,GZ101,Tiếng Trung 1,2,,54,
+GZ102,GZ102,Tiếng Trung 2,2,GZ101,54,
+GZ131,GZ131,Tiếng Trung sơ cấp 1,4,,108,
+GZ132,GZ132,Tiếng Trung sơ cấp 2,4,GZ131,108,
+GZ133,GZ133,Tiếng Trung sơ cấp 3,4,GZ132,108,
+GZ151,GZ151,"Kỹ năng nghe, nói, đọc, viết Trung 1",2,,54,
+GZ152,GZ152,"Kỹ năng nghe, nói, đọc, viết Trung 2",2,GZ151,54,
+GZ153,GZ153,"Kỹ năng nghe, nói, đọc, viết Trung 3",3,GZ152,81,
+GZ241,GZ241,Tiếng Trung trung cấp 1,4,GZ133,108,
+GZ242,GZ242,Tiếng Trung trung cấp 2,4,GZ241,108,
+GZ243,GZ243,Tiếng Trung trung cấp 3,4,GZ242,108,
+GZ251,GZ251,"Kỹ năng nghe, nói, đọc, viết Trung 4",3,GZ153,81,
+GZ252,GZ252,"Kỹ năng nghe, nói, đọc, viết Trung 5",4,GZ251,108,
+GZ253,GZ253,"Kỹ năng nghe, nói, đọc, viết Trung 6",4,GZ252,108,
+HB111,HB111,Giải phẫu,2,,30,30
+HB212,HB212,Sinh lý - Sinh lý bệnh - Miễn địch,4,"NA133,HB111",45,45
+HM201,HM201,Các loại hình bệnh viện,3,,45,
+HM303,HM303,Bảo hiểm y tế,2,HM201,30,
+HM311,HM311,Quản lý được,2,HM201,30,
+HM315,HM315,Quàn lý dự án trong bệnh viện,2,30,30,
+HM321,HM321,Một số vấn đề về chăm sóc tại bệnh viện,2,HM201,30,
+HM330,HM330,Thực tập bệnh viện lần 1,3,50,45,
+HM402,HM402,"Quan hệ làm việc với các phòng, khoa trong bệnh viện",2,HM201,30,
+HM412,HM412,"Quản lý hậu cần, vật tư y tế",2,HM201,30,
+HM413,HM413,Quản lý thông tin bệnh viện,2,HM201,30,
+HM416,HM416,Quản lý các mặt hoạt động trong bệnh viện,2,HM201,30,
+HM417,HM417,Quản lý nhóm công tác trong bệnh viện,2,HM201,30,
+HM418,HM418,CĐTN: Quản lý chất lượng dịch vụ và nguy cơ,3,110,45,
+HM419,HM419,"CĐTN: Tổ chức, quản lý chính sách ỵ tế",3,110,45,
+HM431,HM431,Thực tập bệnh viện lần 2,3,70,45,
+HM499,HM499,KLTN ngành Quản lý bệnh viện,6,120,90,
+IJ301,IJ301,Tiếng Nhật IT,3,"GJ341,IS203",45,
+IM201,IM201,Kỹ năng soạn thảo văn bản (MS Office) hoặc,3,IM001,45,45
+IM202,IM202,Kỹ năng soạn thảo văn bần (Open Office),3,IM001,45,45
+IM203,IM203,ứng dụng Excel hoặc,3,IM201,45,45
+IM204,IM204,ứng dụng Caỉ,3,IM202,45,45
+IM205,IM205,Kỹ năng soạn thảo văn bản (Thanh nhạc),3,,45,45
+IN301,IN301,Tin học ứng dụng trong dinh dưỡng tiết chế,2,IM001,15,30
+IP303,IP303,Tiếng Nhật văn phòng,2,GJ243,30,
+IP401,IP401,Thực tập ngành Khoa học máy tính,2,100,60TH,
+IP402,IP402,Thực tập ngành Truyền thông và mạng máy tính,2,100,60TH,
+IP403,IP403,Thực tập ngành Hệ thống thông tin,2,100,60TH,
+IS203,IS203,Vi tính tiếng Nhật,3,"GJ163,IM201 , IM202",45,
+IS222,IS222,Cơ sở dữ liệu,3,"CS121,MA101",45,45
+IS314,IS314,Hệ thống thông tin,3,IS222,45,45
+IS315,IS315,Mô hình hóa quy trình nghiệp vụ,2,IS314,18,18
+IS316,IS316,Hạ tầng công nghệ thông tin,3,IS314,45,45
+IS322,IS322,Hệ quản trị cơ sở dữ liệu,3,IS222,45,45
+IS325,IS325,Cơ sở dữ liệu phân tán,2,"IS222,NW212",18,18
+IS326,IS326,Khai phá dữ liệu,3,IS322,45,45
+IS327,IS327,Kho dữ liệu,3,IS322,45,45
+IS332,IS332,Phân tích thiết kế hướng đối tượng,3,"CS122,IS222",45,45
+IS333,IS333,Phân tích thiết kế hệ thống thông tin,2,IS222,18,18
+IS334,IS334,Quản lý dự án hệ thống thông tin,3,SE302,45,45
+IS335,IS335,Phát triển ứng dụng doanh nghiệp,3,SE302,45,45
+IS336,IS336,Triển khai và kiềm soát hệ thống thông tin doanh nghiệp,3,IS335,45,45
+IS345,IS345,An toàn thông tin,3,CF231,45,45
+IS382,IS382,Công nghệ thông tin trong doanh nghiệp,2,"100 ,BA102,MK202",18LT+18111,
+IS383,IS383,Hệ thống thông tin nâng cao,2,IS314,18,18
+IS384,IS384,Một số vấn đề hiện đại về hệ thống thông tin,3,IS383,45,45
+IS424,IS424,Lập trình cơ sở dữ liệu,3,IS322,45,45
+IS480,IS480,Kiến trúc doanh nghiệp,3,IS383,45,45
+IS484,IS484,CĐTN: Cơ sở dữ liệu,6,"110,IS322",30,120
+IS499,IS499,KLTN ngành Hệ thống thông tin,6,120,30,120
+MA100,MA100,Logic và suv luân toán hoc,2,,18,24
+MA101,MA101,"Logic, suy luận toán học và kỹ thuật đếm",3,,27,36
+MA103,MA103,Số và cấu trúc đại số,2,MA101,18,24
+MA110,MA110,Giải tích 1,3,MA101,36,18
+MA111,MA111,Giải tích 2,3,MA110,36,18
+MA120,MA120,Đại số tuyến tính,3,MA101,36,18
+MA142,MA142,"Đại số tuyến tính, giải tích và úng dụng trong kinh tế",4,"MA101,EC101",45,27
+MA231,MA231,Xác suất thống kê ứng dụng,4,"MA142,IM001",45,27
+MA232,MA232,Thống kê xã hội học,3,"MA100,IM001",27,36
+MA233,MA233,Thống kê ỵ học,2,"MA100,IM001",15,30
+MA235,MA235,Thống kê du lịch,2,"MA100,IM001",18,24
+MA241,MA241,Toán tài chính,2,MA142,18,24
+MA300,MA300,Toán chuyên ngành truyền thông và mạng máy tính,3,MA231,45,45
+MA313,MA313,Hàm biến phức,2,MA111,18,24
+MA323,MA323,Số học thuật toán,2,MA103,18,24
+MA340,MA340,Giải tích số,3,MA111,36,18
+MA342,MA342,Giải tích lồi,3,MA111,36,18
+MA431,MA431,Phân tích số liệu bằng STATA,2,"MA233,PH321",30TH,
+MI201,MI201,Toán rời rạc,3,CS122,45,45
+MI302,MI302,Tối ưu hóa,2,MA111,18,24
+MI311,MI311,Mã hóa và an toàn dữ liệu,2,MI201,18,24
+MI312,MI312,Đồ họa,2,"CS122,MA120",18,18
+MI321,MI321,Trí tuệ nhân tạo,3,"MI201,CF212",45,45
+MI332,MI332,Thực hành tính toán,3,"MA11 ,MA231 ,MI311, CF302",36,18
+MI414,MI414,Giao diện người máy,2,MI312,18,18
+MI425,MI425,Chuyên đề cơ sở dữ liệu và trí tuệ nhân tạo 1,4,"MI321,IS222",60,
+MI426,MI426,Chuyên đề cơ sở dữ liệu và trí tuệ nhân tạo 2,3,MI425,45,
+MI489,MI489,KLTN ngành Toán ứng dụng,6,110,90,
+MJ401,MJ401,Tiếng Nhật ỵ tế,2,GJ341,30,
+MK201,MK201,Nguyên lý marketing,2,EC102,30,
+MK202,MK202,Marketing căn bản,3,"EC101 , EC102",45,
+MK302,MK302,Nghiên cứu marketing,3,"MK201 , MK202",45,
+MK305,MK305,Tâm lý hành vi người tiêu dùng,3,"MK201 , MK202",45,
+MK313,MK313,Quản trị thưong hiệu,3,"MK201 , MK202",45,
+MK322,MK322,Quản trị chuỗi cung ứng,3,"MK201 , MK202",45,
+MK331,MK331,Marketing ngân hàng,2,"MK201 , MK202",30,
+MK332,MK332,Marketing bệnh viện,2,MK201,30,
+MK333,MK333,Marketing dịch vụ,2,"MK201 , MK202",30,
+MK334,MK334,E - Marketing,3,"MK201 , MK202",45,
+MK337,MK337,Marketing trong kinh doanh du lịch,2,MK201,30,
+MK338,MK338,Marketing du lịch,3,,45,45
+MK418,MK418,Marketing quốc tế,2,"MK201 , MK202",30,
+MK420,MK420,Marketing công nghiệp,3,MK302,45,
+MK423,MK423,Quan hệ cộng đồng,2,50,30,
+MK424,MK424,Quản trị bán hàng,3,"MK201 , MK202",45,
+MK425,MK425,Quan hệ công chúng,3,"MK201 , MK202",45,
+MK426,MK426,Truyền thông marketing tích hợp,3,"MK201 , MK202",45,
+MK490,MK490,CĐTN chuyên ngành Quản trị marketing,3,"124 ,MK426,TT499",45,
+MK499,MK499,KLTN chuyên ngành Quản trị marketing,6,"124 ,MK426,TT499",90,
+ML111,ML111,Triết học Mác - Lên in,2,,,
+ML112,ML112,Kinh tế chính trị và CNXH khoa học,2,,30,
+ML202,ML202,Tư tưởng Hồ Chí Minh,3,,45,
+ML203,ML203,Đường lối cách mạng của Đảng cs Việt Nam,2,ML111,30,
+MZ333,MZ333,Phưong pháp giảng dạy chữ Hán,3,ML202,45,
+NA126,NA126,Hóa sinh,2,GJ342,30,
+NA133,NA133,Hóa hữu cơ - Hóa phân tích,2,"NA133,NA142,NA145",15,30
+NA142,NA142,Giải phẫu ứng dụng,2,,30(LT+IH),
+NA143,NA143,Sinh lvhọc lâm sàng,4,"NA133,NA145",45,30
+NA145,NA145,Mô phôi - Di truyền,2,"NA133,NA142,NA145",30,
+NA146,NA146,Vi sinh vật,2,,30,
+NA147,NA147,Ký sinh trùng,2,"NA142,NA143",30,
+NA151,NA151,Khoa học môi trường,2,"NA142,NA143",30,
+NA210,NA210,Sinh lý bệnh - Miễn dịch ứng dụng,2,,30,
+NC211,NC211,Kiểm soát nhiễm khuẩn trong thực hành điều dưỡng,3,"NA142,NA143",30LT+30IH,
+NC463,NC463,Kinh tế hộ gia đình - dinh dưỡng,2,NA210,15,40
+NC499,NC499,KLTN ngành Dinh dưỡng,2,NS250,30,
+ND337,ND337,Triệu chứng và bệnh học Nội khoa,6,120,90,
+ND338,ND338,Triệu chứng bệnh học Nhi khoa,3,NA210,30,40
+ND339,ND339,Triệu chứng bệnh học Ngoại khoa,3,NA210,30,40
+ND340,ND340,Triệu chứng bệnh học Sản phụ khoa,3,NA210,30,40
+ND341,ND341,"Dinh dưỡng tiết chế Nội, Nhi",3,NA210,30,40
+ND342,ND342,Bệnh học dinh dưỡng,4,NS214,30,80
+ND343,ND343,"Dinh dưỡng tiết chế Ngoại, Sản",2,NS214,30,
+ND344,ND344,Hóa sinh dinh dưõng,4,NS214,30,80
+ND345,ND345,Can thiệp dinh dinh dưỡng trong bệnh viện,2,NA126,30,
+ND448,ND448,CĐTN: Dinh dưõng tiết chế,2,"ND341,ND342",30,
+NF217,NF217,An toàn vệ sinh thực phẩm,3,"100 ,ND341,ND342",45,
+NF329,NF329,Kiểm nghiệm thực phẩm,3,NS215,,
+NF331,NF331,Truyền thông giáo dục an toàn thực phầm,3,NS215,45,45
+NF332,NF332,Điều tra giám sát ngộ độc thực phẩm,3,NS318,30,
+NF334,NF334,Đánh giá nguy cơ ô nhiễm thực phẩm,2,NS214,30,
+NF341,NF341,Kỹ thuật chế biến món ăn,2,NS214,45,45
+NF450,NF450,CĐTN: An toàn thực phẩm,3,"100 , NF217",45,
+NP211,NP211,Dược lý,3,"NA142,NA143",30,
+NR201,NR201,Điều dưỡng cơ bản 1,2,"NA133,NA142,NA143, NA145,NA210",30,30
+NR202,NR202,Điều dưỡng cơ bản 2,3,NR201,15,60
+NR203,NR203,Kỹ năng giao tiếp trong thực hành Điều dưỡng,2,NR201,15,30
+NR211,NR211,Điều dưỡng các bệnh Nội khoa 1,4,NR202,30,80
+NR212,NR212,Điều dưỡng các bệnh Nội khoa 2,4,NR202,30,80
+NR216,NR216,Dinh dưỡng - Tiết chế và an toàn thực phẩm,2,,30,
+NR303,NR303,Điều dưỡng phục hồi chức năng,2,NR202,15,40
+NR310,NR310,Điều dưỡng Hồi sức cấp cứu,3,NR202,30,40
+NR314,NR314,Điều dưỡng các bệnh truyền nhiễm,2,NR202,15,40
+NR321,NR321,Điều dưỡng nhi khoa,5,NR202,45,80
+NR331,NR331,Điều dưỡng các bệnh Ngoại khoa 1,4,NR202,30,80
+NR332,NR332,Điều dưỡng các bệnh Ngoại khoa 2,4,NR202,30,80
+NR342,NR342,Điều dưỡng Sản-Phụ khoa,5,NR202,45,80
+NR354,NR354,Y học cổ truyền,2,NR202,30,
+NR404,NR404,Quản lý ỵ tế và Quăn lý điều dưỡng,3,NR202,45,
+NR413,NR413,Điều dưỡng các bệnh Nội khoa nâng cao,4,"NR211,NR212",,160
+NR415,NR415,Điều dưỡng các bệnh tâm thần,2,NR202,15,40
+NR416,NR416,Chăm sóc người cao tuổi và bệnh nhân hấp hối,2,NR202,15,40
+NR419,NR419,KLTN: Chuyên sâu điều dưỡng các bệnh nội khoa,6,120,90,
+NR422,NR422,Điều dưỡng Nhi khoa nâng cao,4,NR321,,160
+NR429,NR429,KLTN: Chuyên sâu điều dưỡng các bệnh nhi khoa,6,120,90,
+NR433,NR433,Điều dưỡng các bệnh Ngoại khoa nâng cao,4,"NR331,NR332",,160
+NR434,NR434,Điều dưỡng Sản-Phụ khoa nâng cao,4,NR342,,160
+NR439,NR439,KLTN: Chuyên sâu điều dưõng các bệnh ngoại khoa,6,120,90,
+NR449,NR449,KLTN: Chuyên sâu điều dưỡng Sản - Phụ khoa,6,120,90,
+NR451,NR451,Điều dưỡng cộng đồng,2,NR202,15,40
+NR459,NR459,KLTN: Chuyên sâu ỵ học cơ sở,6,120,90,
+NR471,NR471,CĐTN: Điều dưõng Nội khoa,3,110,45,
+NR472,NR472,CĐTN: Điều dưỡng Ngoại khoa,3,110,45,
+NR473,NR473,CĐTN: Điều dưỡng Sản-Phụ khoa,3,110,45,
+NR474,NR474,CĐTN: Điều dưỡng Nhi khoa,3,110,45,
+NR475,NR475,CĐTN: Điều dưỡng Hồi sức cấp cứu,3,110,45,
+NS213,NS213,"Dinh dưỡng thể dục, thể thao",2,NS214,30,
+NS214,NS214,Dinh dưỡng cơ sở,3,NA126,45,45
+NS215,NS215,Khoa học thực phẩm,2,NS214,30,
+NS220,NS220,Dinh dưỡng học đường,2,NS215,30,
+NS221,NS221,Dinh dưỡng người cao tuổi,2,NS250,30,
+NS250,NS250,Dinh dưỡng cộng đồng & Văn hóa xã hội,2,NS214,30,
+NS318,NS318,Giáo dục - Truyền thông/Tưvấn dinh dưỡng,3,NS214,15,30
+NS324,NS324,Can thiệp dinh dưỡng,2,NS214,15,30
+NS438,NS438,Thực tập dinh dưỡng cộng đồng,4,NS214,15,120
+NS448,NS448,Thực tập tốt nghiệp,3,"ND357,ND358",90,
+NS449,NS449,CĐTN: Dinh dưỡng cộng đồng,3,"100 , NS250",45,
+NW212,NW212,Mạng máy tính,2,CS212,18,18
+NW312,NW312,Thiết kế và quản trị mạng,3,NW212,27,36
+NW322,NW322,Lập trình mạng,2,TC314,18,18
+NW332,NW332,An toàn mạng,3,NW312,45,45
+NW439,NW439,CĐTN: An toàn mạng,6,"110 , NW312",30,120
+PG100,PG100,Giáo dục thể chất,4,,100,
+PG121,PG121,Giáo dục quốc phòng,4,,36,60
+PH110,PH110,Khoa học môi trường và các yếu tố ảnh hưởng đến sức khoẻ,3,,45,
+PH111,PH111,Nhập môn Y tế công cộng,2,,30,
+PH130,PH130,Dân số và phát triển,2,,30,
+PH201,PH201,Đạo đức ỵ học,2,PS200,30,
+PH204,PH204,Tổ chức và quản lý dịch vụ ỵ tế,3,,45,45
+PH212,PH212,Sức khỏe môi trường cơ bản và phòng chống thảm họa,3,NA151,45,
+PH215,PH215,Sức khỏe môi trường,2,,30,
+PH232,PH232,Các bệnh thường gặp ở cộng đồng,3,"NA113,NA146,NA147",45,45
+PH233,PH233,Giáo dục và tư vấn sức khỏe,2,,30,30
+PH234,PH234,"Sơ cứu, cấp cứu ở cộng đồng",3,PH232,45,45
+PH235,PH235,Truyền thông và giáo dục sức khỏe,3,PH130,45,45
+PH236,PH236,Thực tập cộng đồng 1,2,"PH234,PH235",30,30
+PH305,PH305,Kế hoạch ỵ tế,2,"BA101,PH204",30,30
+PH313,PH313,Vệ sinh an toàn thực phẩm và dinh dưỡng học,3,,45,45
+PH315,PH315,Dinh dưõng và an toàn thực phẩm,2,"NA126,NA146,NA147",30,30
+PH321,PH321,Dịch tễ học cơ bản và phân loại các bệnh tật,3,,45,
+PH322,PH322,Chính sách ỵ tế,2,,30,
+PH332,PH332,Các nguyên lý về sức khoẻ cộng đồng và chăm sóc sức khoẻ ban đầu,2,,30,
+PH334,PH334,Phương pháp nghiên cứu khoa học trong ỵ tế,3,"72 ,MA233",45,
+PH335,PH335,Sức khoẻ cộng đồng,2,,30,
+PH336,PH336,Thực tập cộng đồng 2,3,PH236,45,45
+PH337,PH337,Sơ cấp cứu trong quá trình phục vụ du lịch,3,,45,45
+PH342,PH342,Sức khoẻ sinh sản cơ bản,2,PH130,30,
+PH343,PH343,Sức khoẻ nghề nghiệp cơ bản,2,"HB212,PH212",30,30
+PH344,PH344,Phục hồi chức năng dựa vào cộng đồng,2,"HB212,PH321",30,30
+PH345,PH345,Dịch tễ học bệnh lây,2,PH321,30,30
+PH411,PH411,ô nhiễm thực phẩm và các bệnh truyền qua thực phầm,2,"PH315,PH321",30,30
+PH419,PH419,CĐTN: Dinh dưỡng - Vệ sinh an toàn thực phẩm,3,"100,PH315,PH344",45,
+PH422,PH422,Dịch tễ học các bệnh không lây,2,PH321,30,30
+PH423,PH423,Chương trình phòng chống HIV/AIDS,2,,30,30
+PH424,PH424,Nghiên cứu định tính,2,,30,30
+PH436,PH436,Thực tập cộng đồng 3,5,PH336,,75
+PH439,PH439,CĐTN: Sức khỏe môi trường,3,"100,PH212,PH334",45,
+PH441,PH441,Sức khoẻ học đường,2,PH212,30,30
+PH443,PH443,Sức khỏe toàn cầu,2,,30,
+PH448,PH448,CĐTN: Sức khỏe nghề nghiệp,3,"100,PH334,PH343",45,
+PH499,PH499,KLTN ngành Y tế công cộng,6,120,90,
+PJ321,PJ321,Tiếng Nhật marketing 1,2,GJ340,30,
+PJ322,PJ322,Giảng dạy Tiếng Nhật 1,2,GJ242,36,36
+PJ323,PJ323,Tiếng Nhật kế toán 1,2,GJ342,30,
+PJ324,PJ324,Tiếng Nhật kế toán 2,2,PJ323,30,
+PJ325,PJ325,Tiếng Nhật kinh tế 1,2,GJ342,30,
+PJ401,PJ401,Thực tập tiếng Nhật tại Nhật Bản,6,50,,
+PJ403,PJ403,Thực tập tiếng Nhật trong nước,6,50,,
+PJ422,PJ422,Giảng dạy Tiếng Nhật 2,2,PJ322,36,36
+PJ424,PJ424,Tiếng Nhật kinh tế 2,2,PJ325,30,
+PJ425,PJ425,Tiếng Nhật marketing 2,2,PJ321,30,
+PK301,PK301,Tiếng Hàn du lịch,2,GK242,30,
+PK302,PK302,Ngôn ngữ học đối chiếu,2,GK242,30,
+PK431,PK431,Thư tín thương mại Hàn Quốc,3,GK242,45,
+PK441,PK441,Chữ Hán trong tiếng Hàn 1,2,36,30,
+PK442,PK442,Tiếng Hàn doanh nghiệp,2,GK242,30,
+PK443,PK443,Chữ Hán trong tiếng Hàn 2,2,PK441,30,
+PS200,PS200,Tâm lý học đại cương,2,"36 ,ML111",30,
+PS201,PS201,Tâm lý học phát triển,2,SM201,30,
+PS202,PS202,Tâm lý học xã hội,2,"PS200,SO101",30,
+PS211,PS211,Tâm lý học du lịch,2,PS200,30,
+PS303,PS303,Hành vi con người và môi trường xã hội,2,"PS200,SO101",30,
+PS321,PS321,Tham vấn,2,PS303,30,
+PS322,PS322,Khoa học giao tiếp,2,PS200,30,
+PZ301,PZ301,Tiếng Trung báo chí,2,GZ243,30,
+PZ302,PZ302,Ngôn ngữ học đối chiếu,2,GZ243,30,
+PZ341,PZ341,Tiếng Trung du lịch 1,2,GZ243,30,
+PZ342,PZ342,Tiếng Trung du lịch 2,2,PZ341,30,
+PZ431,PZ431,Khấu ngữ tiếng Trung thương mại 1,3,GZ243,45,
+PZ432,PZ432,Khầu ngữ tiếng Trung thương mại 2,3,PZ431,45,
+PZ442,PZ442,Văn bản tiếng Trung thương mại,2,GZ243,30,
+SB203,SB203,Kỹ năng đàm phán trong kinh doanh,2,50,30,
+SC201,SC201,Kỹ năng giao tiếp và thuyết trình,2,36,30,
+SE302,SE302,Công nghệ phần mềm,2,IS332,18,18
+SE312,SE312,Kiểm thử và đảm bảo chất lưọng phần mềm,3,SE302,45,45
+SE380,SE380,Project,3,SE302,45,45
+SE422,SE422,Quản lý dự án phần mềm,3,SE302,45,45
+SE487,SE487,CĐTN: Phát triển phần mềm,6,"110 , SE302",30,120
+SF320,SF320,Trị liệu gia đình,2,SK241,30,
+SH111,SH111,Lịch sử văn minh thế giói,2,,30,
+SH113,SH113,Văn hóa Đông Nam Á,3,,45,
+SH121,SH121,Địa lý kinh tế,2,,30,
+SH122,SH122,Địa lý thế giới,3,,45,
+SH131,SH131,Pháp luật đại cưong,2,,30,
+SH201,SH201,Các tôn giáo trên thế giới,2,"VC200, VC211",30,
+SK201,SK201,Phương pháp nghiên cứu trong công tác xã hội,2,SM201,30,
+SK210,SK210,Nhập môn công tác xã hội,2,,30,
+SK212,SK212,Đạo đức nghề công tác xã hội,2,SK241,30,
+SK233,SK233,Công tác xã hội với cá nhân,2,SK241,30,
+SK241,SK241,Lý thuyết công tác xâ hội,2,SK210,30,
+SK301,SK301,Công tác xã hội trong bệnh viện,2,SK241,30,
+SK302,SK302,Công tác xẫ hội trong ỵ tế công cộng,2,SK241,30,
+SK303,SK303,Công tác xã hội với sức khỏe tâm thần,2,SK241,30,
+SK304,SK304,Công tác xã hội với người có HIV/AIDS,2,SK241,30,
+SK305,SK305,Công tác xã hội với người lạm dụng các chất gây nghiện,2,SK241,30,
+SK320,SK320,Quản trị ngành công tác xã hội,2,SK241,30,
+SK322,SK322,Công tác xã hội với quản lý thảm hoạ,2,SK241,30,
+SK323,SK323,Xây dụng và quản lý dự án trong công tác xã hội,2,SK241,30,
+SK324,SK324,Kiểm huấn công tác xã hội,2,SK241,30,
+SK325,SK325,Công tác xẫ hội và hoạt động truyền thông,2,SK241,30,
+SK331,SK331,Thực hành công tác xã hội 1,3,SK233,45,
+SK332,SK332,Thực hành công tác xã hội 2,3,SK334,45,
+SK334,SK334,Công tác xã hội với nhóm,2,SK241,30,
+SK335,SK335,Phát triển cộng đồng,2,SK241,30,
+SK336,SK336,Thực hành công tác xã hội 3,3,SK335,45,
+SK341,SK341,Công tác xã hội với người nghèo,2,SK241,30,
+SK342,SK342,Công tác xẫ hội trong trường học,2,SK241,30,
+SK343,SK343,Công tác xã hội trong hôn nhân và gia đình,2,SK241,30,
+SK345,SK345,Công tác xã hội với dân tộc ít người,2,SK241,30,
+SK346,SK346,Công tác xã hội với doanh nghiệp xã hội,2,SK241,30,
+SK350,SK350,Tội phạm học và công tác xã hội với nhóm tội phạm,2,SK241,30,
+SK351,SK351,Công tác xã hội với trẻ em và thanh thiếu niên,2,SK241,30,
+SK353,SK353,Công tác xã hội với người cao tuổi,2,SK241,30,
+SK354,SK354,Công tác xã hội với nhóm phụ nữ yếu thế,2,SK241,30,
+SK355,SK355,Công tác xẫ hội với trẻ em có hoàn cảnh đặc biệt,2,SK241,30,
+SK356,SK356,Công tác xã hội với người khuyết tật,2,SK241,30,
+SK357,SK357,Công tác xã hội trong phòng chống bạo lực gia đình,2,SK241,30,
+SK359,SK359,"Sai lệch văn hóa, quản lý và phát triển văn hóa",2,"SK241,SK210",30,
+SK419,SK419,CĐTN: Lý luận về công tác xã hội,3,110,45,
+SK439,SK439,CĐTN: Thực hành trong công tác xã hội,3,110,45,
+SK460,SK460,Thực tập ngành công tác xã hội,4,100,60,
+SK499,SK499,KLTN ngành Công tác xã hội,6,120,90,
+SM201,SM201,Phưong pháp nghiên cứu khoa học,3,62,45,45
+SM421,SM421,Tập dưọt nghiên cứu khoa học,2,108,30,
+SO101,SO101,Xã hội học đại cương,2,,30,
+SO211,SO211,Nhập môn nhân học xã hội,2,SO101,30,
+SO221,SO221,Gia đình học,2,SO101,30,
+SO232,SO232,An sinh xã hội,2,ML111,30,
+SO233,SO233,Dân số và phát triển bền vũng,2,,30,
+SO320,SO320,Phát triển học,2,SO101,30,
+SO322,SO322,Giới và phát triển,2,SO320,30,
+SO331,SO331,Chính sách xã hội,2,ML111,30,
+SO333,SO333,Sai lệch xã hội và kiểm soát xã hội,2,SO101,30,
+TC300,TC300,Mô hình hóa và mô phỏng,3,"CF231,MA300",45,45
+TC303,TC303,Thiết kế và quản trị mạng truyền thông,3,TC300,27,36
+TC313,TC313,Kỹ thuật truyền dẫn,3,"CF231,CF321",45,45
+TC314,TC314,Kỹ thuật kết nối mạng,3,CF321,45,45
+TC316,TC316,An ninh mạng truyền thông,3,"TC314,NW312",45,45
+TC411,TC411,Mạng không dây đa bước,2,CF321,18,18
+TC412,TC412,Báo hiệu và điều khiển,2,TC314,18,18
+TC413,TC413,Chất lượng dịch vụ mạng,2,TC473,18,18
+TC414,TC414,Tính toán đám mây,2,NW312,18,18
+TC415,TC415,Mạng cảm biến,2,TC314,18,18
+TC416,TC416,Internet thế hệ mới,2,NW312,18,18
+TC417,TC417,Vô tuyến nhận thức,2,CF321,18,18
+TC418,TC418,Lập trình nhúng,2,CS122,18,18
+TC420,TC420,Thiết kế hệ thống truyền thông và mạng máy tính,2,TC473,18,18
+TC421,TC421,Dữ liệu lớn,2,TC314,18,18
+TC424,TC424,Quản lý dự án truyền thông và mạng máy tính,3,TC473,45,45
+TC473,TC473,Quản lý mạng viễn thông,3,TC314,45,45
+TC487,TC487,CĐTN: Truyền thông và mạng máy tính,6,110,30,120
+TC499,TC499,KLTN ngành Truyền thông và mạng máy tính,6,120,30,120
+TJ314,TJ314,Dịch viết,2,GJ341,36,36
+TJ401,TJ401,Tiếng Nhật du lịch và khách sạn 1,2,GJ340,30,
+TJ403,TJ403,Tiếng Nhật du lịch và khách sạn 2,2,TJ401,30,
+TJ414,TJ414,Dịch nói,2,GJ341,36,36
+TK499,TK499,KLTN ngành Ngôn ngữ Hàn,6,120,90,
+TR111,TR111,Nhập môn du lịch,3,,45,
+TR211,TR211,Tổng quan du lịch,2,,30,
+TR221,TR221,Địa lí và tài nguyên du lịch,2,TR111,30,
+TR222,TR222,Địa lý du lịch,2,,30,
+TR223,TR223,Bản đồ du lịch,3,,45,
+TR224,TR224,Điểm tuyến du lịch Việt Nam - Miền Bắc,3,,45,45
+TR225,TR225,Điểm tuyến du lịch Việt Nam - Miền Nam,3,,45,45
+TR231,TR231,Pháp luật trong kinh doanh du lịch,2,SH131,30,
+TR233,TR233,Ẳm thực Hàn Quốc,2,,30,
+TR261,TR261,"Tuyên truyền, quảng cáo và xúc tiến du lịch",3,TR111,45,45
+TR281,TR281,Khảo sát thực tế ngành du lịch,4,36,30,60
+TR312,TR312,Mĩ thuật Việt Nam,3,VC200,45,45
+TR315,TR315,Văn hóa du lịch,3,,45,
+TR316,TR316,Quảng bá xúc tiến du lịch,3,,45,
+TR317,TR317,Giao tiếp và lễ tân du lịch,3,,45,45
+TR322,TR322,Hệ thống di tích và danh thắng Việt Nam,3,"TR221,VC211",45,45
+TR323,TR323,Các nghiệp vụ cơ bản trong kinh doanh lữ hành,3,TR221,45,45
+TR324,TR324,Nghệ thuật đàm phán trong kinh doanh du lịch,3,,45,45
+TR325,TR325,Nghiệp vụ hướng dẫn du lịch,3,TR221,45,45
+TR326,TR326,Nghiệp vụ lữ hành & Hướng dẫn du lịch,3,,45,45
+TR331,TR331,Nghiệp vụ lễ tân,3,,45,45
+TR332,TR332,Nghiệp vụ phục vụ buồng,3,,45,45
+TR333,TR333,Nghiệp vụ phục vụ Bàn,3,,45,45
+TR334,TR334,Nghiệp vụ phục vụ Bar,3,,45,45
+TR335,TR335,Nghiệp vụ chế biến các món ăn,3,,45,45
+TR341,TR341,Du lịch văn hóa,3,"TR111,VC200",45,45
+TR342,TR342,Du lịch sinh thái,3,"TR111,TR221",45,45
+TR343,TR343,Du lịch chữa bệnh,3,TR111,45,45
+TR344,TR344,Du lịch cộng đồng,3,TR111,45,45
+TR345,TR345,Phát triển du lịch bền vững,3,,45,
+TR421,TR421,Kỹ năng điều hành và hướng dẫn du lịch,3,"TR221,TR323",45,45
+TR483,TR483,Thực tập tốt nghiệp,3,110,,
+TR491,TR491,"CĐTN: Văn hóa ẩm thực các vùng, miền",3,110,45,
+TR492,TR492,CĐTN: Đánh giá hiệu quả của kinh doanh khách sạn,3,110,45,
+TR493,TR493,CĐTN: Đánh giá hiệu quả của kinh doanh nhà hàng,3,110,45,
+TR494,TR494,CĐTN: Đánh giá nguồn nhân lực trong du lịch,3,110,45,
+TR495,TR495,CĐTN: Đánh giá chất lưọng dịch vụ trong du lịch,3,110,45,
+TR496,TR496,CĐTN: Các điểm đến và điểm tham quan du lịch ở Việt Nam,3,110,45,
+TR497,TR497,CĐTN: Đánh giá hiệu quả của kinh doanh lữ hành,3,110,45,
+TR498,TR498,CĐTN: Đánh giá các loại hình du lịch ở Việt Nam,3,110,45,
+TR499,TR499,KLTN ngành Quản trị dịch vụ du lịch - lữ hành,6,120,90,
+TT499,TT499,Thực tập tốt nghiệp,3,112,,
+TZ499,TZ499,KLTN ngành Ngôn ngữ Trung Quốc,6,120,90,
+VC102,VC102,Các tôn giáo Việt Nam,3,,45,
+VC127,VC127,Địa lý Việt Nam,3,,45,45
+VC134,VC134,Việt Nam trong bối cảnh Đông Nam Á,2,,30,
+VC135,VC135,Nhập môn khu vực học và Việt Nam học,2,,30,
+VC200,VC200,Văn hoá Việt Nam,2,,30,
+VC204,VC204,Các dân tộc Việt Nam,3,,45,45
+VC206,VC206,Ngôn ngữ Việt Nam,3,,45,
+VC207,VC207,Đặc trưng văn hóa vùng miền Việt Nam,3,,45,
+VC209,VC209,Văn học Việt Nam,3,,45,
+VC211,VC211,Lịch sử Việt Nam,2,,30,
+VC212,VC212,Văn hóa ẩm thực Việt Nam,2,VC200,30,
+VC213,VC213,Văn học dân gian Việt Nam,3,,45,
+VC214,VC214,Vãn học hiện đại Việt Nam,3,,45,
+VC215,VC215,Văn hóa tộc người Việt Nam,2,VC200,30,
+VC229,VC229,Thực tập thực tế,4,30,60,
+VC231,VC231,Thể chế chính trị Việt Nam,3,,45,
+VC232,VC232,Kinh tế Việt Nam,3,,45,
+VC303,VC303,Văn hóa úng xử của người Việt,3,,45,
+VC309,VC309,Văn bản Hán Nôm Việt Nam,3,,45,
+VC319,VC319,Hán Nôm dành cho du lịch,3,,45,
+VC413,VC413,Thực tập dành cho ngưòi nước ngoài,4,,60,
+VC429,VC429,Thực tập du lịch,4,110,60,
+VC431,VC431,CĐTN: ứng xử giao tiếp ngôn ngữ-văn hóa của người Việt,3,110,45,
+VC433,VC433,CĐTN: Tiếp biến văn hóa,3,110,45,
+VC441,VC441,Nhập môn thư pháp chữ Hán 1,2,36,30,30
+VC442,VC442,Nhập môn thư pháp chữ Hán 2,2,VC441,30,30
+VC445,VC445,CĐTN: Tổ chức quản lý và điều hành tour,3,110,45,
+VC446,VC446,CĐTN: Du lịch thế giới,3,110,45,
+VC499,VC499,KLTN ngành Việt Nam học,6,120,90,
+VJ321,VJ321,Ngữ âm học tiếng Nhật,2,GJ340,30,
+VJ322,VJ322,Từ vựng học tiếng Nhật,2,GJ243,30,
+VJ425,VJ425,Ngữ dụng học tiếng Nhật,2,GJ342,30,
+VL100,VL100,Ngôn ngữ học đại cương,2,,30,
+VL101,VL101,Tiếng Việt thực hành,2,,30,
+VL102,VL102,Tiếng Việt thực hành (Thanh nhạc),2,,30,
+VL225,VL225,Tiếng Việt nâng cao: nghe,2,,30,
+VL226,VL226,Tiếng Việt nâng cao: nói,2,,30,
+VL227,VL227,Tiếng Việt nâng cao: viết,2,,30,
+VL229,VL229,Tiếng Việt nâng cao: đọc,2,,30,
+VL230,VL230,Tiếng Việt học thuật: đọc,2,,30,
+VL233,VL233,Tiếng Việt học thuật: nghe,2,,30,
+VL234,VL234,Tiếng Việt học thuật: nói,2,,30,
+VL235,VL235,Tiếng Việt học thuật: viết,2,,30,
+VL243,VL243,Các phương tiện liên kết và soạn thảo văn bản,2,,30,
+VL300,VL300,Lịch sử tiếng Việt,2,,30,
+VL301,VL301,Ngôn ngữ học đối chiếu,3,,45,
+VL311,VL311,Phưong ngữ tiếng Việt,2,,30,
+VL312,VL312,Tiếng Việt thưong mại,2,,30,
+VL313,VL313,Hán Nôm,3,,45,
+VL329,VL329,Phưong pháp giảng dạy tiếng Việt như một ngoại ngữ,2,,30,
+VP302,VP302,Cơ sở truyền thông báo chí,2,,30,
+VP304,VP304,Truyền thông đa phưong tiện,2,,30,
+VP306,VP306,Nghiệp vụ báo chí - xuất bản,2,,30,30
+VP308,VP308,Sự kiện và tỗ chức sự kiện,2,,30,
+VP310,VP310,Đại cưong quảng cáo,3,,45,45
+VP311,VP311,Tổ chức & hoạt động của cơ quan báo chí truyền thông,3,,45,
+VP312,VP312,Sản xuất chương trình phát thanh truyền hình,3,,45,45
+VP412,VP412,Thực tập văn hóa - truyền thông,4,110,60,
+VP424,VP424,CĐTN: Báo chí truyền thông Việt Nam đương đại,3,110,45,
+VP425,VP425,CĐTN: Báo chí truyền thông thế giới đương đại,3,110,45,
