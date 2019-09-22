@@ -21,9 +21,10 @@ export class LeftMenuComponent implements OnInit {
   public linkText: boolean = false;
 
   public pages: Page[] = [
-    { name: 'Quản lý môn học', link: '/subject-management', icon: 'menu_book' },
-    { name: 'Quản lý phòng học', link: '/classroom-management', icon: 'meeting_room' },
+    { name: 'Quản lý môn học', link: '/course-management', icon: 'menu_book' },
+    { name: 'Quản lý phòng học', link: '/room-management', icon: 'meeting_room' },
     { name: 'Quản lý kỳ học', link: '/semester-management', icon: 'date_range' },
+    { name: 'Quản lý giáo viên', link: '/teacher-management', icon: 'school' }
   ]
 
   constructor(private _sidenavService: SidenavService) { }

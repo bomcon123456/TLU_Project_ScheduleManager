@@ -2,19 +2,24 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from '../home.component';
-import { SubjectManagementComponent } from '../categories/subject-management/subject-management.component';
-import { ClassroomManagementComponent } from '../categories/classroom-management/classroom-management.component';
+import { CourseManagementComponent } from '../categories/course-management/course-management.component';
+import { RoomManagementComponent } from '../categories/room-management/room-management.component';
 import { SemesterManagementComponent } from '../categories/semester-management/semester-management.component';
+import { TeacherManagementComponent } from './../categories/teacher-management/teacher-management.component';
 
 
 const routes: Routes = [
   {
-    path: 'subject-management',
-    component: SubjectManagementComponent
+    path: 'course-management',
+    component: CourseManagementComponent
   },
   {
-    path: 'classroom-management',
-    component: ClassroomManagementComponent
+    path: 'room-management',
+    component: RoomManagementComponent
+  },
+  {
+    path: 'teacher-management',
+    component: TeacherManagementComponent
   },
   {
     path: 'semester-management',

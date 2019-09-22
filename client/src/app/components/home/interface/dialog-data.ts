@@ -3,25 +3,27 @@ export interface DialogData {
   name: string;
 }
 
-export interface ClassroomElement {
+export interface RoomElement {
   action?: string;
-  id?: string;
+  _id?: string;
   name?: string;
   capacity?: number;
   location?: {
     building?: string;
-    floor?: string;
+    floor?: number;
   };
   roomType?: string;
-  multi?: boolean;
 }
 
 export interface CourseElement {
   action?: string;
-  id?: string;
+  _id?: string;
   name?: string;
   credits?: number;
-  department?: string;
+  department?: {
+    _id?: string;
+    name?: string;
+  };
   length?: {
     theory?: number;
     practice?: number;
@@ -31,9 +33,13 @@ export interface CourseElement {
 }
 
 export interface TeacherElement {
-  id?: string;
+  action?: string;
+  _id?: string;
   name?: string;
-  department?: string;
+  department?: {
+    _id?: string;
+    name?: string;
+  };
 }
 
 export interface SemesterElement {

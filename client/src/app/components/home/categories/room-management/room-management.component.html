@@ -10,60 +10,49 @@
 
   <div class="mat-elevation-z8">
     <table mat-table matSort [dataSource]="dataSource" #myTable>
-
-      <ng-container matColumnDef="position">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> STT </th>
+      <!-- Position Column -->
+      <ng-container matColumnDef="position" >
+        <th mat-header-cell *matHeaderCellDef > STT </th>
         <td mat-cell *matCellDef="let element, let i=index"> {{i+1}} </td>
       </ng-container>
 
+      <!-- ID Column -->
+      <!-- <ng-container matColumnDef="_id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Mã phòng </th>
+        <td mat-cell *matCellDef="let element"> {{element._id}} </td>
+      </ng-container> -->
 
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Mã học phần </th>
-        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-      </ng-container>
-
-
+      <!-- Name Column -->
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tên học phần </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tên phòng </th>
         <td mat-cell *matCellDef="let element"> {{element.name}} </td>
       </ng-container>
 
-
-      <ng-container matColumnDef="credits">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Số tín chỉ </th>
-        <td mat-cell *matCellDef="let element"> {{element.credits}} </td>
+      <!-- Chairs Column -->
+      <ng-container matColumnDef="capacity">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> SL sinh viên </th>
+        <td mat-cell *matCellDef="let element"> {{element.capacity == -1? '' : element.capacity}} </td>
       </ng-container>
 
-
-      <ng-container matColumnDef="department">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Bộ môn </th>
-        <td mat-cell *matCellDef="let element"> {{element.department}} </td>
+      <!-- Address Column -->
+      <ng-container matColumnDef="location">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Địa điểm </th>
+        <td mat-cell *matCellDef="let element"> Tầng {{element.location.floor}} tòa {{element.location.building}} </td>
       </ng-container>
 
-
-      <ng-container matColumnDef="theory">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Số giờ lý thuyết </th>
-        <td mat-cell *matCellDef="let element"> {{element.length.theory}} </td>
+      <!-- Type Column -->
+      <ng-container matColumnDef="roomType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Dạng phòng </th>
+        <td mat-cell *matCellDef="let element"> {{element.roomType}} </td>
       </ng-container>
 
-
-      <ng-container matColumnDef="practice">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Số giờ thực hành </th>
-        <td mat-cell *matCellDef="let element"> {{element.length.practice}} </td>
+      <!-- Multi Column -->
+      <ng-container matColumnDef="multi">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Dùng được nhiều </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox [checked]='element.capacity == -1? 1 : 0' disabled="true"></mat-checkbox>
+        </td>
       </ng-container>
-
-
-      <ng-container matColumnDef="coursePrereq">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Học phần bắt buộc </th>
-        <td mat-cell *matCellDef="let element"> {{element.coursePrerequisites}} </td>
-      </ng-container>
-
-
-      <ng-container matColumnDef="creditPrereq">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Số tín chỉ bắt buộc </th>
-        <td mat-cell *matCellDef="let element"> {{element.creditPrerequisites}} </td>
-      </ng-container>
-
 
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
@@ -82,7 +71,7 @@
     </table>
 
     <mat-paginator [pageSize]="8" [pageSizeOptions]="[8, 20, 50, 100]" showFirstLastButtons></mat-paginator>
-  </div>
+</div>
 </div>
 <div [ngStyle]="{'display': isLoading? 'block' : 'none'}" class="spinner-loading">
   <div class="lds-facebook">

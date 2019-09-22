@@ -2,6 +2,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AngularMaterialModule } from './core/angular-material.module';
 import { AppRoutingModule } from './core/app-routing.module';
@@ -23,6 +24,7 @@ import { HomeModule } from './components/home/home.module';
     AppRoutingModule,
     FlexLayoutModule,
     HomeModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent],

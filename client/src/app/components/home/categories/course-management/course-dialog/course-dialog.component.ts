@@ -3,24 +3,27 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CourseElement } from '../../../interface/dialog-data';
 
 @Component({
-  selector: 'app-subject-dialog',
-  templateUrl: './subject-dialog.component.html',
-  styleUrls: ['./subject-dialog.component.scss']
+  selector: 'app-course-dialog',
+  templateUrl: './course-dialog.component.html',
+  styleUrls: ['./course-dialog.component.scss']
 })
-export class SubjectDialogComponent {
+export class CourseDialogComponent {
 
   action: string;
   local_data: CourseElement;
 
   constructor(
-    public dialogRef: MatDialogRef<SubjectDialogComponent>,
+    public dialogRef: MatDialogRef<CourseDialogComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: CourseElement) {
     // console.log(data);
     this.local_data = {
-      id: '',
+      _id: '',
       name: '',
       credits: null,
-      department: '',
+      department: {
+        _id: '',
+        name: ''
+      },
       length: {
         theory: null,
         practice: null
@@ -29,7 +32,7 @@ export class SubjectDialogComponent {
       creditPrerequisites: null,
     }
 
-    if (data.id) {
+    if (data._id) {
       this.local_data = { ...data };
     }
     else {
@@ -45,10 +48,13 @@ export class SubjectDialogComponent {
     console.log(this.local_data);
 
     let newData = {
-      id: this.local_data.id,
+      _id: this.local_data._id,
       name: this.local_data.name,
       capacity: this.local_data.credits,
-      department: this.local_data.department,
+      department: {
+        _id: this.local_data.department._id,
+        name: this.local_data.department.name
+      },
       length: {
         theory: this.local_data.length.theory,
         practice: this.local_data.length.practice

@@ -1,34 +1,33 @@
 import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ClassroomElement } from '../../../interface/dialog-data';
+import { RoomElement } from '../../../interface/dialog-data';
 
 @Component({
-  selector: 'app-classroom-dialog',
-  templateUrl: './classroom-dialog.component.html',
-  styleUrls: ['./classroom-dialog.component.scss']
+  selector: 'app-room-dialog',
+  templateUrl: './room-dialog.component.html',
+  styleUrls: ['./room-dialog.component.scss']
 })
-export class ClassroomDialogComponent {
+export class RoomDialogComponent {
 
   action: string;
-  local_data: ClassroomElement;
+  local_data: RoomElement;
 
   constructor(
-    public dialogRef: MatDialogRef<ClassroomDialogComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: ClassroomElement) {
-      // console.log(data);
+    public dialogRef: MatDialogRef<RoomDialogComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: RoomElement) {
+      console.log(data);
       this.local_data = {
-        id: '',
+        _id: '',
         name: '',
         capacity: null,
         location: {
           building: '',
-          floor: ''
+          floor: null
         },
         roomType: '',
-        multi: false,
       }
 
-      if (data.id) {
+      if (data._id) {
         this.local_data = { ...data };
       }
       else {
@@ -44,7 +43,7 @@ export class ClassroomDialogComponent {
     console.log(this.local_data);
 
     let newData = {
-      id: this.local_data.id,
+      _id: this.local_data._id,
       name: this.local_data.name,
       capacity: this.local_data.capacity,
       location: {
@@ -52,7 +51,6 @@ export class ClassroomDialogComponent {
         floor: this.local_data.location.floor
       },
       roomType: this.local_data.roomType,
-      multi: this.local_data.multi
     }
     console.log(newData);
 
@@ -64,7 +62,12 @@ export class ClassroomDialogComponent {
   }
 
   onChange(event) {
-  this.local_data.multi = event.checked;
+    if (event.checked == 1) {
+      this.local_data.capacity = -1;
+    }
+    else {
+      this.local_data.capacity = 0;
+    }
   }
 
 }
