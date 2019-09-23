@@ -1,14 +1,33 @@
 const Department = require("./model");
+const Course = require("../courses/model");
 
 const getAll = (req, res, next) => {
   const page = req.query.page || 1;
-  const size = req.query.size || 5;
+  const size = parseInt(req.query.size) || 5;
   Department.find()
     .skip((page - 1) * size)
     .limit(size)
     .then(data => {
       res.status(200).json({
         message: "fetched_departments_successfully",
+        data: data
+      });
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
+const getAllCourses = (req, res, next) => {
+  const id = req.params.id;
+  const page = req.query.page || 1;
+  const size = parseInt(req.query.size) || 5;
+  Course.find({ department: id })
+    .skip((page - 1) * size)
+    .limit(size)
+    .then(data => {
+      res.status(200).json({
+        message: "fetched_courses_successfully",
         data: data
       });
     })
@@ -94,4 +113,4 @@ const deleteOne = (req, res, next) => {
     });
 };
 
-module.exports = { getAll, get, post, put, deleteOne };
+module.exports = { getAll, get, post, put, deleteOne, getAllCourses };

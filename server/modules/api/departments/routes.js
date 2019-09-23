@@ -4,6 +4,7 @@ const router = express.Router();
 const Controller = require("./controller");
 
 router.get("/", Controller.getAll);
+router.get("/courses/:id", Controller.getAllCourses);
 router.get("/:id", Controller.get);
 router.post("/", Controller.post);
 router.put("/:id", Controller.put);

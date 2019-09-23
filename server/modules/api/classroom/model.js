@@ -9,10 +9,10 @@ const classroomSchema = new Schema(
     name: { type: String, required: true },
     students: { type: Number, required: true },
     courseId: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "Course"
     },
-    roomIdId: {
+    roomId: {
       type: Schema.Types.ObjectId,
       ref: "Room"
     },
