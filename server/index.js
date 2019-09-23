@@ -61,18 +61,6 @@ mongoose
     const port = process.env.PORT;
     console.warn("Listening at port:", port);
     app.listen(process.env.PORT);
-    const User = require("./modules/api/users/model");
-    const admin = new User({
-      username: "admin",
-      password: "123456",
-      name: "Administrator",
-      email: "admin@admin.com",
-      gender: "MALE",
-      description: "I'm god.",
-      role: 99,
-      birthday: new Date("02/09/1998")
-    });
-    admin.save();
     // coursesCSV();
     /* HTTPs
     // https
