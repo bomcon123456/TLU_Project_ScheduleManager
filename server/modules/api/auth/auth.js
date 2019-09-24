@@ -45,6 +45,7 @@ exports.login = (req, res, next) => {
       const token = jwt.sign(
         {
           username: loadedUser.username,
+          role: loadedUser.role,
           userId: loadedUser._id.toString()
         },
         process.env.JWT_SECRET,
@@ -54,8 +55,8 @@ exports.login = (req, res, next) => {
       console.log(resUser);
       res.status(200).json({
         message: "login_succeed",
-        token: token,
-        user: resUser
+        token: token
+        // user: resUser
       });
     })
     .catch(error => {
