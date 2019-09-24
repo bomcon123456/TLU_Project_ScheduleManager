@@ -25,10 +25,15 @@ export class TeacherManagementComponent implements OnInit {
 
   public dataSource = null;
   private ELEMENT_DATA: TeacherElement[];
-  private isLoading = true;
+  private isLoading: boolean;
+  private isFirstTime: boolean;
   private action: string;
   private width: string;
   private height: string;
+  private index: number;
+  private dataLength: number;
+  private pageSize: number;
+  private pageIndex: number;
 
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -40,17 +45,26 @@ export class TeacherManagementComponent implements OnInit {
     private toastr: ToastrService) { }
 
   ngOnInit() {
+    this.isFirstTime = true;
+    this.isLoading = true;
+    this.index = 0;
+    this.dataLength = 276;
+    this.pageIndex = 1;
+    this.pageSize = 8;
 
-    this.getTeachersData();
+    this.getTeachersData(this.pageSize, this.pageIndex);
+  }
 
-
-    // setTimeout(() => {
-    //   this.isLoading = false;
-    // }, 3000);
+  getPageEvent(event) {
+    console.log(event);
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex + 1;
+    this.index = event.pageSize * event.pageIndex;
+    this.getTeachersData(this.pageSize, this.pageIndex);
   }
 
   default() {
-    this.dataSource.paginator = this.paginator;
+    this.dataSource.paginator = null;
     this.dataSource.sort = this.sort;
   }
 
@@ -90,13 +104,19 @@ export class TeacherManagementComponent implements OnInit {
     });
   }
 
-  getTeachersData() {
-    this.teacherApi.getTeachers().subscribe(result => {
+  getTeachersData(pageSize: number, pageIndex: number) {
+    this.teacherApi.getTeachers(pageSize, pageIndex).subscribe(result => {
+      console.log(result);
+
       this.ELEMENT_DATA = result.data;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-      this.isLoading = false;
       this.default();
-      this.toastr.success(result.message);
+
+      if (this.isFirstTime) {
+        this.isLoading = false;
+        this.isFirstTime = false;
+        this.toastr.success(result.message);
+      }
     }, error => {
       this.toastr.error(error.message)
     })

@@ -1,29 +1,22 @@
 <h1 mat-dialog-title>
-  <strong *ngIf="action == 'add'">Thêm giáo viên mới</strong>
-  <strong *ngIf="action == 'edit'">Chỉnh sửa thông tin giáo viên</strong>
-  <strong *ngIf="action == 'delete'">Xoá giáo viên</strong>
+  <strong *ngIf="action == 'add'">Thêm bộ môn mới</strong>
+  <strong *ngIf="action == 'edit'">Chỉnh sửa thông tin bộ môn</strong>
+  <strong *ngIf="action == 'delete'">Xoá bộ môn</strong>
 </h1>
 <div mat-dialog-content *ngIf="action != 'delete'; else elseTemplate" style="overflow: unset">
   <div class="example-container">
     <mat-form-field>
-      <input placeholder="Mã giáo viên" matInput [(ngModel)]="local_data._id">
+      <input placeholder="Mã bộ môn" matInput [(ngModel)]="local_data.schoolId">
     </mat-form-field>
     <mat-form-field>
-      <input placeholder="Tên giáo viên" matInput [(ngModel)]="local_data.name">
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Bộ môn</mat-label>
-      <mat-select [(value)]="local_data.department.name">
-        <mat-option>None</mat-option>
-        <mat-option *ngFor="let item of departments" [value]="item.name">{{item.name}}</mat-option>
-      </mat-select>
+      <input placeholder="Tên bộ môn" matInput [(ngModel)]="local_data.name">
     </mat-form-field>
   </div>
 </div>
 <div mat-dialog-content>
   <ng-template #elseTemplate>
-    <label>Bạn chắc chắn muốn xóa giáo viên này?</label><br>
-    <b>{{local_data._id}}</b> - <b>{{local_data.name}}</b>
+    <label>Bạn chắc chắn muốn xóa học phần này?</label><br>
+    <b>{{local_data.schoolId}}</b> - <b>{{local_data.name}}</b>
   </ng-template>
 </div>
 <div mat-dialog-actions style="float: right; margin: 25px 15px 0px">

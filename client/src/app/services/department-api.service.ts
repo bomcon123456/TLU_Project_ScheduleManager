@@ -7,10 +7,10 @@ import { retry, catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 
-export class TeacherApiService {
+export class DepartmentApiService {
 
   // Define API
-  apiURL = 'http://localhost:6969/api/teachers';
+  apiURL = 'http://localhost:6969/api/departments';
 
   constructor(private http: HttpClient) { }
 
@@ -25,8 +25,8 @@ export class TeacherApiService {
     })
   }
 
-  // HttpClient API get() method => Fetch teacher list
-  getTeachers(pageSize?: number, pageIndex?: number): Observable<any> {
+  // HttpClient API get() method => Fetch department list
+  getDepartments(pageSize?: number, pageIndex?: number): Observable<any> {
     if (!pageIndex) {
       pageIndex = 1;
     }
@@ -40,8 +40,8 @@ export class TeacherApiService {
       )
   }
 
-  // HttpClient API get() method => Fetch teacher
-  getTeacher(id): Observable<any> {
+  // HttpClient API get() method => Fetch department
+  getDepartment(id): Observable<any> {
     return this.http.get(this.apiURL + '/' + id)
       .pipe(
         retry(1),
@@ -49,27 +49,41 @@ export class TeacherApiService {
       )
   }
 
-  // HttpClient API post() method => Create teacher
-  createTeacher(teacher): Observable<any> {
-    return this.http.post(this.apiURL, JSON.stringify(teacher), this.httpOptions)
+  // HttpClient API post() method => Create department
+  createDepartment(department): Observable<any> {
+    return this.http.post(this.apiURL, JSON.stringify(department), this.httpOptions)
       .pipe(
         retry(1),
         catchError(this.handleError)
       )
   }
 
-  // HttpClient API put() method => Update teacher
-  updateTeacher(id, teacher): Observable<any> {
-    return this.http.put(this.apiURL + '/' + id, JSON.stringify(teacher), this.httpOptions)
+  // HttpClient API put() method => Update department
+  updateDepartment(id, department): Observable<any> {
+    return this.http.put(this.apiURL + '/' + id, JSON.stringify(department), this.httpOptions)
       .pipe(
         retry(1),
         catchError(this.handleError)
       )
   }
 
-  // HttpClient API delete() method => Delete teacher
-  deleteTeacher(id): Observable<any> {
+  // HttpClient API delete() method => Delete department
+  deleteDepartment(id): Observable<any> {
     return this.http.delete(this.apiURL + '/' + id, this.httpOptions)
+      .pipe(
+        retry(1),
+        catchError(this.handleError)
+      )
+  }
+
+  getCoursesById(id, pageSize?: number, pageIndex?: number): Observable<any> {
+    if (!pageIndex) {
+      pageIndex = 1;
+    }
+    if (!pageSize) {
+      pageSize = 5;
+    }
+    return this.http.get(this.apiURL + '/courses/' + id + `?size=${pageSize}&page=${pageIndex}`)
       .pipe(
         retry(1),
         catchError(this.handleError)

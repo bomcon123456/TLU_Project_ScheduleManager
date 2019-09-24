@@ -1,19 +1,23 @@
 import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CourseElement } from '../../../interface/dialog-data';
+import { CourseElement, DepartmentElement } from '../../../interface/dialog-data';
+import { DepartmentApiService } from './../../../../../services/department-api.service';
+
 
 @Component({
   selector: 'app-course-dialog',
   templateUrl: './course-dialog.component.html',
   styleUrls: ['./course-dialog.component.scss']
 })
-export class CourseDialogComponent {
+export class CourseDialogComponent implements OnInit {
 
-  action: string;
-  local_data: CourseElement;
+  private action: string;
+  private local_data: CourseElement;
+  private departments: DepartmentElement[];
 
   constructor(
     public dialogRef: MatDialogRef<CourseDialogComponent>,
+    private departmentApi: DepartmentApiService,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: CourseElement) {
     // console.log(data);
     this.local_data = {
@@ -42,6 +46,20 @@ export class CourseDialogComponent {
     this.action = this.local_data.action;
     console.log(this.local_data);
 
+  }
+
+  ngOnInit() {
+
+    this.getDepartmentsData(17, 1);
+  }
+
+  getDepartmentsData(pageSize: number, pageIndex: number) {
+    this.departmentApi.getDepartments(pageSize, pageIndex).subscribe(result => {
+      this.departments = result.data;
+    }, error => {
+      console.log(error);
+
+    })
   }
 
   doAction() {

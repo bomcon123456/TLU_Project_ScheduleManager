@@ -26,15 +26,21 @@ export class CourseApiService {
   }
 
   // HttpClient API get() method => Fetch course list
-  getCourses(): Observable<any> {
-    return this.http.get(this.apiURL) // this.apiURL+ '?page=23'
+  getCourses(pageSize?: number, pageIndex?: number): Observable<any> {
+    if (!pageIndex) {
+      pageIndex = 1;
+    }
+    if (!pageSize) {
+      pageSize = 5;
+    }
+    return this.http.get(this.apiURL + `?size=${pageSize}&page=${pageIndex}`) // this.apiURL+ '?page=23'
       .pipe(
         retry(1),
         catchError(this.handleError)
       )
   }
 
-  // HttpClient API get() method => Fetch employee
+  // HttpClient API get() method => Fetch course
   getCourse(id): Observable<any> {
     return this.http.get(this.apiURL + '/' + id)
       .pipe(
@@ -43,7 +49,7 @@ export class CourseApiService {
       )
   }
 
-  // HttpClient API post() method => Create employee
+  // HttpClient API post() method => Create course
   createCourse(course): Observable<any> {
     return this.http.post(this.apiURL, JSON.stringify(course), this.httpOptions)
       .pipe(
@@ -52,7 +58,7 @@ export class CourseApiService {
       )
   }
 
-  // HttpClient API put() method => Update employee
+  // HttpClient API put() method => Update course
   updateCourse(id, course): Observable<any> {
     return this.http.put(this.apiURL + '/' + id, JSON.stringify(course), this.httpOptions)
       .pipe(
@@ -61,7 +67,7 @@ export class CourseApiService {
       )
   }
 
-  // HttpClient API delete() method => Delete employee
+  // HttpClient API delete() method => Delete course
   deleteCourse(id): Observable<any> {
     return this.http.delete(this.apiURL + '/' + id, this.httpOptions)
       .pipe(

@@ -6,6 +6,7 @@ import { CourseManagementComponent } from '../categories/course-management/cours
 import { RoomManagementComponent } from '../categories/room-management/room-management.component';
 import { SemesterManagementComponent } from '../categories/semester-management/semester-management.component';
 import { TeacherManagementComponent } from './../categories/teacher-management/teacher-management.component';
+import { DepartmentManagementComponent } from './../categories/department-management/department-management.component';
 
 
 const routes: Routes = [
@@ -25,6 +26,10 @@ const routes: Routes = [
     path: 'semester-management',
     component: SemesterManagementComponent
   },
+  {
+    path: 'department-management',
+    component: DepartmentManagementComponent
+  }
 ];
 
 @NgModule({

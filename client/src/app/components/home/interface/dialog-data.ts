@@ -46,3 +46,10 @@ export interface SemesterElement {
   year?: string;
   semester?: string;
 }
+
+export interface DepartmentElement {
+  action?: string;
+  _id?: string;
+  schoolId?: string;
+  name?: string;
+}

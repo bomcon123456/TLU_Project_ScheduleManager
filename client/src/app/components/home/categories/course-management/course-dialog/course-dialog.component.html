@@ -18,9 +18,7 @@
       <mat-label>Bộ môn</mat-label>
       <mat-select [(value)]="local_data.department.name">
         <mat-option>None</mat-option>
-        <mat-option value="1">1</mat-option>
-        <mat-option value="2">2</mat-option>
-        <mat-option value="3">3</mat-option>
+        <mat-option *ngFor="let item of departments" [value]="item.name"> {{item.name}} </mat-option>
       </mat-select>
     </mat-form-field>
     <mat-label class="location-label">Tổng số giờ</mat-label>

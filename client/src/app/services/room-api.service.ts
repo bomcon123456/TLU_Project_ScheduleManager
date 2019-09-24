@@ -26,15 +26,21 @@ export class RoomApiService {
   }
 
   // HttpClient API get() method => Fetch room list
-  getRooms(): Observable<any> {
-    return this.http.get(this.apiURL) // this.apiURL+ '?page=23'
+  getRooms(pageSize?: number, pageIndex?: number): Observable<any> {
+    if (!pageIndex) {
+      pageIndex = 1;
+    }
+    if (!pageSize) {
+      pageSize = 5;
+    }
+    return this.http.get(this.apiURL + `?size=${pageSize}&page=${pageIndex}`) // this.apiURL+ '?page=23'
       .pipe(
         retry(1),
         catchError(this.handleError)
       )
   }
 
-  // HttpClient API get() method => Fetch employee
+  // HttpClient API get() method => Fetch room
   getRoom(id): Observable<any> {
     return this.http.get(this.apiURL + '/' + id)
       .pipe(
@@ -43,7 +49,7 @@ export class RoomApiService {
       )
   }
 
-  // HttpClient API post() method => Create employee
+  // HttpClient API post() method => Create room
   createRoom(room): Observable<any> {
     return this.http.post(this.apiURL, JSON.stringify(room), this.httpOptions)
       .pipe(
@@ -52,7 +58,7 @@ export class RoomApiService {
       )
   }
 
-  // HttpClient API put() method => Update employee
+  // HttpClient API put() method => Update room
   updateRoom(id, room): Observable<any> {
     return this.http.put(this.apiURL + '/' + id, JSON.stringify(room), this.httpOptions)
       .pipe(
@@ -61,7 +67,7 @@ export class RoomApiService {
       )
   }
 
-  // HttpClient API delete() method => Delete employee
+  // HttpClient API delete() method => Delete room
   deleteRoom(id): Observable<any> {
     return this.http.delete(this.apiURL + '/' + id, this.httpOptions)
       .pipe(

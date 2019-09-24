@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -24,11 +24,15 @@ export class RoomManagementComponent implements OnInit {
 
   public dataSource = null;
   private ELEMENT_DATA: RoomElement[];
-  private isLoading = true;
+  private isLoading: boolean;
+  private isFirstTime: boolean;
   private action: string;
   private width: string;
   private height: string;
-
+  private index: number;
+  private dataLength: number;
+  private pageSize: number;
+  private pageIndex: number;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -39,18 +43,26 @@ export class RoomManagementComponent implements OnInit {
               private toastr: ToastrService) { }
 
   ngOnInit() {
+    this.isFirstTime = true;
+    this.isLoading = true;
+    this.index = 0;
+    this.dataLength = 111;
+    this.pageIndex = 1;
+    this.pageSize = 8;
 
-    this.getRoomsData();
+    this.getRoomsData(this.pageSize, this.pageIndex);
+  }
 
-
-    // setTimeout(() => {
-    //   this.isLoading = false;
-    // }, 3000);
-
+  getPageEvent(event) {
+    console.log(event);
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex + 1;
+    this.index = event.pageSize * event.pageIndex;
+    this.getRoomsData(this.pageSize, this.pageIndex);
   }
 
   default() {
-    this.dataSource.paginator = this.paginator;
+    this.dataSource.paginator = null;
     this.dataSource.sort = this.sort;
   }
 
@@ -94,15 +106,19 @@ export class RoomManagementComponent implements OnInit {
     });
   }
 
-  getRoomsData() {
-    this.roomApi.getRooms().subscribe( result => {
+  getRoomsData(pageSize: number, pageIndex: number) {
+    this.roomApi.getRooms(pageSize, pageIndex).subscribe( result => {
       console.log(result);
 
       this.ELEMENT_DATA = result.data;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-      this.isLoading = false;
       this.default();
-      this.toastr.success(result.message);
+
+      if (this.isFirstTime) {
+        this.isLoading = false;
+        this.isFirstTime = false;
+        this.toastr.success(result.message);
+      }
     }, error => {
       this.toastr.error(error.message)
     })

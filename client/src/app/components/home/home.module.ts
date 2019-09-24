@@ -19,6 +19,8 @@ import { CourseDialogComponent } from './categories/course-management/course-dia
 import { SemesterDialogComponent } from './categories/semester-management/semester-dialog/semester-dialog.component';
 import { TeacherManagementComponent } from './categories/teacher-management/teacher-management.component';
 import { TeacherDialogComponent } from './categories/teacher-management/teacher-dialog/teacher-dialog.component';
+import { DepartmentManagementComponent } from './categories/department-management/department-management.component';
+import { DepartmentDialogComponent } from './categories/department-management/department-dialog/department-dialog.component';
 
 
 @NgModule({
@@ -42,17 +44,21 @@ import { TeacherDialogComponent } from './categories/teacher-management/teacher-
     CourseDialogComponent,
     SemesterDialogComponent,
     TeacherManagementComponent,
-    TeacherDialogComponent
+    TeacherDialogComponent,
+    DepartmentManagementComponent,
+    DepartmentDialogComponent
   ],
   entryComponents: [
     RoomDialogComponent,
     CourseDialogComponent,
     TeacherDialogComponent,
     SemesterDialogComponent,
+    DepartmentDialogComponent,
     RoomManagementComponent,
     CourseManagementComponent,
     SemesterManagementComponent,
     TeacherManagementComponent,
+    DepartmentManagementComponent
   ],
   providers: [SidenavService]
 })

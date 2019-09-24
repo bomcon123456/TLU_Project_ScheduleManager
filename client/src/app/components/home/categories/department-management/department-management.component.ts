@@ -5,28 +5,28 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 
-import { CourseDialogComponent } from './course-dialog/course-dialog.component';
-import { CourseElement } from '../../interface/dialog-data';
-import { CourseApiService } from './../../../../services/course-api.service';
+import { DepartmentDialogComponent } from './department-dialog/department-dialog.component';
+import { DepartmentElement } from '../../interface/dialog-data';
+import { DepartmentApiService } from './../../../../services/department-api.service';
 
 
 /**
  * @title Table with pagination
  */
 @Component({
-  selector: 'app-course-management',
-  templateUrl: './course-management.component.html',
-  styleUrls: ['./course-management.component.scss']
+  selector: 'app-department-management',
+  templateUrl: './department-management.component.html',
+  styleUrls: ['./department-management.component.scss']
 })
-export class CourseManagementComponent implements OnInit {
+export class DepartmentManagementComponent implements OnInit {
 
-  public displayedColumns: string[] = ['position', '_id', 'name', 'credits', 'department', 'theory', 'practice', 'coursePrereq', 'creditPrereq', 'actions'];
+  public displayedColumns: string[] = ['position', 'schoolId', 'name', 'actions'];
   // public dataSource = new MatTableDataSource(ELEMENT_DATA);
 
   public dataSource = null;
-  private ELEMENT_DATA: CourseElement[];
+  private ELEMENT_DATA: DepartmentElement[];
   private isLoading: boolean;
-  private isFirstTime: boolean;
+  private isFisrtTime: boolean;
   private action: string;
   private width: string;
   private height: string;
@@ -41,18 +41,18 @@ export class CourseManagementComponent implements OnInit {
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
 
   constructor(public dialog: MatDialog,
-              private courseApi: CourseApiService,
-              private toastr: ToastrService) { }
+    private courseApi: DepartmentApiService,
+    private toastr: ToastrService) { }
 
   ngOnInit() {
-    this.isFirstTime = true;
+    this.isFisrtTime = true;
     this.isLoading = true;
     this.index = 0;
-    this.dataLength = 743;
+    this.dataLength = 17;
     this.pageIndex = 1;
     this.pageSize = 8;
 
-    this.getCoursesData(this.pageSize, this.pageIndex);
+    this.getDepartmentsData(this.pageSize, this.pageIndex);
   }
 
   getPageEvent(event) {
@@ -60,7 +60,7 @@ export class CourseManagementComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex + 1;
     this.index = event.pageSize * event.pageIndex;
-    this.getCoursesData(this.pageSize, this.pageIndex);
+    this.getDepartmentsData(this.pageSize, this.pageIndex);
   }
 
   default() {
@@ -78,14 +78,14 @@ export class CourseManagementComponent implements OnInit {
 
     if (this.action != 'delete') {
       this.width = '780px';
-      this.height = '535px';
+      this.height = '280px';
     }
     else {
       this.width = '460px';
       this.height = '230px';
     }
 
-    const dialogRef = this.dialog.open(CourseDialogComponent, {
+    const dialogRef = this.dialog.open(DepartmentDialogComponent, {
       width: this.width,
       height: this.height,
       data: obj
@@ -95,24 +95,24 @@ export class CourseManagementComponent implements OnInit {
       if (!result || result.event == 'cancel') return;
 
       if (this.action == 'add') {
-        this.createCourse(result.data);
+        this.createDepartment(result.data);
       } else if (this.action == 'edit') {
-        this.updateCourse(result.data);
+        this.updateDepartment(result.data);
       } else if (this.action == 'delete') {
-        this.deleteCourse(result.data);
+        this.deleteDepartment(result.data);
       }
     });
   }
 
-  getCoursesData(pageSize: number, pageIndex: number) {
-    this.courseApi.getCourses(pageSize, pageIndex).subscribe( result => {
+  getDepartmentsData(pageSize: number, pageIndex: number) {
+    this.courseApi.getDepartments(pageSize, pageIndex).subscribe(result => {
       this.ELEMENT_DATA = result.data;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.default();
 
-      if (this.isFirstTime) {
+      if (this.isFisrtTime) {
         this.isLoading = false;
-        this.isFirstTime = false;
+        this.isFisrtTime = false;
         this.toastr.success(result.message);
       }
     }, error => {
@@ -120,8 +120,8 @@ export class CourseManagementComponent implements OnInit {
     })
   }
 
-  createCourse(row_obj) {
-    this.courseApi.createCourse(this.dataTranform(row_obj)).subscribe(result => {
+  createDepartment(row_obj) {
+    this.courseApi.createDepartment(this.dataTranform(row_obj)).subscribe(result => {
 
       this.ELEMENT_DATA.unshift(row_obj);
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -132,8 +132,8 @@ export class CourseManagementComponent implements OnInit {
     })
   }
 
-  updateCourse(row_obj) {
-    this.courseApi.updateCourse(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
+  updateDepartment(row_obj) {
+    this.courseApi.updateDepartment(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
 
       this.dataSource.data.filter((value, key) => {
         if (value._id == row_obj._id) {
@@ -148,8 +148,8 @@ export class CourseManagementComponent implements OnInit {
 
   }
 
-  deleteCourse(row_obj) {
-    this.courseApi.deleteCourse(row_obj._id).subscribe(result => {
+  deleteDepartment(row_obj) {
+    this.courseApi.deleteDepartment(row_obj._id).subscribe(result => {
 
       this.dataSource.data = this.dataSource.data.filter(item => {
 
@@ -163,16 +163,8 @@ export class CourseManagementComponent implements OnInit {
 
   dataTranform(data) {
     let newData = {
-      _id: data._id,
+      schoolId: data.schoolId,
       name: data.name,
-      capacity: data.credits,
-      department: data.department._id,
-      length: {
-        theory: data.length.theory,
-        practice: data.length.practice
-      },
-      coursePrerequisites: data.coursePrerequisites,
-      creditPrerequisites: data.creditPrerequisites
     }
     return newData;
   }
@@ -180,7 +172,7 @@ export class CourseManagementComponent implements OnInit {
 
 }
 
-// const ELEMENT_DATA: CourseElement[] = [
+// const ELEMENT_DATA: DepartmentElement[] = [
 //   { _id: 'RM001', name: 'Hydrogen', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
 //   { _id: 'RM002', name: 'Helium', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
 //   { _id: 'RM003', name: 'Lithium', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },

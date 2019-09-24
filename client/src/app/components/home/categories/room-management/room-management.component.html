@@ -12,8 +12,8 @@
     <table mat-table matSort [dataSource]="dataSource" #myTable>
       <!-- Position Column -->
       <ng-container matColumnDef="position" >
-        <th mat-header-cell *matHeaderCellDef > STT </th>
-        <td mat-cell *matCellDef="let element, let i=index"> {{i+1}} </td>
+        <th mat-header-cell *matHeaderCellDef class="stt-pad-l" > STT </th>
+        <td mat-cell *matCellDef="let element, let i=index" class="stt-pad-l"> {{i+index+1}} </td>
       </ng-container>
 
       <!-- ID Column -->
@@ -70,7 +70,11 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <mat-paginator [pageSize]="8" [pageSizeOptions]="[8, 20, 50, 100]" showFirstLastButtons></mat-paginator>
+    <mat-paginator  [length]="dataLength"
+                    [pageSize]="pageSize"
+                    [pageSizeOptions]="[8, 25, 50, 100]"
+                    (page)="getPageEvent($event)">
+    </mat-paginator>
 </div>
 </div>
 <div [ngStyle]="{'display': isLoading? 'block' : 'none'}" class="spinner-loading">
