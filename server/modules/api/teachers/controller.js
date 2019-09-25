@@ -5,15 +5,19 @@ const { generateTeacherId } = require("../../common/util/generateId");
 const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
-  console.log(size);
-  return Teacher.find()
-    .skip((page - 1) * size)
-    .limit(size)
-    .populate("department", "name")
+  let total = -1;
+  return Teacher.estimatedDocumentCount(data => {
+    total = data;
+    return Teacher.find()
+      .skip((page - 1) * size)
+      .limit(size)
+      .populate("department", "name");
+  })
     .then(data => {
       res.status(200).json({
         message: "fetch_teachers_successful",
-        data: data
+        data: data,
+        size: total
       });
     })
     .catch(err => {

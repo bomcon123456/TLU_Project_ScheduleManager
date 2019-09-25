@@ -3,13 +3,19 @@ const Room = require("./model");
 const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
-  Room.find()
-    .skip((page - 1) * size)
-    .limit(size)
+  let total = -1;
+  Room.estimatedDocumentCount()
+    .then(data => {
+      total = data;
+      return Room.find()
+        .skip((page - 1) * size)
+        .limit(size);
+    })
     .then(data => {
       res.status(200).json({
         message: "fetched_rooms_successfully",
-        data: data
+        data: data,
+        size: total
       });
     })
     .catch(err => {

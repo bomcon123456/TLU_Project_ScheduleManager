@@ -23,6 +23,10 @@ const classroomSchema = new Schema(
     date: {
       type: customDateSchema,
       require: true
+    },
+    verified: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: { createdAt: "createdAt" } }

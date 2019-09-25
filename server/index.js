@@ -65,7 +65,6 @@ mongoose
     const port = process.env.PORT;
     console.warn("Listening at port:", port);
     app.listen(process.env.PORT);
-    // coursesCSV();
     /* HTTPs
     // https
     //   .createServer(

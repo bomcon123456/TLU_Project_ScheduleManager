@@ -1,4 +1,4 @@
-﻿id,schoolId,name,credits,prerequisites,theory,pratice
+﻿id,schoolId,name,credits,prerequisites,theory,practice
 AC201,AC201,Nguyên lý kế toán,3,40,45,
 AC210,AC210,Kế toán doanh nghiệp,3,AC201,45,
 AC211,AC211,Kế toán tài chính 1,3,AC201,45,
