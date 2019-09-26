@@ -327,9 +327,9 @@ IM204,IM204,ứng dụng Caỉ,3,IM202,45,45
 IM205,IM205,Kỹ năng soạn thảo văn bản (Thanh nhạc),3,,45,45
 IN301,IN301,Tin học ứng dụng trong dinh dưỡng tiết chế,2,IM001,15,30
 IP303,IP303,Tiếng Nhật văn phòng,2,GJ243,30,
-IP401,IP401,Thực tập ngành Khoa học máy tính,2,100,60TH,
-IP402,IP402,Thực tập ngành Truyền thông và mạng máy tính,2,100,60TH,
-IP403,IP403,Thực tập ngành Hệ thống thông tin,2,100,60TH,
+IP401,IP401,Thực tập ngành Khoa học máy tính,2,100,,60
+IP402,IP402,Thực tập ngành Truyền thông và mạng máy tính,2,100,,60
+IP403,IP403,Thực tập ngành Hệ thống thông tin,2,100,,60
 IS203,IS203,Vi tính tiếng Nhật,3,"GJ163,IM201 , IM202",45,
 IS222,IS222,Cơ sở dữ liệu,3,"CS121,MA101",45,45
 IS314,IS314,Hệ thống thông tin,3,IS222,45,45
@@ -345,7 +345,7 @@ IS334,IS334,Quản lý dự án hệ thống thông tin,3,SE302,45,45
 IS335,IS335,Phát triển ứng dụng doanh nghiệp,3,SE302,45,45
 IS336,IS336,Triển khai và kiềm soát hệ thống thông tin doanh nghiệp,3,IS335,45,45
 IS345,IS345,An toàn thông tin,3,CF231,45,45
-IS382,IS382,Công nghệ thông tin trong doanh nghiệp,2,"100 ,BA102,MK202",18LT+18111,
+IS382,IS382,Công nghệ thông tin trong doanh nghiệp,2,"100 ,BA102,MK202",18,18
 IS383,IS383,Hệ thống thông tin nâng cao,2,IS314,18,18
 IS384,IS384,Một số vấn đề hiện đại về hệ thống thông tin,3,IS383,45,45
 IS424,IS424,Lập trình cơ sở dữ liệu,3,IS322,45,45
@@ -369,7 +369,7 @@ MA313,MA313,Hàm biến phức,2,MA111,18,24
 MA323,MA323,Số học thuật toán,2,MA103,18,24
 MA340,MA340,Giải tích số,3,MA111,36,18
 MA342,MA342,Giải tích lồi,3,MA111,36,18
-MA431,MA431,Phân tích số liệu bằng STATA,2,"MA233,PH321",30TH,
+MA431,MA431,Phân tích số liệu bằng STATA,2,"MA233,PH321",,30
 MI201,MI201,Toán rời rạc,3,CS122,45,45
 MI302,MI302,Tối ưu hóa,2,MA111,18,24
 MI311,MI311,Mã hóa và an toàn dữ liệu,2,MI201,18,24
@@ -408,14 +408,14 @@ ML203,ML203,Đường lối cách mạng của Đảng cs Việt Nam,2,ML111,30,
 MZ333,MZ333,Phưong pháp giảng dạy chữ Hán,3,ML202,45,
 NA126,NA126,Hóa sinh,2,GJ342,30,
 NA133,NA133,Hóa hữu cơ - Hóa phân tích,2,"NA133,NA142,NA145",15,30
-NA142,NA142,Giải phẫu ứng dụng,2,,30(LT+IH),
+NA142,NA142,Giải phẫu ứng dụng,2,,30,30
 NA143,NA143,Sinh lvhọc lâm sàng,4,"NA133,NA145",45,30
 NA145,NA145,Mô phôi - Di truyền,2,"NA133,NA142,NA145",30,
 NA146,NA146,Vi sinh vật,2,,30,
 NA147,NA147,Ký sinh trùng,2,"NA142,NA143",30,
 NA151,NA151,Khoa học môi trường,2,"NA142,NA143",30,
 NA210,NA210,Sinh lý bệnh - Miễn dịch ứng dụng,2,,30,
-NC211,NC211,Kiểm soát nhiễm khuẩn trong thực hành điều dưỡng,3,"NA142,NA143",30LT+30IH,
+NC211,NC211,Kiểm soát nhiễm khuẩn trong thực hành điều dưỡng,3,"NA142,NA143",30,30
 NC463,NC463,Kinh tế hộ gia đình - dinh dưỡng,2,NA210,15,40
 NC499,NC499,KLTN ngành Dinh dưỡng,2,NS250,30,
 ND337,ND337,Triệu chứng và bệnh học Nội khoa,6,120,90,
