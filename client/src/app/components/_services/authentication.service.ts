@@ -10,7 +10,7 @@ import { UserData } from './../home/interface/dialog-data';
 export class AuthenticationService {
 
   // Define API
-  apiURL = `${environment.apiUrl}/auth`;
+  apiURL = `http://${environment.apiUrl}/auth`;
 
   private currentUserSubject: BehaviorSubject<UserData>;
   public currentUser: Observable<UserData>;
