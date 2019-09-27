@@ -6,16 +6,16 @@ const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
   let total = -1;
-  return Teacher.estimatedDocumentCount(data => {
-    total = data;
-    return Teacher.find()
-      .skip((page - 1) * size)
-      .limit(size)
-      .populate("department", "name");
-  })
+  Teacher.estimatedDocumentCount()
+    .then(data => {
+      total = data;
+      return Teacher.find()
+        .skip((page - 1) * size)
+        .limit(size).populate("department","name");
+    })
     .then(data => {
       res.status(200).json({
-        message: "fetch_teachers_successful",
+        message: "fetched_teachers_successfully",
         data: data,
         size: total
       });
@@ -23,6 +23,7 @@ const getAll = (req, res, next) => {
     .catch(err => {
       next(err);
     });
+
 };
 
 const get = (req, res, next) => {

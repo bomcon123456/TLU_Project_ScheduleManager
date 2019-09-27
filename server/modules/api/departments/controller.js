@@ -5,12 +5,13 @@ const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
   let total = -1;
-  Department.estimatedDocumentCount(data => {
-    total = data;
-    return Department.find()
-      .skip((page - 1) * size)
-      .limit(size);
-  })
+  Department.estimatedDocumentCount()
+    .then(data => {
+      total = data;
+      return Department.find()
+        .skip((page - 1) * size)
+        .limit(size);
+    })
     .then(data => {
       res.status(200).json({
         message: "fetched_departments_successfully",
@@ -21,6 +22,7 @@ const getAll = (req, res, next) => {
     .catch(err => {
       next(err);
     });
+
 };
 
 const getAllCourses = (req, res, next) => {

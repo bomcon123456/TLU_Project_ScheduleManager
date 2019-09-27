@@ -4,17 +4,18 @@ const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
   let total = -1;
-  Course.estimatedDocumentCount(data => {
-    total = data;
-    return Course.find()
-      .skip((page - 1) * size)
-      .limit(size)
-      .populate("department", "name");
-  })
+  Course.estimatedDocumentCount()
+    .then(data => {
+      total = data;
+      return Course.find()
+        .skip((page - 1) * size)
+        .limit(size).populate("department", "name");
+    })
     .then(data => {
       res.status(200).json({
-        message: "fetch_courses_successful",
-        data: data
+        message: "fetched_courses_successfully",
+        data: data,
+        size: total
       });
     })
     .catch(err => {
