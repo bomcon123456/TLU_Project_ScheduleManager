@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 
+import { environment } from './../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,7 +12,7 @@ import { retry, catchError } from 'rxjs/operators';
 export class RoomApiService {
 
   // Define API
-  apiURL = 'http://localhost:6969/api/rooms';
+  apiURL = `${environment.apiUrl}/rooms`;
 
   constructor(private http: HttpClient) { }
 

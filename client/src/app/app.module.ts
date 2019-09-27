@@ -2,14 +2,17 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AngularMaterialModule } from './core/angular-material.module';
 import { AppRoutingModule } from './core/app-routing.module';
-import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { HomeModule } from './components/home/home.module';
+import { JwtInterceptor } from './components/_helpers/jwt.interceptor';
+import { ErrorInterceptor } from './components/_helpers/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -18,15 +21,20 @@ import { HomeModule } from './components/home/home.module';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     AngularMaterialModule,
     FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     FlexLayoutModule,
     HomeModule,
     ToastrModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

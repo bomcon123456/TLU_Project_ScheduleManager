@@ -1,6 +1,10 @@
-export interface DialogData {
-  animal: string;
-  name: string;
+export interface UserData {
+  id?: string;
+  username?: string;
+  password?: string;
+  firstname?: string;
+  lastname?: string;
+  token?: string;
 }
 
 export interface RoomElement {

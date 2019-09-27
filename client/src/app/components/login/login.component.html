@@ -5,22 +5,40 @@
     <mat-card class="box">
       <img src="../../../assets/dtl_logo.png" class="img" alt="Logo TLU" mat-card-image>
 
-      <form class="example-form"  autocomplete="false">
+      <form class="example-form" autocomplete="false">
         <mat-card-content>
           <mat-form-field class="example-full-width" appearance="standard">
-            <mat-label>Username</mat-label>
-            <input matInput placeholder="Fill me" [(ngModel)]="User.username" name="username">
+            <!-- <mat-label>Username</mat-label> -->
+            <input matInput
+                  placeholder="Username"
+                  [(ngModel)]="loginUser.username"
+                  name="username"
+                  type="text"
+                  [formControl]="usernameFormControl"
+                  [errorStateMatcher]="matcher">
+            <mat-error *ngIf="usernameFormControl.hasError('required')">
+              Username is <strong>required</strong>
+            </mat-error>
           </mat-form-field>
 
           <mat-form-field class="example-full-width" appearance="standard">
-            <mat-label>Password</mat-label>
-            <input matInput placeholder="Fill me" [(ngModel)]="User.password" name="password" type="password">
+            <!-- <mat-label>Password</mat-label> -->
+            <input matInput
+                  placeholder="Password"
+                  [(ngModel)]="loginUser.password"
+                  name="password"
+                  type="password"
+                  [formControl]="passwordFormControl"
+                  [errorStateMatcher]="matcher">
+            <mat-error *ngIf="passwordFormControl.hasError('required')">
+              Password is <strong>required</strong>
+            </mat-error>
           </mat-form-field>
         </mat-card-content>
         <mat-card-actions>
           <button mat-stroked-button color="accent" class="btn-block" (click)="login()">Log in</button>
         </mat-card-actions>
-        <mat-error *ngIf="isLoginFalse" class="text-error"><strong>Username</strong> or <strong>Password</strong> invalid</mat-error>
+        <mat-error *ngIf="isLoginFalse" class="text-error">Username or Password is<strong>invalid</strong></mat-error>
       </form>
     </mat-card>
 </div>
