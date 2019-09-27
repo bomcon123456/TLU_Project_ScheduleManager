@@ -30,9 +30,11 @@ module.exports = (req, res, next) => {
       error.statusCode = 401;
       throw error;
     }
-    req.userId = decodedToken.userId;
+    req.user.id = decodedToken.userId;
+    req.user.role = decodedToken.role;
   } else {
-    // req.userId = "5d36914f34f7c2158e4fb789";
+    req.user.id = "5d86e7f47eacc31052eba6a2";
+    red.user.role = 99;
   }
   next();
 };

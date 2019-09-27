@@ -107,14 +107,30 @@ const coursesCSV = () => {
             error.status = 404;
             throw error;
           }
+          let theo = parseInt(each.theory) || 0;
+          let prac = parseInt(each.practice) || 0;
+          let combine = 0;
+          let length = {
+            theory: theo,
+            practice: prac,
+            combine: 0
+          };
+          if (theo === prac) {
+            if (theo === 30 || theo === 36 || theo === 45 || theo === 60) {
+              combine = theo;
+              theo = 0;
+              prac = 0;
+            }
+          }
           course = new Course({
             _id: each.schoolId,
             name: each.name,
             credits: parseInt(each.credits),
             department: data._id,
             length: {
-              theory: parseInt(each.theory) || 0,
-              practice: parseInt(each.practice) || 0
+              theory: theo,
+              practice: prac,
+              combined: combine
             },
             coursePrerequisites: coursePrerequisites,
             creditPrerequisites: parseInt(creditPrerequisites)

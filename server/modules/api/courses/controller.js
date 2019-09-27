@@ -3,10 +3,14 @@ const Course = require("./model");
 const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
-  return Course.find()
-    .skip((page - 1) * size)
-    .limit(size)
-    .populate("department", "name")
+  let total = -1;
+  Course.estimatedDocumentCount(data => {
+    total = data;
+    return Course.find()
+      .skip((page - 1) * size)
+      .limit(size)
+      .populate("department", "name");
+  })
     .then(data => {
       res.status(200).json({
         message: "fetch_courses_successful",
