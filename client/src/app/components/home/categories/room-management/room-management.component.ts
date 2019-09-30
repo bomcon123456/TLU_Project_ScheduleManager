@@ -77,7 +77,7 @@ export class RoomManagementComponent implements OnInit {
 
     if ( this.action != 'delete' ) {
       this.width = '780px';
-      this.height = '475px';
+      this.height = '450px';
     }
     else {
       this.width = '460px';
@@ -179,6 +179,18 @@ export class RoomManagementComponent implements OnInit {
       roomType: data.roomType
     }
     return newData;
+  }
+
+  getFullText(data) {
+    if (data == "TH") {
+      return "Thực hành";
+    }
+    if (data == "LT") {
+      return "Lý thuyết";
+    }
+    if (data == "TC") {
+      return "Thể chất";
+    }
   }
 
 

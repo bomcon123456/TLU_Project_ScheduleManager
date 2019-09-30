@@ -7,6 +7,8 @@ import { RoomManagementComponent } from '../categories/room-management/room-mana
 import { SemesterManagementComponent } from '../categories/semester-management/semester-management.component';
 import { TeacherManagementComponent } from './../categories/teacher-management/teacher-management.component';
 import { DepartmentManagementComponent } from './../categories/department-management/department-management.component';
+import { ClassroomManagementComponent } from './../categories/classroom-management/classroom-management.component';
+import { ClassroomAddComponent } from '../categories/classroom-management/classroom-add/classroom-add.component';
 
 
 const routes: Routes = [
@@ -29,6 +31,14 @@ const routes: Routes = [
   {
     path: 'department-management',
     component: DepartmentManagementComponent
+  },
+  {
+    path: 'classroom-management',
+    component: ClassroomManagementComponent
+  },
+  {
+    path: 'classroom-management/classroom-add',
+    component: ClassroomAddComponent
   }
 ];
 

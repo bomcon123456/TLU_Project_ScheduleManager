@@ -12,6 +12,27 @@ td, th {
   padding: 0 5px !important;
 }
 
+.menu-filter {
+  display: table;
+  max-width: 850px !important;
+  min-width: 570px !important;
+
+  .mat-menu-content {
+    display: flex;
+    max-width: inherit;
+  }
+}
+
+.item-filter {
+  width: 35%;
+  margin: 0 10px;
+
+  .mat-form-field-wrapper {
+    padding-bottom: unset;
+  }
+}
+
+
 // animation spinner loading
 
 // lds-hourglass

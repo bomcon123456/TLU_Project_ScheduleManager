@@ -57,3 +57,29 @@ export interface DepartmentElement {
   schoolId?: string;
   name?: string;
 }
+
+export interface ClassroomElement {
+  action?: string;
+  _id?: string;
+  name?: string;
+  students?: number;
+  courseId?: {
+    _id?: string;
+    name?: string;
+  },
+  roomId?: {
+    _id: string;
+    name?: string;
+  },
+  teacherId?: {
+    _id: string;
+    name?: string;
+  },
+  date?: {
+    shift?: string;
+    day?: string;
+    group?: string;
+    semester?: string;
+    year?: string;
+  }
+}

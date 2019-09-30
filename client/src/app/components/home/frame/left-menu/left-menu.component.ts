@@ -22,10 +22,11 @@ export class LeftMenuComponent implements OnInit {
 
   public pages: Page[] = [
     { name: 'Quản lý môn học', link: '/course-management', icon: 'menu_book' },
-    { name: 'Quản lý phòng học', link: '/room-management', icon: 'meeting_room' },
+    { name: 'Quản lý phòng', link: '/room-management', icon: 'meeting_room' },
     { name: 'Quản lý kỳ học', link: '/semester-management', icon: 'date_range' },
     { name: 'Quản lý giáo viên', link: '/teacher-management', icon: 'school' },
-    { name: 'Quản lý bộ môn', link: '/department-management', icon: 'account_balance' }
+    { name: 'Quản lý bộ môn', link: '/department-management', icon: 'account_balance' },
+    { name: 'Quản lý phòng học', link: '/classroom-management', icon: 'meeting_room'}
   ]
 
   constructor(private _sidenavService: SidenavService) { }

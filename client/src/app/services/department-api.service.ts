@@ -78,13 +78,15 @@ export class DepartmentApiService {
       )
   }
 
-  getCoursesById(id, pageSize?: number, pageIndex?: number): Observable<any> {
+  getCoursesById(id: string, pageSize?: number, pageIndex?: number): Observable<any> {
     if (!pageIndex) {
       pageIndex = 1;
     }
     if (!pageSize) {
       pageSize = 5;
     }
+    console.log(id);
+
     return this.http.get(this.apiURL + '/courses/' + id + `?size=${pageSize}&page=${pageIndex}`)
       .pipe(
         retry(1),

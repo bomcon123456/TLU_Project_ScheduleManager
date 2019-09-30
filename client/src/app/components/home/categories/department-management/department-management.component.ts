@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
@@ -27,6 +27,7 @@ export class DepartmentManagementComponent implements OnInit {
   private ELEMENT_DATA: DepartmentElement[];
   private isLoading: boolean;
   private isFisrtTime: boolean;
+  private isFilter: boolean;
   private action: string;
   private width: string;
   private height: string;
@@ -46,7 +47,8 @@ export class DepartmentManagementComponent implements OnInit {
 
   ngOnInit() {
     this.isFisrtTime = true;
-    this.isLoading = true;
+    this.isLoading = false;
+    this.isFilter = false;
     this.index = 0;
     this.dataLength = 17;
     this.pageIndex = 1;
@@ -55,12 +57,14 @@ export class DepartmentManagementComponent implements OnInit {
     this.getDepartmentsData(this.pageSize, this.pageIndex);
   }
 
-  getPageEvent(event) {
-    console.log(event);
-    this.pageSize = event.pageSize;
-    this.pageIndex = event.pageIndex + 1;
-    this.index = event.pageSize * event.pageIndex;
-    this.getDepartmentsData(this.pageSize, this.pageIndex);
+  async getPageEvent(event) {
+      this.isLoading = true;
+      this.pageSize = event.pageSize;
+      this.pageIndex = event.pageIndex + 1;
+      this.getDepartmentsData(this.pageSize, this.pageIndex);
+      // if ( !this.isLoading) {
+      //   this.index = event.pageSize * event.pageIndex;
+      // }
   }
 
   default() {
@@ -68,8 +72,12 @@ export class DepartmentManagementComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  applyFilter(filterValue: string) {
+  applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  applyFilter() {
+    this.isFilter = !this.isFilter;
   }
 
   openDialog(action, obj): void {
@@ -109,9 +117,10 @@ export class DepartmentManagementComponent implements OnInit {
       this.ELEMENT_DATA = result.data;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.default();
+      this.index = pageSize * ( pageIndex-1 );
+      this.isLoading = false;
 
       if (this.isFisrtTime) {
-        this.isLoading = false;
         this.isFisrtTime = false;
         this.toastr.success(result.message);
       }

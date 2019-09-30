@@ -65,6 +65,16 @@ export class CourseManagementComponent implements OnInit {
 
   default() {
     this.dataSource.paginator = null;
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'department': return item.department.name;
+        case 'theory': return item.length.theory;
+        case 'practice': return item.length.practice;
+        case 'coursePrereq': return item.coursePrerequisites.join(', ');
+        case 'creditPrereq': return item.creditPrerequisites;
+        default: return item[property];
+      }
+    };
     this.dataSource.sort = this.sort;
   }
 
@@ -78,7 +88,7 @@ export class CourseManagementComponent implements OnInit {
 
     if (this.action != 'delete') {
       this.width = '780px';
-      this.height = '535px';
+      this.height = '550px';
     }
     else {
       this.width = '460px';
@@ -176,7 +186,6 @@ export class CourseManagementComponent implements OnInit {
     }
     return newData;
   }
-
 
 }
 

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AngularMaterialModule } from '../../core/angular-material.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { HomeRoutingModule } from './core/home-routing.module';
@@ -21,6 +21,9 @@ import { TeacherManagementComponent } from './categories/teacher-management/teac
 import { TeacherDialogComponent } from './categories/teacher-management/teacher-dialog/teacher-dialog.component';
 import { DepartmentManagementComponent } from './categories/department-management/department-management.component';
 import { DepartmentDialogComponent } from './categories/department-management/department-dialog/department-dialog.component';
+import { ClassroomManagementComponent } from './categories/classroom-management/classroom-management.component';
+import { ClassroomDialogComponent } from './categories/classroom-management/classroom-dialog/classroom-dialog.component';
+import { ClassroomAddComponent } from './categories/classroom-management/classroom-add/classroom-add.component';
 
 
 @NgModule({
@@ -30,7 +33,8 @@ import { DepartmentDialogComponent } from './categories/department-management/de
     AngularMaterialModule,
     FlexLayoutModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule
     // MatButtonModule
   ],
   declarations: [
@@ -46,7 +50,10 @@ import { DepartmentDialogComponent } from './categories/department-management/de
     TeacherManagementComponent,
     TeacherDialogComponent,
     DepartmentManagementComponent,
-    DepartmentDialogComponent
+    DepartmentDialogComponent,
+    ClassroomManagementComponent,
+    ClassroomDialogComponent,
+    ClassroomAddComponent
   ],
   entryComponents: [
     RoomDialogComponent,
@@ -54,10 +61,12 @@ import { DepartmentDialogComponent } from './categories/department-management/de
     TeacherDialogComponent,
     SemesterDialogComponent,
     DepartmentDialogComponent,
+    ClassroomDialogComponent,
     RoomManagementComponent,
     CourseManagementComponent,
     SemesterManagementComponent,
     TeacherManagementComponent,
+    ClassroomManagementComponent,
     DepartmentManagementComponent
   ],
   providers: [SidenavService]

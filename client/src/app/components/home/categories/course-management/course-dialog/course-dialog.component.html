@@ -16,7 +16,8 @@
     </mat-form-field>
     <mat-form-field>
       <mat-label>Bộ môn</mat-label>
-      <mat-select [(value)]="local_data.department.name">
+      <mat-select [value]="local_data.department.name"
+                  (selectionChange)="departmentSelected($event)">
         <mat-option>None</mat-option>
         <mat-option *ngFor="let item of departments" [value]="item.name"> {{item.name}} </mat-option>
       </mat-select>
@@ -29,13 +30,30 @@
       <input placeholder="Số giờ thực hành" matInput [(ngModel)]="local_data.length.practice" type="number">
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Chọn học phần bắt buộc</mat-label>
+      <mat-chip-list #chipList aria-label="Courses prerequisite selection">
+        <mat-chip *ngFor="let course of coursesSelected"
+                  [removable]="true"
+                  (removed)="remove(course)">
+          {{course}}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+        <input  placeholder="Học phần bắt buộc"
+                #courseInput [formControl]="courseCtrl" [matAutocomplete]="auto"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+      </mat-chip-list>
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+        <mat-option *ngFor="let course of filteredCourses | async" [value]="course._id">
+          {{course._id}} - {{course.name}}
+        </mat-option>
+      </mat-autocomplete>
+      <!-- <mat-label>Chọn học phần bắt buộc</mat-label>
       <mat-select [(value)]="local_data.coursePrerequisites">
         <mat-option>None</mat-option>
         <mat-option value="1">1</mat-option>
         <mat-option value="2">2</mat-option>
         <mat-option value="3">3</mat-option>
-      </mat-select>
+      </mat-select> -->
     </mat-form-field>
     <mat-form-field>
       <input placeholder="Số tín chỉ bắt buộc" type="number" matInput [(ngModel)]="local_data.creditPrerequisites">
