@@ -36,9 +36,9 @@ const userSchema = new Schema(
       type: Number,
       min: 0
     },
-    division: {
+    department: {
       type: Schema.Types.ObjectId,
-      ref: "Division"
+      ref: "Department"
     },
     birthday: { type: Date, default: "2/9/1990" }
   },

@@ -28,7 +28,7 @@ const get = (req, res, next) => {
   Room.findById(id)
     .then(data => {
       if (!data) {
-        const err = new Error("fetch_teacher_failed");
+        const err = new Error("fetch_room_failed");
         err.statusCode = 404;
         throw err;
       }
