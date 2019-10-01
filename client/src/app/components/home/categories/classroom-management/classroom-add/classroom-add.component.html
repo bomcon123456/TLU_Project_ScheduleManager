@@ -85,10 +85,10 @@
         <td mat-cell *matCellDef="let element; let i = index">
           <mat-form-field>
             <mat-label>Giáo viên</mat-label>
-            <mat-select [value]="ELEMENT_DATA[i].teacher"
-                        (selectionChange)="ELEMENT_DATA[i].teacher = $event.value">
+            <mat-select value="ELEMENT_DATA[i].teacher.name"
+                        (selectionChange)="handleWithData($event.value, i, elm = 'teacher')">
               <mat-option *ngFor="let teacher of teacherList"
-                          [value]="getIdNameFromData(teacher)">
+                          [value]="teacher">
                 {{teacher.name}}
               </mat-option>
             </mat-select>
@@ -118,8 +118,9 @@
         <td mat-cell *matCellDef="let element; let i = index">
           <mat-form-field>
             <mat-label>Ca</mat-label>
-            <mat-select [(value)]="ELEMENT_DATA[i].date.shift"
-                        [disabled]="!ELEMENT_DATA[i].date.day ? true : false ">
+            <mat-select value="ELEMENT_DATA[i].date.shift"
+                        (selectionChange)="handleWithData($event.value, i, elm = 'shift')"
+                        [disabled]="ELEMENT_DATA[i].date.day && ELEMENT_DATA[i].type ? false : true ">
               <mat-option *ngFor="let shift of shifts" [value]="shift">
                 {{shift}}
               </mat-option>
@@ -134,11 +135,11 @@
         <td mat-cell *matCellDef="let element; let i = index">
           <mat-form-field>
             <mat-label>Phòng</mat-label>
-            <mat-select [value]="ELEMENT_DATA[i].room"
-                        (selectionChange)="ELEMENT_DATA[i].room = $event.value"
+            <mat-select value="ELEMENT_DATA[i].room.name"
+                        (selectionChange)="handleWithData($event.value, i, elm = 'room')"
                         [disabled]="!ELEMENT_DATA[i].date.shift ? true : false ">
               <mat-option *ngFor="let room of roomList"
-                          [value]="getIdNameFromData(room)">
+                          [value]="room">
                 {{room.name}}
               </mat-option>
             </mat-select>

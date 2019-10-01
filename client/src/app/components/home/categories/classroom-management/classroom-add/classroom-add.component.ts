@@ -72,8 +72,6 @@ export class ClassroomAddComponent implements OnInit {
   ngOnInit() {
     this.isFisrtTime = true;
     this.isLoading = false;
-    this.isChildDone = true;
-    this.isChildDone = true;
     this.index = 0;
     this.pageIndex = 1;
     this.pageSize = 8;
@@ -177,12 +175,46 @@ export class ClassroomAddComponent implements OnInit {
     })
   }
 
-  getIdNameFromData(data) {
-    let result = {
-      _id: data._id,
-      name: data.name
-    };
-    return result;
+  handleWithData(data, index, elm) {
+    switch (elm) {
+      case 'teacher': {
+        this.ELEMENT_DATA[index].teacher = {
+          _id: data._id,
+          name: data.name
+        }
+        console.log(this.ELEMENT_DATA);
+        return;
+      };
+      case 'room': {
+        this.isChildDone = true;
+        this.ELEMENT_DATA[index].room = {
+          _id: data._id,
+          name: data.name
+        };
+        return;
+      };
+      case 'shift': {
+        this.ELEMENT_DATA[index].date.shift = data;
+        switch (this.ELEMENT_DATA[index].type) {
+          case 'LT': {
+            this.theoryWeek = this.takeTimeLeft(this.theoryWeek, data);
+            return;
+          };
+          case 'TH': {
+            this.practiceWeek = this.takeTimeLeft(this.practiceWeek, data);
+            return;
+          }
+        }
+        return;
+      }
+    }
+  }
+
+  takeTimeLeft(time, shift) {
+    let indexCut = shift.indexOf('-');
+    let startShift = parseInt(shift.substring(0, indexCut));
+    let endShift = parseInt(shift.substring(indexCut+1));
+    return time - (endShift - startShift + 1);
   }
 
   tranformToVn(data) {

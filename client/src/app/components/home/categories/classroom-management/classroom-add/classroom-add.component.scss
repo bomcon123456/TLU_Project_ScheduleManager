@@ -72,3 +72,12 @@
   }
 }
 
+td {
+
+  height: 80px !important;
+
+  ::ng-deep .mat-form-field {
+    width: 80% !important;
+  }
+}
+
