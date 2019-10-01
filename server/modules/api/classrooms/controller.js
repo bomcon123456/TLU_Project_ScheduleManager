@@ -23,6 +23,29 @@ const getAll = (req, res, next) => {
     });
 };
 
+const getAllBackup = (req, res, next) => {
+  const page = req.query.page || 1;
+  const size = parseInt(req.query.size) || 5;
+  let total = -1;
+  Classroom.estimatedDocumentCount()
+    .then(data => {
+      total = data;
+      return Classroom.find()
+        .skip((page - 1) * size)
+        .limit(size);
+    })
+    .then(data => {
+      res.status(200).json({
+        message: "fetched_classrooms_successfully",
+        data: data,
+        size: total
+      });
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
 const get = (req, res, next) => {
   const id = req.params.id;
   Classroom.findById(id)
