@@ -44,7 +44,7 @@ export class RoomManagementComponent implements OnInit {
 
   ngOnInit() {
     this.isFirstTime = true;
-    this.isLoading = true;
+    this.isLoading = false;
     this.dataLength = 0;
     this.index = 0;
     this.pageIndex = 1;
@@ -54,10 +54,9 @@ export class RoomManagementComponent implements OnInit {
   }
 
   getPageEvent(event) {
-    console.log(event);
+    this.isLoading = true;
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex + 1;
-    this.index = event.pageSize * event.pageIndex;
     this.getRoomsData(this.pageSize, this.pageIndex);
   }
 
@@ -114,9 +113,10 @@ export class RoomManagementComponent implements OnInit {
       this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.default();
+      this.index = pageSize * (pageIndex-1);
+      this.isLoading = false;
 
       if (this.isFirstTime) {
-        this.isLoading = false;
         this.isFirstTime = false;
         this.toastr.success(result.message);
       }

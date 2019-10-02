@@ -46,7 +46,7 @@ export class TeacherManagementComponent implements OnInit {
 
   ngOnInit() {
     this.isFirstTime = true;
-    this.isLoading = true;
+    this.isLoading = false;
     this.index = 0;
     this.dataLength = 0;
     this.pageIndex = 1;
@@ -56,10 +56,9 @@ export class TeacherManagementComponent implements OnInit {
   }
 
   getPageEvent(event) {
-    console.log(event);
+    this.isLoading = true;
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex + 1;
-    this.index = event.pageSize * event.pageIndex;
     this.getTeachersData(this.pageSize, this.pageIndex);
   }
 
@@ -112,9 +111,10 @@ export class TeacherManagementComponent implements OnInit {
       this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.default();
+      this.index = pageSize * (pageIndex-1);
+      this.isLoading = false;
 
       if (this.isFirstTime) {
-        this.isLoading = false;
         this.isFirstTime = false;
         this.toastr.success(result.message);
       }

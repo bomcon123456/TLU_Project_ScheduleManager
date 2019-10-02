@@ -35,6 +35,7 @@ export class DepartmentManagementComponent implements OnInit {
   private dataLength: number;
   private pageSize: number;
   private pageIndex: number;
+  private filter: any;
 
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -42,7 +43,7 @@ export class DepartmentManagementComponent implements OnInit {
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
 
   constructor(public dialog: MatDialog,
-    private courseApi: DepartmentApiService,
+    private departmentApi: DepartmentApiService,
     private toastr: ToastrService) { }
 
   ngOnInit() {
@@ -53,15 +54,16 @@ export class DepartmentManagementComponent implements OnInit {
     this.dataLength = 0;
     this.pageIndex = 1;
     this.pageSize = 8;
+    this.filter = {};
 
-    this.getDepartmentsData(this.pageSize, this.pageIndex);
+    this.getDepartmentsData(this.pageSize, this.pageIndex, this.filter);
   }
 
   async getPageEvent(event) {
       this.isLoading = true;
       this.pageSize = event.pageSize;
       this.pageIndex = event.pageIndex + 1;
-      this.getDepartmentsData(this.pageSize, this.pageIndex);
+      this.getDepartmentsData(this.pageSize, this.pageIndex, this.filter);
       // if ( !this.isLoading) {
       //   this.index = event.pageSize * event.pageIndex;
       // }
@@ -112,9 +114,15 @@ export class DepartmentManagementComponent implements OnInit {
     });
   }
 
-  getDepartmentsData(pageSize: number, pageIndex: number) {
-    this.courseApi.getDepartments(pageSize, pageIndex).subscribe(result => {
+  getDepartmentsData(pageSize: number, pageIndex: number, filter: any) {
+    console.log(filter);
+
+    this.departmentApi.getDepartments(pageSize, pageIndex, filter).subscribe(result => {
+      console.log(result);
+
       this.ELEMENT_DATA = result.data;
+      console.log(this.ELEMENT_DATA);
+
       this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.default();
@@ -131,7 +139,7 @@ export class DepartmentManagementComponent implements OnInit {
   }
 
   createDepartment(row_obj) {
-    this.courseApi.createDepartment(this.dataTranform(row_obj)).subscribe(result => {
+    this.departmentApi.createDepartment(this.dataTranform(row_obj)).subscribe(result => {
 
       this.ELEMENT_DATA.unshift(row_obj);
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
@@ -143,7 +151,7 @@ export class DepartmentManagementComponent implements OnInit {
   }
 
   updateDepartment(row_obj) {
-    this.courseApi.updateDepartment(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
+    this.departmentApi.updateDepartment(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
 
       this.dataSource.data.filter((value, key) => {
         if (value._id == row_obj._id) {
@@ -159,7 +167,7 @@ export class DepartmentManagementComponent implements OnInit {
   }
 
   deleteDepartment(row_obj) {
-    this.courseApi.deleteDepartment(row_obj._id).subscribe(result => {
+    this.departmentApi.deleteDepartment(row_obj._id).subscribe(result => {
 
       this.dataSource.data = this.dataSource.data.filter(item => {
 
@@ -177,6 +185,13 @@ export class DepartmentManagementComponent implements OnInit {
       name: data.name,
     }
     return newData;
+  }
+
+  getFilter() {
+    console.log(123);
+
+    this.isLoading = true;
+    this.getDepartmentsData(this.pageSize, this.pageIndex, this.filter);
   }
 
 

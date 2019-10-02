@@ -1,4 +1,4 @@
-<div [ngStyle]="{'display': !isLoading ? 'block' : 'none'}">
+<div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
   <div style="width: 100%;">
     <mat-form-field class="search">
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
@@ -8,7 +8,15 @@
     </button>
   </div>
 
-  <div class="mat-elevation-z8">
+  <div class="mat-elevation-z8" style="position: relative">
+    <div class="background-loading" *ngIf="isLoading">
+      <div class="lds-ellipsis position-loading">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
     <table mat-table matSort [dataSource]="dataSource" #myTable>
 
       <ng-container matColumnDef="position">
@@ -58,7 +66,7 @@
     </mat-paginator>
   </div>
 </div>
-<div [ngStyle]="{'display': isLoading? 'block' : 'none'}" class="spinner-loading">
+<div [ngStyle]="{'display': isFirstTime? 'block' : 'none'}" class="spinner-loading">
   <div class="lds-facebook">
     <div></div>
     <div></div>

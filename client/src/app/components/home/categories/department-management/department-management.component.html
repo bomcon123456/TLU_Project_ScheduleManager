@@ -14,42 +14,18 @@
           <div (click)="$event.stopPropagation()" class="item-menu">
             <mat-form-field appearance="outline" class="item-filter">
               <mat-label>Mã bộ môn</mat-label>
-              <input matInput placeholder="" (click)="$event.stopPropagation()">
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="item-filter">
-              <mat-label>Mã bộ môn</mat-label>
-              <input matInput placeholder="" (click)="$event.stopPropagation()">
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="item-filter">
-              <mat-label>Mã bộ môn</mat-label>
-              <input matInput placeholder="" (click)="$event.stopPropagation()">
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="item-filter">
-              <mat-label>Mã bộ môn</mat-label>
-              <input matInput placeholder="" (click)="$event.stopPropagation()">
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="item-filter">
-              <mat-label>Mã bộ môn</mat-label>
-              <input matInput placeholder="" (click)="$event.stopPropagation()">
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="item-filter">
-              <mat-label>Mã bộ môn</mat-label>
-              <input matInput placeholder="" (click)="$event.stopPropagation()">
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="item-filter">
-              <mat-label>Mã bộ môn</mat-label>
-              <input matInput placeholder="" (click)="$event.stopPropagation()">
+              <input matInput placeholder="" [(ngModel)]="filter.schoolId">
             </mat-form-field>
             <mat-divider [vertical]="true"></mat-divider>
             <mat-form-field appearance="outline" class="item-filter">
               <mat-label>Tên bộ môn</mat-label>
-              <input matInput placeholder="">
+              <input matInput placeholder="" [(ngModel)]="filter.name">
             </mat-form-field>
           </div>
         </div>
         <mat-divider [vertical]="true"></mat-divider>
         <div class="action-filter">
-          <button mat-raised-button color="primary" class="button">
+          <button mat-raised-button color="primary" class="button" (click)="getFilter()">
             Lọc
           </button>
         </div>
@@ -61,7 +37,15 @@
     </div>
   </div>
 
-  <div class="mat-elevation-z8">
+  <div class="mat-elevation-z8" style="position: relative">
+    <div class="background-loading" *ngIf="isLoading">
+      <div class="lds-ellipsis position-loading">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
     <table mat-table matSort [dataSource]="dataSource" #myTable>
 
       <ng-container matColumnDef="position">

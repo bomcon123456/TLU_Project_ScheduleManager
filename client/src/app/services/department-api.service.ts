@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 
@@ -28,14 +28,19 @@ export class DepartmentApiService {
   }
 
   // HttpClient API get() method => Fetch department list
-  getDepartments(pageSize?: number, pageIndex?: number): Observable<any> {
+  getDepartments(pageSize?: number, pageIndex?: number, filter?: any): Observable<any> {
+
+    const options = filter ? { params: new HttpParams().set('filter', filter) } : {};
+    console.log(options);
+
+
     if (!pageIndex) {
       pageIndex = 1;
     }
     if (!pageSize) {
       pageSize = 5;
     }
-    return this.http.get(this.apiURL + `?size=${pageSize}&page=${pageIndex}`) // this.apiURL+ '?page=23'
+    return this.http.get(this.apiURL + `?size=${pageSize}&page=${pageIndex}`, options) // this.apiURL+ '?page=23'
       .pipe(
         retry(1),
         catchError(this.handleError)
