@@ -10,7 +10,6 @@ const getAll = (req, res, next) => {
   let query = {};
   if (filter) {
     filter = JSON.parse(filter);
-    idQuery = "";
     if (filter._id) {
       idQuery = new RegExp(filter._id, "i");
       query._id = idQuery;

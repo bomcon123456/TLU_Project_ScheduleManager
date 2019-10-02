@@ -5,24 +5,38 @@ const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
   let total = -1;
-  Department.estimatedDocumentCount()
+  let { filter } = req.query;
+  let query = {};
+  if (filter) {
+    filter = JSON.parse(filter);
+    if (filter.name) {
+      query["$text"] = { $search: filter.name };
+    }
+    if (filter.schoolId) {
+      idQuery = new RegExp(filter.schoolId, "i");
+      query.schoolId = idQuery;
+    }
+  }
+  let departments = [];
+  console.log(query);
+  Department.find(query)
+    .skip((page - 1) * size)
+    .limit(size)
     .then(data => {
-      total = data;
-      return Department.find()
-        .skip((page - 1) * size)
-        .limit(size);
+      departments = data;
+      return Department.count(query);
     })
     .then(data => {
+      console.log("Departments: " + data);
       res.status(200).json({
         message: "fetched_departments_successfully",
-        data: data,
-        size: total
+        data: departments,
+        size: data
       });
     })
     .catch(err => {
       next(err);
     });
-
 };
 
 const getAllCourses = (req, res, next) => {
