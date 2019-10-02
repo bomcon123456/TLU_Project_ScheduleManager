@@ -9,6 +9,8 @@ const scheduleSchema = new Schema(
     group: { type: String, required: true, enum: groups },
     semesters: { type: String, required: true, enum: semesters },
     year: { type: String, required: true, enum: years },
+    startDate: { type: String },
+    endDate: { type: String },
     timetable: {
       type: [
         {

@@ -14,6 +14,9 @@ const courseSchema = new Schema(
         },
         practice: {
           type: Number
+        },
+        combined: {
+          type: Number
         }
       },
       required: true
@@ -29,5 +32,7 @@ const courseSchema = new Schema(
   },
   { timestamps: { createdAt: "createdAt" } }
 );
+
+courseSchema.index({ name: "text" });
 
 module.exports = mongoose.model("Course", courseSchema);

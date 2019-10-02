@@ -13,6 +13,8 @@ const roomRoutes = require("./modules/api/rooms/routes");
 const courseRoutes = require("./modules/api/courses/routes");
 const departmentRoutes = require("./modules/api/departments/routes");
 const authRoutes = require("./modules/api/auth/routes");
+const classroomRoutes = require("./modules/api/classrooms/routes");
+const queryRoutes = require("./modules/api/query/routes");
 // const teacherRoutes = require("./modules/api/teachers/routes");
 
 // const multer = require("multer");
@@ -45,7 +47,9 @@ app.use("/api/teachers", teacherRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/departments", departmentRoutes);
+app.use("/api/classrooms", classroomRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/query", queryRoutes);
 
 // Error-handling Middleware
 app.use((error, req, res, next) => {

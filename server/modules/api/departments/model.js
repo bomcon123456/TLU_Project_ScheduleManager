@@ -10,4 +10,6 @@ const departmentSchema = new Schema(
   { timestamps: { createdAt: "createdAt" } }
 );
 
+departmentSchema.index({ name: "text" });
+
 module.exports = mongoose.model("Department", departmentSchema);

@@ -1,0 +1,114 @@
+const Classroom = require("./model");
+
+const getAll = (req, res, next) => {
+  const page = req.query.page || 1;
+  const size = parseInt(req.query.size) || 5;
+  let { filter } = req.query;
+  let query = {};
+  if (filter) {
+    filter = JSON.parse(filter);
+  }
+  let classrooms = [];
+  console.log(query);
+  Classroom.find(query)
+    .skip((page - 1) * size)
+    .limit(size)
+    .populate("courseId", "name")
+    .populate("roomId", "name")
+    .populate("teacherId", "name")
+    .then(data => {
+      classrooms = data;
+      return Classroom.count(query);
+    })
+    .then(data => {
+      console.log("Classrooms:" + " " + data);
+      res.status(200).json({
+        message: "fetched_classrooms_successfully",
+        data: classrooms,
+        size: data
+      });
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
+const get = (req, res, next) => {
+  const id = req.params.id;
+  Classroom.findById(id)
+    .populate("courseId", "name")
+    .populate("roomId", "name")
+    .populate("teacherId", "name")
+    .then(data => {
+      if (!data) {
+        const err = new Error("fetch_classroom_failed");
+        err.statusCode = 404;
+        throw err;
+      }
+      res.status(200).json({
+        message: "fetched_classroom_successfully",
+        data: data
+      });
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
+const post = (req, res, next) => {
+  const { data } = req.body;
+  promises = [];
+  data.map(each => {
+    classroom = new Classroom({ ...each });
+    promises.push(classroom.save());
+  });
+  Promise.all(promises)
+    .then(data => {
+      res.status(200).json({
+        message: "create_classroom_successfully"
+      });
+    })
+    .catch(err => next(err));
+};
+
+const put = (req, res, next) => {
+  const { id } = req.params;
+  const { students, teacherId, roomId, date } = req.body;
+  Classroom.findById(id)
+    .then(data => {
+      data.students = students || data.students;
+      data.roomId = roomId || data.roomId;
+      data.teacherId = teacherId || data.teacherId;
+      data.date = date || data.date;
+      data.save().then(data => {
+        res.status(200).json({
+          message: "update_classroom_successfully",
+          id: id
+        });
+      });
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
+const deleteOne = (req, res, next) => {
+  const id = req.params.id;
+  Classroom.findByIdAndDelete(id)
+    .then(data => {
+      if (!data) {
+        const error = new Error("delete_classroom_failed");
+        error.statusCode = 406;
+        throw error;
+      }
+      res.status(200).json({
+        message: "delete_classroom_successfully",
+        id: id
+      });
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
+module.exports = { getAll, get, post, put, deleteOne };

@@ -14,4 +14,6 @@ const teacherSchema = new Schema(
   { timestamps: { createdAt: "createdAt" } }
 );
 
+teacherSchema.index({ name: "text" });
+
 module.exports = mongoose.model("Teacher", teacherSchema);
