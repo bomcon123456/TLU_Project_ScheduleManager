@@ -4,18 +4,27 @@ const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
   let total = -1;
-  Classroom.estimatedDocumentCount()
+  let { filter } = req.query;
+  let query = {};
+  if (filter) {
+    filter = JSON.parse(filter);
+  }
+  let classrooms = [];
+  console.log(query);
+  Classroom.find(query)
+    .skip((page - 1) * size)
+    .limit(size)
+    .populate("department", "name")
     .then(data => {
-      total = data;
-      return Classroom.find()
-        .skip((page - 1) * size)
-        .limit(size);
+      classrooms = data;
+      return Classroom.count(query);
     })
     .then(data => {
+      console.log("Classrooms:" + " " + data);
       res.status(200).json({
         message: "fetched_classrooms_successfully",
-        data: data,
-        size: total
+        data: classrooms,
+        size: data
       });
     })
     .catch(err => {

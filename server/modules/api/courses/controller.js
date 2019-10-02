@@ -3,7 +3,6 @@ const Course = require("./model");
 const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
-  let total = -1;
   let { filter } = req.query;
   let query = {};
   if (filter) {
@@ -46,7 +45,7 @@ const getAll = (req, res, next) => {
       res.status(200).json({
         message: "fetched_courses_successfully",
         data: courses,
-        size: total
+        size: data
       });
     })
     .catch(err => {
