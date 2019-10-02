@@ -31,6 +31,7 @@ export interface CourseElement {
   length?: {
     theory?: number;
     practice?: number;
+    combined?: number;
   };
   coursePrerequisites?: string[];
   creditPrerequisites?: number;

@@ -48,7 +48,7 @@ export class TeacherManagementComponent implements OnInit {
     this.isFirstTime = true;
     this.isLoading = true;
     this.index = 0;
-    this.dataLength = 276;
+    this.dataLength = 0;
     this.pageIndex = 1;
     this.pageSize = 8;
 
@@ -109,6 +109,7 @@ export class TeacherManagementComponent implements OnInit {
       console.log(result);
 
       this.ELEMENT_DATA = result.data;
+      this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.default();
 

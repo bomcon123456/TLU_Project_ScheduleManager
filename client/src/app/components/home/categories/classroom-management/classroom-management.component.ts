@@ -53,7 +53,7 @@ export class ClassroomManagementComponent implements OnInit {
     this.isFirstTime = true;
     this.isLoading = true;
     this.index = 0;
-    this.dataLength = 111;
+    this.dataLength = 0;
     this.pageIndex = 1;
     this.pageSize = 8;
 
@@ -121,16 +121,18 @@ export class ClassroomManagementComponent implements OnInit {
   }
 
   getRoomsData(pageSize: number, pageIndex: number) {
-      this.ELEMENT_DATA = ELEMENT_DATA;
+    this.ELEMENT_DATA = ELEMENT_DATA;
     this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-      this.default();
-          this.isLoading = false;
-          this.isFirstTime = false;
+    this.default();
+    this.isLoading = false;
+    this.isFirstTime = false;
 
     // this.roomApi.getRooms(pageSize, pageIndex).subscribe( result => {
     //   console.log(result);
 
     //   this.ELEMENT_DATA = result.data;
+    //   this.dataLength = result.size;
+
     //   this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
     //   this.default();
 

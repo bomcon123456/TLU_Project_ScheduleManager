@@ -5,7 +5,7 @@
   <div class="container-header container-1">
 
     <div class="some-actions">
-      <mat-form-field class="mg-l-r-30 w-200">
+      <mat-form-field class="mg-l-r-30 w-40">
         <mat-label>Chọn học phần</mat-label>
         <mat-select (selectionChange)="courseSelected($event)">
           <mat-option *ngFor="let course of coursesList" [value]="course">
@@ -14,11 +14,11 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field class="mg-l-r-30 w-200">
+      <mat-form-field class="mg-l-r-30 w-20">
         <input matInput placeholder="Số lớp học" value="3">
       </mat-form-field>
 
-      <mat-checkbox labelPosition='before' class="mg-l-r-30">Gộp lớp</mat-checkbox>
+      <mat-checkbox labelPosition='before' class="mg-l-r-30 w-30">Gộp lớp</mat-checkbox>
     </div>
 
     <div class="some-text">
@@ -54,6 +54,7 @@
         <th mat-header-cell *matHeaderCellDef> Tên lớp </th>
         <td mat-cell *matCellDef="let element"> {{element.name}} </td>
       </ng-container>
+
       <ng-container matColumnDef="students">
         <th mat-header-cell *matHeaderCellDef> Số lượng sinh viên </th>
         <td mat-cell *matCellDef="let element; let i = index">

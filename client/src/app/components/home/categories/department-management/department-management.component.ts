@@ -50,7 +50,7 @@ export class DepartmentManagementComponent implements OnInit {
     this.isLoading = false;
     this.isFilter = false;
     this.index = 0;
-    this.dataLength = 17;
+    this.dataLength = 0;
     this.pageIndex = 1;
     this.pageSize = 8;
 
@@ -115,6 +115,7 @@ export class DepartmentManagementComponent implements OnInit {
   getDepartmentsData(pageSize: number, pageIndex: number) {
     this.courseApi.getDepartments(pageSize, pageIndex).subscribe(result => {
       this.ELEMENT_DATA = result.data;
+      this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.default();
       this.index = pageSize * ( pageIndex-1 );

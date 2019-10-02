@@ -10,9 +10,6 @@ import { CourseElement } from '../../interface/dialog-data';
 import { CourseApiService } from './../../../../services/course-api.service';
 
 
-/**
- * @title Table with pagination
- */
 @Component({
   selector: 'app-course-management',
   templateUrl: './course-management.component.html',
@@ -21,7 +18,6 @@ import { CourseApiService } from './../../../../services/course-api.service';
 export class CourseManagementComponent implements OnInit {
 
   public displayedColumns: string[] = ['position', '_id', 'name', 'credits', 'department', 'theory', 'practice', 'coursePrereq', 'creditPrereq', 'actions'];
-  // public dataSource = new MatTableDataSource(ELEMENT_DATA);
 
   public dataSource = null;
   private ELEMENT_DATA: CourseElement[];
@@ -48,7 +44,7 @@ export class CourseManagementComponent implements OnInit {
     this.isFirstTime = true;
     this.isLoading = true;
     this.index = 0;
-    this.dataLength = 743;
+    this.dataLength = 0;
     this.pageIndex = 1;
     this.pageSize = 8;
 
@@ -56,7 +52,6 @@ export class CourseManagementComponent implements OnInit {
   }
 
   getPageEvent(event) {
-    console.log(event);
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex + 1;
     this.index = event.pageSize * event.pageIndex;
@@ -88,7 +83,7 @@ export class CourseManagementComponent implements OnInit {
 
     if (this.action != 'delete') {
       this.width = '780px';
-      this.height = '550px';
+      this.height = '600px';
     }
     else {
       this.width = '460px';
@@ -117,6 +112,13 @@ export class CourseManagementComponent implements OnInit {
   getCoursesData(pageSize: number, pageIndex: number) {
     this.courseApi.getCourses(pageSize, pageIndex).subscribe( result => {
       this.ELEMENT_DATA = result.data;
+      this.dataLength = result.size;
+
+      for ( let i=0; i<this.ELEMENT_DATA.length; i++) {
+        this.ELEMENT_DATA[i].length = this.timeTranform(this.ELEMENT_DATA[i].length, true);
+
+      }
+
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.default();
 
@@ -131,6 +133,9 @@ export class CourseManagementComponent implements OnInit {
   }
 
   createCourse(row_obj) {
+
+    row_obj.length = this.timeTranform(row_obj.length, false);
+
     this.courseApi.createCourse(this.dataTranform(row_obj)).subscribe(result => {
 
       this.ELEMENT_DATA.unshift(row_obj);
@@ -143,6 +148,9 @@ export class CourseManagementComponent implements OnInit {
   }
 
   updateCourse(row_obj) {
+
+    row_obj.length = this.timeTranform(row_obj.length, false);
+
     this.courseApi.updateCourse(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
 
       this.dataSource.data.filter((value, key) => {
@@ -179,7 +187,8 @@ export class CourseManagementComponent implements OnInit {
       department: data.department._id,
       length: {
         theory: data.length.theory,
-        practice: data.length.practice
+        practice: data.length.practice,
+        combined: data.length.combined
       },
       coursePrerequisites: data.coursePrerequisites,
       creditPrerequisites: data.creditPrerequisites
@@ -187,27 +196,93 @@ export class CourseManagementComponent implements OnInit {
     return newData;
   }
 
-}
+  timeTranform(data, getData: boolean) {
 
-// const ELEMENT_DATA: CourseElement[] = [
-//   { _id: 'RM001', name: 'Hydrogen', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM002', name: 'Helium', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM003', name: 'Lithium', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM004', name: 'Beryllium', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM005', name: 'Boron', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM006', name: 'Carbon', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM007', name: 'Nitrogen', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM008', name: 'Oxygen', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM009', name: 'Fluorine', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM010', name: 'Neon', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM011', name: 'Sodium', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM012', name: 'Magnesium', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM013', name: 'Aluminum', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM014', name: 'Silicon', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM015', name: 'Phosphorus', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM016', name: 'Sulfur', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM017', name: 'Chlorine', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM018', name: 'Argon', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM019', name: 'Potassium', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM020', name: 'Calcium', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-// ];
+    let length;
+
+    if ( getData==true ) {
+      if ( data.combined == 0 ) {
+        return data;
+      }
+      else {
+        length = {
+          theory: data.combined,
+          practice: data.combined,
+          combined: data.combined
+        }
+        return length;
+      }
+    }
+    else {
+      if ( data.combined == 0 ) {
+        return data;
+      }
+      else {
+        length = {
+          theory: 0,
+          practice: 0,
+          combined: data.combined
+        }
+        return length;
+      }
+    }
+
+    // if ( getData == true ) {
+    //   if ( data.combined==0 ) {
+    //     return data
+    //   }
+    //   else {
+    //     if ( data.combined%9 == 0 ) {
+    //       let timeTotal = data.combined / 9;
+    //       if ( timeTotal%2 == 0 ) {
+    //         length = {
+    //           theory: timeTotal / 2 * 9,
+    //           practice: timeTotal / 2 * 9,
+    //           combined: data.combined
+    //         }
+    //       }
+    //       else {
+    //         length = {
+    //           theory: ((timeTotal / 2) + 0.5) * 9,
+    //           practice: ((timeTotal / 2) - 0.5) * 9,
+    //           combined: data.combined
+    //         }
+    //       }
+    //       return length;
+    //     }
+    //     else {
+    //       let timeTotal = data.combined * 60 / 50 / 9;
+    //       if ( timeTotal%2 == 0 ) {
+    //         length = {
+    //           theory: timeTotal / 2 * 9 * 50 / 60,
+    //           practice: timeTotal / 2 * 9 * 50 / 60,
+    //           combined: data.combined
+    //         }
+    //       }
+    //       else {
+    //         length = {
+    //           theory: ((timeTotal / 2) + 0.5) * 9 * 50 / 60,
+    //           practice: ((timeTotal / 2) - 0.5) * 9 * 50 / 60,
+    //           combined: data.combined
+    //         }
+    //       }
+    //       return length;
+    //     }
+    //   }
+    // }
+    // else {
+    //   if ( data.combined==0 ) {
+    //     return data;
+    //   }
+    //   else {
+    //     length = {
+    //       theory: 0,
+    //       practice: 0,
+    //       combined: data.theory + data.practice
+    //     }
+    //     return length;
+    //   }
+    // }
+  }
+
+}

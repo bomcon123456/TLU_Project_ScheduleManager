@@ -26,6 +26,8 @@ export class CourseDialogComponent implements OnInit {
   private local_data: CourseElement;
   private departments: DepartmentElement[];
 
+  private isCombined: boolean;
+
   @ViewChild('courseInput', { static: false }) courseInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
 
@@ -44,7 +46,8 @@ export class CourseDialogComponent implements OnInit {
       },
       length: {
         theory: null,
-        practice: null
+        practice: null,
+        combined: null
       },
       coursePrerequisites: [],
       creditPrerequisites: null,
@@ -53,10 +56,18 @@ export class CourseDialogComponent implements OnInit {
     if (data._id) {
       this.local_data = { ...data };
       this.coursesSelected = this.local_data.coursePrerequisites;
+      if ( this.local_data.length.combined == 0 ) {
+        this.isCombined = false;
+      }
+      else {
+        this.local_data.length.practice = null;
+        this.isCombined = true;
+      }
     }
     else {
       this.local_data.action = 'add'
       this.coursesSelected = [];
+      this.isCombined = false;
     }
 
     this.action = this.local_data.action;
@@ -132,7 +143,8 @@ export class CourseDialogComponent implements OnInit {
       },
       length: {
         theory: this.local_data.length.theory,
-        practice: this.local_data.length.practice
+        practice: this.local_data.length.practice,
+        combined: this.local_data.length.combined
       },
       coursePrerequisites: this.local_data.coursePrerequisites,
       creditPrerequisites: this.local_data.creditPrerequisites
@@ -173,6 +185,26 @@ export class CourseDialogComponent implements OnInit {
       if (course.name.toLowerCase().indexOf(filterValue) !== -1)
         return course;
     });
+  }
+
+  onChange(event) {
+    if (event.checked == 1) {
+      this.isCombined = true;
+      let total = this.local_data.length.theory + this.local_data.length.practice;
+      this.local_data.length = {
+        theory: total,
+        practice: null,
+        combined: total,
+      }
+    }
+    else {
+      this.isCombined = false;
+      this.local_data.length= {
+        theory: this.local_data.length.theory,
+        practice: 0,
+        combined: 0
+      }
+    }
   }
 
   // onChange(event) {
