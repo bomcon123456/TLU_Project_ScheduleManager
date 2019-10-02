@@ -15,12 +15,12 @@ import { CourseElement, TeacherElement, RoomElement } from '../../../interface/d
 const days = [ "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" ];
 const shifts = [
   "1-1", "1-2", "1-3", "1-4", "1-5",
-  "10-10", "10-11", "10-12", "10-13", "12-13",
   "2-2", "2-3", "2-5", "3-3", "3-4",
-  "3-5", "4-4", "4-5", "5-5", "6-1",
-  "6-6", "6-7", "6-8", "6-9", "7-1",
-  "7-7", "7-8", "8-1", "8-1", "8-8",
-  "8-9", "9-1", "9-9"
+  "3-5", "4-4", "4-5", "5-5", "6-6",
+  "6-7", "6-8", "6-9", "6-10", "7-7",
+  "7-8", "7-10", "8-8", "8-9", "8-10",
+  "9-10", "9-9", "10-10", "10-11", "10-12",
+  "10-13", "12-13",
 ];
 
 /**
@@ -37,27 +37,30 @@ export class ClassroomAddComponent implements OnInit {
   // public dataSource = new MatTableDataSource(ELEMENT_DATA);
 
   public dataSource = null;
-  private ELEMENT_DATA: any;
-  private isLoading: boolean;
-  private isFisrtTime: boolean;
-  private isChildDone: boolean;
+  public parentClass: any[];
+
+  private childClass: any[];
   private coursesList: CourseElement[];
   private teacherList: TeacherElement[];
   private roomList: RoomElement[];
+
+  private ELEMENT_DATA: any;
+  private course: any;
+  private timeTotal: any;
+
+  private isLoading: boolean;
+  private isFisrtTime: boolean;
+  private isChildDone: boolean;
+
   private index: number;
   private pageSize: number;
   private pageIndex: number;
   private theoryWeek: number;
   private practiceWeek: number;
-  private course: any;
-  public parentClass: any[];
-  private childClass: any[];
 
   days: any;
   shifts: any;
-  th = 5;
-  lt = 5;
-
+  undefined = "1-1";
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -77,6 +80,10 @@ export class ClassroomAddComponent implements OnInit {
     this.pageSize = 8;
     this.theoryWeek = null;
     this.practiceWeek = null;
+    this.timeTotal = {
+      theory: null,
+      practice: null
+    }
 
     this.days = days;
     this.shifts = shifts;
@@ -118,7 +125,7 @@ export class ClassroomAddComponent implements OnInit {
     this.course = event.value;
     this.getHoursOfWeek(event.value.length.theory, event.value.length.practice);
     this.ELEMENT_DATA = [];
-
+    this.getDepartmentsData(1, 1);
   }
 
   addChildClass() {
@@ -135,7 +142,7 @@ export class ClassroomAddComponent implements OnInit {
       },
       date: {
         day: '',
-        shift: ''
+        shift: undefined
       },
       room: {
         _id: '',
@@ -194,27 +201,69 @@ export class ClassroomAddComponent implements OnInit {
         return;
       };
       case 'shift': {
+        let temp = this.ELEMENT_DATA[index].date.shift;
         this.ELEMENT_DATA[index].date.shift = data;
         switch (this.ELEMENT_DATA[index].type) {
           case 'LT': {
-            this.theoryWeek = this.takeTimeLeft(this.theoryWeek, data);
+            let timeLeft = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
+            if (timeLeft >= 0) {
+              this.theoryWeek = timeLeft;
+            }
+            else {
+              this.ELEMENT_DATA[index].date.shift = temp;
+              this.theoryWeek = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
+            }
+            console.log(this.ELEMENT_DATA);
             return;
           };
           case 'TH': {
-            this.practiceWeek = this.takeTimeLeft(this.practiceWeek, data);
+            console.log(1);
+
+            let timeLeft = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
+            if (timeLeft >= 0) {
+              this.practiceWeek = timeLeft;
+            }
+            else {
+              this.ELEMENT_DATA[index].date.shift = temp;
+              this.practiceWeek = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
+            }
+            console.log(this.ELEMENT_DATA);
             return;
           }
         }
+
+
         return;
       }
     }
   }
 
-  takeTimeLeft(time, shift) {
-    let indexCut = shift.indexOf('-');
-    let startShift = parseInt(shift.substring(0, indexCut));
-    let endShift = parseInt(shift.substring(indexCut+1));
-    return time - (endShift - startShift + 1);
+  takeTimeLeft(time, array, type) {
+
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].type == type) {
+
+
+        let temp = array[i].date.shift;
+        console.log(temp, temp.indexOf('-'));
+        let indexCut = temp.indexOf('-');
+        console.log(indexCut);
+
+
+        if (indexCut == -1) {
+          time = time;
+        }
+        else {
+          let startShift = parseInt(temp.substring(0, indexCut));
+          let endShift = parseInt(temp.substring(indexCut + 1));
+          time = time - (endShift - startShift + 1);
+        }
+      }
+
+    }
+    console.log(time);
+
+    return time;
   }
 
   tranformToVn(data) {
@@ -301,28 +350,34 @@ export class ClassroomAddComponent implements OnInit {
 
     this.getTheoryHours(theory);
     if ( practice == 0) {
-      return this.practiceWeek = 0;
+      this.timeTotal.practice = this.practiceWeek = 0;
+      return;
     }
     else {
       if ( practice % 10 == 0) {
-        return this.practiceWeek = practice/10;
+        this.timeTotal.practice = this.practiceWeek = practice/10;
+        return;
       }
       else {
-        return this.practiceWeek = practice/9;
+        this.timeTotal.practice = this.practiceWeek = practice/9;
+        return;
       }
     }
   }
 
   getTheoryHours(theory) {
     if (theory == 0) {
-      return this.theoryWeek = 0;
+      this.timeTotal.theory = this.theoryWeek = 0;
+      return;
     }
     else {
       if (theory % 10 == 0) {
-        return this.theoryWeek = theory / 10;
+        this.timeTotal.theory = this.theoryWeek = theory / 10;
+        return;
       }
       else {
-        return this.theoryWeek = theory / 9;
+        this.timeTotal.theory = this.theoryWeek = theory / 9;
+        return;
       }
     }
   }

@@ -118,14 +118,21 @@
         <td mat-cell *matCellDef="let element; let i = index">
           <mat-form-field>
             <mat-label>Ca</mat-label>
-            <mat-select value="ELEMENT_DATA[i].date.shift"
+            <mat-select [value]="ELEMENT_DATA[i].date.shift !== '' ? ELEMENT_DATA[i].date.shift : undefined" (selectionChange)="handleWithData($event.value, i, elm = 'shift')">
+              <mat-option *ngFor="let shift of shifts" [value]="shift"> {{shift}} </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <!-- <mat-form-field>
+            <mat-label>Ca</mat-label>
+            <mat-select [value]="ELEMENT_DATA[i].date.shift"
                         (selectionChange)="handleWithData($event.value, i, elm = 'shift')"
                         [disabled]="ELEMENT_DATA[i].date.day && ELEMENT_DATA[i].type ? false : true ">
-              <mat-option *ngFor="let shift of shifts" [value]="shift">
+              <mat-option [ngStyle]="{'display': 'block'}">None</mat-option>
+              <mat-option *ngFor="let shift of shifts" value="{{shift}}">
                 {{shift}}
               </mat-option>
             </mat-select>
-          </mat-form-field>
+          </mat-form-field> -->
         </td>
       </ng-container>
 
