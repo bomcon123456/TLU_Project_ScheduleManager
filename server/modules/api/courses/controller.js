@@ -4,17 +4,48 @@ const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
   let total = -1;
-  Course.estimatedDocumentCount()
+  let { filter } = req.query;
+  let query = {};
+  if (filter) {
+    filter = JSON.parse(filter);
+    if (filter._id) {
+      idQuery = new RegExp(filter._id, "i");
+      query._id = idQuery;
+    }
+    if (filter.name) {
+      query["$text"] = { $search: filter.name };
+    }
+    if (filter.credits) {
+      query.credits = {
+        $lte: filter.credits.max,
+        $gte: filter.credits.min
+      };
+    }
+    if (filter.creditPrerequisites) {
+      query.creditPrerequisites = {
+        $lte: filter.creditPrerequisites.max,
+        $gte: filter.creditPrerequisites.min
+      };
+    }
+    if (filter.department) {
+      query.department = filter.department;
+    }
+  }
+  let courses = [];
+  console.log(query);
+  Course.find(query)
+    .skip((page - 1) * size)
+    .limit(size)
+    .populate("department", "name")
     .then(data => {
-      total = data;
-      return Course.find()
-        .skip((page - 1) * size)
-        .limit(size).populate("department", "name");
+      courses = data;
+      return Course.count(query);
     })
     .then(data => {
+      console.log("Courses:" + " " + data);
       res.status(200).json({
         message: "fetched_courses_successfully",
-        data: data,
+        data: courses,
         size: total
       });
     })
