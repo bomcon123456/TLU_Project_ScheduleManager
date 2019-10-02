@@ -16,9 +16,7 @@ const getFreeRooms = (req, res, next) => {
       str += "]";
     }
   }
-  console.log(str);
   let shiftQuery = new RegExp(str, "i");
-  console.log(shiftQuery.test("6-7"));
   Classroom.find({
     "date.year": year,
     "date.group": group,
@@ -32,7 +30,7 @@ const getFreeRooms = (req, res, next) => {
       data.map(each => {
         rooms.push(each.roomId);
       });
-      console.log(rooms);
+      console.log("Used rooms: " + rooms);
       return Room.find({ _id: { $nin: rooms } }).select({ name: 1 });
     })
     .then(data => {
