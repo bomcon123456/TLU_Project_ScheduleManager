@@ -14,6 +14,9 @@ const courseSchema = new Schema(
         },
         practice: {
           type: Number
+        },
+        combined: {
+          type: Number
         }
       },
       required: true
