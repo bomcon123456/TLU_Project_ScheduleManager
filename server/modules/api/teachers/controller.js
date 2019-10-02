@@ -32,7 +32,7 @@ const getAll = (req, res, next) => {
       return Teacher.count(query);
     })
     .then(data => {
-      console.log(data);
+      console.log("Counts:" + " " + data);
       res.status(200).json({
         message: "fetched_teachers_successfully",
         data: teachers,

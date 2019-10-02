@@ -4,18 +4,37 @@ const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
   let total = -1;
-  Room.estimatedDocumentCount()
+  let { filter } = req.query;
+  let query = {};
+  if (filter) {
+    filter = JSON.parse(filter);
+    if (filter.location) {
+      if (filter.location.building) {
+        query["location.building"] = filter.location.building;
+      }
+      if (filter.location.floor) {
+        query["location.floor"] = filter.location.floor;
+      }
+    }
+    if (filter.capacity) {
+      query.capacity = { $lte: filter.capacity.max, $gte: filter.capacity.min };
+    }
+  }
+  let rooms = [];
+  console.log(query);
+  Room.find(query)
+    .skip((page - 1) * size)
+    .limit(size)
     .then(data => {
-      total = data;
-      return Room.find()
-        .skip((page - 1) * size)
-        .limit(size);
+      rooms = data;
+      return Room.count(query);
     })
     .then(data => {
+      console.log("Rooms: " + data);
       res.status(200).json({
         message: "fetched_rooms_successfully",
-        data: data,
-        size: total
+        data: rooms,
+        size: data
       });
     })
     .catch(err => {
