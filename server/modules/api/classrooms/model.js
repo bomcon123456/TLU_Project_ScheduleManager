@@ -9,7 +9,6 @@ const years = require("../../common/constants/years");
 
 const classroomSchema = new Schema(
   {
-    _id: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     students: { type: Number, required: true },
     courseId: {
@@ -21,7 +20,7 @@ const classroomSchema = new Schema(
       ref: "Room"
     },
     teacherId: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "Teacher"
     },
     date: {
