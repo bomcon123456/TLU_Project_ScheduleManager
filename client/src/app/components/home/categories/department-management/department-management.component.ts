@@ -26,7 +26,6 @@ export class DepartmentManagementComponent implements OnInit {
   private ELEMENT_DATA: DepartmentElement[];
   private isLoading: boolean;
   private isFisrtTime: boolean;
-  private isFilter: boolean;
   private action: string;
   private width: string;
   private height: string;
@@ -48,7 +47,6 @@ export class DepartmentManagementComponent implements OnInit {
   ngOnInit() {
     this.isFisrtTime = true;
     this.isLoading = false;
-    this.isFilter = false;
     this.index = 0;
     this.dataLength = 0;
     this.pageIndex = 1;
@@ -75,10 +73,6 @@ export class DepartmentManagementComponent implements OnInit {
 
   applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  applyFilter() {
-    this.isFilter = !this.isFilter;
   }
 
   openDialog(action, obj): void {

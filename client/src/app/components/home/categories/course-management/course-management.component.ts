@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, delay, tap, filter, map, takeUntil } from 'rxjs/operators'
+import { debounceTime, delay, tap, filter, map, takeUntil, switchMap } from 'rxjs/operators'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
@@ -25,9 +25,10 @@ export class CourseManagementComponent implements OnInit {
 
   public dataSource = null;
   private ELEMENT_DATA: CourseElement[];
+  private departmentList: DepartmentElement[];
   private isLoading: boolean;
   private isFirstTime: boolean;
-  private isFilter: boolean;
+  public searching: boolean;
   private action: string;
   private width: string;
   private height: string;
@@ -37,23 +38,9 @@ export class CourseManagementComponent implements OnInit {
   private pageIndex: number;
   private filter: any;
 
-
-
   public ServerSideCtrl: FormControl = new FormControl();
-
-  /** control for filter for server side. */
   public ServerSideFilteringCtrl: FormControl = new FormControl();
-
-  /** indicate search operation is in progress */
-  public searching: boolean = false;
-
-  /** list of banks filtered after simulating server side search */
   public filteredServerSide: ReplaySubject<any> = new ReplaySubject<any>(1);
-
-  /** Subject that emits when the component has been destroyed. */
-  protected _onDestroy = new Subject<void>();
-
-
 
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -68,7 +55,7 @@ export class CourseManagementComponent implements OnInit {
   ngOnInit() {
     this.isFirstTime = true;
     this.isLoading = false;
-    this.isFilter = false;
+    this.searching = false;
     this.index = 0;
     this.dataLength = 0;
     this.pageIndex = 1;
@@ -80,9 +67,7 @@ export class CourseManagementComponent implements OnInit {
         min: 0,
         max: 1000
       },
-      // department: {
-      //   name: 'kinh tế'
-      // },
+      department: '',
       creditPrerequisites: {
         min: 0,
         max: 1000
@@ -91,31 +76,29 @@ export class CourseManagementComponent implements OnInit {
 
     this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
 
-    // this.ServerSideFilteringCtrl.valueChanges
-    //   .pipe(
-    //     filter(search => !!search),
-    //     tap(() => this.searching = true),
-    //     takeUntil(this._onDestroy),
-    //     debounceTime(200),
-    //     map(search => {
-    //       let filter = {
-    //         name: search
-    //       }
-    //       return this.getDepartments(17, 1, filter);
+    this.ServerSideFilteringCtrl.valueChanges
+      .pipe(
+        filter(search => !!search),
+        tap(() => this.searching = true),
+        debounceTime(1000),
+        switchMap(async search => {
+          let filter = {
+            schoolId: '',
+            name: search
+          }
+          let res = await this.getDepartments(17, 1, filter);
+          return res;
+        }),
+        // delay(500)
+      )
+      .subscribe( filtered => {
+        this.searching = false;
+        this.filteredServerSide.next(filtered);
+      }, error => {
+        this.searching = false;
+        console.log(error);
 
-    //       // simulate server fetching and filtering data
-    //       // return this.banks.filter(bank => bank.name.toLowerCase().indexOf(search) > -1);
-    //     }),
-    //     delay(500)
-    //   )
-    //   .subscribe( filtered => {
-    //     this.searching = false;
-    //     this.filteredServerSide.next(filtered);
-    //   }, error => {
-    //       // no errors in our simulated example
-    //     this.searching = false;
-    //       // handle error...
-    //   });
+      });
 
   }
 
@@ -143,10 +126,6 @@ export class CourseManagementComponent implements OnInit {
 
   applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  applyFilter() {
-    this.isFilter = !this.isFilter;
   }
 
   openDialog(action, obj): void {
@@ -182,16 +161,22 @@ export class CourseManagementComponent implements OnInit {
   }
 
   getDepartments(pageSize: number, pageIndex: number, filter: any) {
-    this.departmentApi.getDepartments(pageSize, pageIndex, filter).subscribe( result => {
-      return result.data;
-    }, error => {
-      console.log(error);
+    return new Promise((resolve, reject) => {
+      this.departmentApi.getDepartments(pageSize, pageIndex, filter).subscribe(result => {
 
+        resolve(result.data);
+      }, error => {
+        reject(error);
+
+      })
     })
   }
 
+  setDepartmentId(data) {
+    return this.filter.department = data._id;
+  }
+
   getCoursesData(pageSize: number, pageIndex: number, filter: any) {
-    console.log(filter);
 
     this.courseApi.getCourses(pageSize, pageIndex, filter).subscribe( result => {
       this.ELEMENT_DATA = result.data;

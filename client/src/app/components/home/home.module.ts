@@ -24,6 +24,7 @@ import { DepartmentDialogComponent } from './categories/department-management/de
 import { ClassroomManagementComponent } from './categories/classroom-management/classroom-management.component';
 import { ClassroomDialogComponent } from './categories/classroom-management/classroom-dialog/classroom-dialog.component';
 import { ClassroomAddComponent } from './categories/classroom-management/classroom-add/classroom-add.component';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { ClassroomAddComponent } from './categories/classroom-management/classro
     FlexLayoutModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxMatSelectSearchModule,
     // MatButtonModule
   ],
   declarations: [

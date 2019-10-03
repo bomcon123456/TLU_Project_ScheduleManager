@@ -27,7 +27,7 @@ export class RoomManagementComponent implements OnInit {
   private ELEMENT_DATA: RoomElement[];
   private isLoading: boolean;
   private isFirstTime: boolean;
-  private isFilter: boolean;
+  private isMulti: boolean;
   private action: string;
   private width: string;
   private height: string;
@@ -48,7 +48,7 @@ export class RoomManagementComponent implements OnInit {
   ngOnInit() {
     this.isFirstTime = true;
     this.isLoading = false;
-    this.isFilter = false;
+    this.isMulti = false;
     this.dataLength = 0;
     this.index = 0;
     this.pageIndex = 1;
@@ -57,6 +57,10 @@ export class RoomManagementComponent implements OnInit {
       location: {
         building: '',
         floor: null
+        // floor: {
+        //   min: 1,
+        //   max: 100
+        // }
       },
       capacity: {
         min: 0,
@@ -81,10 +85,6 @@ export class RoomManagementComponent implements OnInit {
 
   applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  applyFilter() {
-    this.isFilter = !this.isFilter;
   }
 
   openDialog(action, obj): void {
@@ -124,10 +124,12 @@ export class RoomManagementComponent implements OnInit {
   }
 
   getRoomsData(pageSize: number, pageIndex: number, filter: any) {
-    console.log(filter);
+
+    this.checkMulti(-1);
 
     this.roomApi.getRooms(pageSize, pageIndex, filter).subscribe( result => {
       console.log(result);
+      this.checkMulti(0);
 
       this.ELEMENT_DATA = result.data;
       this.dataLength = result.size;
@@ -216,12 +218,27 @@ export class RoomManagementComponent implements OnInit {
 
   getFilter() {
     console.log(this.filter);
+    this.filter.location.building = this.filter.location.building.toUpperCase();
 
     this.isLoading = true;
     this.paginator.pageIndex = 0;
     this.pageSize = 8;
     this.pageIndex = 1;
     this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
+  }
+
+  multiClass() {
+    this.isMulti = !this.isMulti;
+    this.filter.capacity.min = 0;
+    this.filter.capacity.max = 0;
+  }
+
+  checkMulti(num) {
+
+    if (this.isMulti) {
+      this.filter.capacity.min = num;
+      this.filter.capacity.max = num;
+    }
   }
 
 

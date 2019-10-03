@@ -1,7 +1,7 @@
 <div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
   <div class="container-header">
     <mat-form-field class="search">
-      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+      <input matInput (keyup)="applySearch($event.target.value)" placeholder="Search">
     </mat-form-field>
     <div class="action-button">
 
@@ -24,20 +24,15 @@
             <mat-divider [vertical]="true"></mat-divider>
             <mat-form-field appearance="outline" class="item-filter">
               <mat-label>Bộ môn</mat-label>
-              <input matInput placeholder="">
-            </mat-form-field>
-            <!-- <mat-form-field appearance="outline" class="item-filter">
-              <mat-label>Bộ môn</mat-label>
-              <mat-select [formControl]="ServerSideCtrl">
+              <mat-select [formControl]="ServerSideCtrl" (selectionChange)="setDepartmentId($event.value)">
                 <mat-option>
-                  <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl" [searching]="searching">
-                  </ngx-mat-select-search>
+                  <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl" [searching]="searching"></ngx-mat-select-search>
                 </mat-option>
                 <mat-option *ngFor="let department of filteredServerSide | async" [value]="department">
-                  {{bank.name}}
+                  {{department.name}}
                 </mat-option>
               </mat-select>
-            </mat-form-field> -->
+            </mat-form-field>
           </div>
         </div>
         <mat-divider [vertical]="true"></mat-divider>

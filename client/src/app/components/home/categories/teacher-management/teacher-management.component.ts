@@ -1,4 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { ReplaySubject } from 'rxjs';
+import { debounceTime, delay, tap, filter, switchMap } from 'rxjs/operators';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
@@ -6,8 +9,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 
 import { TeacherDialogComponent } from './teacher-dialog/teacher-dialog.component';
-import { TeacherElement } from '../../interface/dialog-data';
+import { TeacherElement, DepartmentElement } from '../../interface/dialog-data';
 import { TeacherApiService } from './../../../../services/teacher-api.service';
+import { DepartmentApiService } from './../../../../services/department-api.service';
 
 
 /**
@@ -27,7 +31,7 @@ export class TeacherManagementComponent implements OnInit {
   private ELEMENT_DATA: TeacherElement[];
   private isLoading: boolean;
   private isFirstTime: boolean;
-  private isFilter: boolean;
+  public searching: boolean;
   private action: string;
   private width: string;
   private height: string;
@@ -37,6 +41,10 @@ export class TeacherManagementComponent implements OnInit {
   private pageIndex: number;
   private filter: any;
 
+  public ServerSideCtrl: FormControl = new FormControl();
+  public ServerSideFilteringCtrl: FormControl = new FormControl();
+  public filteredServerSide: ReplaySubject<any> = new ReplaySubject<any>(1);
+
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -44,12 +52,13 @@ export class TeacherManagementComponent implements OnInit {
 
   constructor(public dialog: MatDialog,
     private teacherApi: TeacherApiService,
+    private departmentApi: DepartmentApiService,
     private toastr: ToastrService) { }
 
   ngOnInit() {
     this.isFirstTime = true;
     this.isLoading = false;
-    this.isFilter = false;
+    this.searching = false;
     this.index = 0;
     this.dataLength = 0;
     this.pageIndex = 1;
@@ -63,6 +72,31 @@ export class TeacherManagementComponent implements OnInit {
     }
 
     this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
+
+    this.ServerSideFilteringCtrl.valueChanges
+      .pipe(
+        filter(search => !!search),
+        tap(() => this.searching = true),
+        debounceTime(1000),
+        switchMap(async search => {
+          let filter = {
+            schoolId: '',
+            name: search
+          }
+          let res = await this.getDepartments(17, 1, filter);
+          return res;
+        }),
+        // delay(500)
+      )
+      .subscribe(filtered => {
+        this.searching = false;
+        this.filteredServerSide.next(filtered);
+      }, error => {
+        this.searching = false;
+        console.log(error);
+
+      });
+
   }
 
   getPageEvent(event) {
@@ -79,10 +113,6 @@ export class TeacherManagementComponent implements OnInit {
 
   applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  applyFilter() {
-    this.isFilter = !this.isFilter;
   }
 
   openDialog(action, obj): void {
@@ -115,6 +145,22 @@ export class TeacherManagementComponent implements OnInit {
         this.deleteTeacher(result.data);
       }
     });
+  }
+
+  getDepartments(pageSize: number, pageIndex: number, filter: any) {
+    return new Promise((resolve, reject) => {
+      this.departmentApi.getDepartments(pageSize, pageIndex, filter).subscribe(result => {
+
+        resolve(result.data);
+      }, error => {
+        reject(error);
+
+      })
+    })
+  }
+
+  setDepartmentId(data) {
+    return this.filter.department = data._id;
   }
 
   getTeachersData(pageSize: number, pageIndex: number, filter: any) {
