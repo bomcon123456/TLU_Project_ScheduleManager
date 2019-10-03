@@ -1,4 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { ReplaySubject, Subject } from 'rxjs';
+import { debounceTime, delay, tap, filter, map, takeUntil } from 'rxjs/operators'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
@@ -6,8 +9,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 
 import { CourseDialogComponent } from './course-dialog/course-dialog.component';
-import { CourseElement } from '../../interface/dialog-data';
+import { CourseElement, DepartmentElement } from '../../interface/dialog-data';
 import { CourseApiService } from './../../../../services/course-api.service';
+import { DepartmentApiService } from './../../../../services/department-api.service';
 
 
 @Component({
@@ -23,6 +27,7 @@ export class CourseManagementComponent implements OnInit {
   private ELEMENT_DATA: CourseElement[];
   private isLoading: boolean;
   private isFirstTime: boolean;
+  private isFilter: boolean;
   private action: string;
   private width: string;
   private height: string;
@@ -30,6 +35,25 @@ export class CourseManagementComponent implements OnInit {
   private dataLength: number;
   private pageSize: number;
   private pageIndex: number;
+  private filter: any;
+
+
+
+  public ServerSideCtrl: FormControl = new FormControl();
+
+  /** control for filter for server side. */
+  public ServerSideFilteringCtrl: FormControl = new FormControl();
+
+  /** indicate search operation is in progress */
+  public searching: boolean = false;
+
+  /** list of banks filtered after simulating server side search */
+  public filteredServerSide: ReplaySubject<any> = new ReplaySubject<any>(1);
+
+  /** Subject that emits when the component has been destroyed. */
+  protected _onDestroy = new Subject<void>();
+
+
 
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -38,24 +62,68 @@ export class CourseManagementComponent implements OnInit {
 
   constructor(public dialog: MatDialog,
               private courseApi: CourseApiService,
+              private departmentApi: DepartmentApiService,
               private toastr: ToastrService) { }
 
   ngOnInit() {
     this.isFirstTime = true;
     this.isLoading = false;
+    this.isFilter = false;
     this.index = 0;
     this.dataLength = 0;
     this.pageIndex = 1;
     this.pageSize = 8;
+    this.filter = {
+      _id: '',
+      name: '',
+      credits: {
+        min: 0,
+        max: 1000
+      },
+      // department: {
+      //   name: 'kinh tế'
+      // },
+      creditPrerequisites: {
+        min: 0,
+        max: 1000
+      }
+    };
 
-    this.getCoursesData(this.pageSize, this.pageIndex);
+    this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
+
+    // this.ServerSideFilteringCtrl.valueChanges
+    //   .pipe(
+    //     filter(search => !!search),
+    //     tap(() => this.searching = true),
+    //     takeUntil(this._onDestroy),
+    //     debounceTime(200),
+    //     map(search => {
+    //       let filter = {
+    //         name: search
+    //       }
+    //       return this.getDepartments(17, 1, filter);
+
+    //       // simulate server fetching and filtering data
+    //       // return this.banks.filter(bank => bank.name.toLowerCase().indexOf(search) > -1);
+    //     }),
+    //     delay(500)
+    //   )
+    //   .subscribe( filtered => {
+    //     this.searching = false;
+    //     this.filteredServerSide.next(filtered);
+    //   }, error => {
+    //       // no errors in our simulated example
+    //     this.searching = false;
+    //       // handle error...
+    //   });
+
   }
 
   getPageEvent(event) {
     this.isLoading = true;
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex + 1;
-    this.getCoursesData(this.pageSize, this.pageIndex);
+    this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
   }
 
   default() {
@@ -73,8 +141,12 @@ export class CourseManagementComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  applyFilter(filterValue: string) {
+  applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  applyFilter() {
+    this.isFilter = !this.isFilter;
   }
 
   openDialog(action, obj): void {
@@ -109,8 +181,19 @@ export class CourseManagementComponent implements OnInit {
     });
   }
 
-  getCoursesData(pageSize: number, pageIndex: number) {
-    this.courseApi.getCourses(pageSize, pageIndex).subscribe( result => {
+  getDepartments(pageSize: number, pageIndex: number, filter: any) {
+    this.departmentApi.getDepartments(pageSize, pageIndex, filter).subscribe( result => {
+      return result.data;
+    }, error => {
+      console.log(error);
+
+    })
+  }
+
+  getCoursesData(pageSize: number, pageIndex: number, filter: any) {
+    console.log(filter);
+
+    this.courseApi.getCourses(pageSize, pageIndex, filter).subscribe( result => {
       this.ELEMENT_DATA = result.data;
       this.dataLength = result.size;
 
@@ -195,6 +278,14 @@ export class CourseManagementComponent implements OnInit {
       creditPrerequisites: data.creditPrerequisites
     }
     return newData;
+  }
+
+  getFilter() {
+    this.isLoading = true;
+    this.pageSize = 8;
+    this.pageIndex = 1;
+    this.paginator.pageIndex = 0;
+    this.getCoursesData(this.pageSize, this.pageIndex, this.filter)
   }
 
   timeTranform(data, getData: boolean) {

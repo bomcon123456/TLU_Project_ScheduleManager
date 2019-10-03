@@ -12,6 +12,7 @@ import { RoomApiService } from './../../../../services/room-api.service';
 /**
  * @title Table with pagination
  */
+
 @Component({
   selector: 'app-room-management',
   templateUrl: './room-management.component.html',
@@ -26,6 +27,7 @@ export class RoomManagementComponent implements OnInit {
   private ELEMENT_DATA: RoomElement[];
   private isLoading: boolean;
   private isFirstTime: boolean;
+  private isFilter: boolean;
   private action: string;
   private width: string;
   private height: string;
@@ -33,6 +35,7 @@ export class RoomManagementComponent implements OnInit {
   private dataLength: number;
   private pageSize: number;
   private pageIndex: number;
+  private filter: any;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -45,19 +48,30 @@ export class RoomManagementComponent implements OnInit {
   ngOnInit() {
     this.isFirstTime = true;
     this.isLoading = false;
+    this.isFilter = false;
     this.dataLength = 0;
     this.index = 0;
     this.pageIndex = 1;
     this.pageSize = 8;
+    this.filter = {
+      location: {
+        building: '',
+        floor: null
+      },
+      capacity: {
+        min: 0,
+        max: 1000
+      }
+    }
 
-    this.getRoomsData(this.pageSize, this.pageIndex);
+    this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
   }
 
   getPageEvent(event) {
     this.isLoading = true;
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex + 1;
-    this.getRoomsData(this.pageSize, this.pageIndex);
+    this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
   }
 
   default() {
@@ -65,8 +79,12 @@ export class RoomManagementComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  applyFilter(filterValue: string) {
+  applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  applyFilter() {
+    this.isFilter = !this.isFilter;
   }
 
   openDialog(action, obj): void {
@@ -105,8 +123,10 @@ export class RoomManagementComponent implements OnInit {
     });
   }
 
-  getRoomsData(pageSize: number, pageIndex: number) {
-    this.roomApi.getRooms(pageSize, pageIndex).subscribe( result => {
+  getRoomsData(pageSize: number, pageIndex: number, filter: any) {
+    console.log(filter);
+
+    this.roomApi.getRooms(pageSize, pageIndex, filter).subscribe( result => {
       console.log(result);
 
       this.ELEMENT_DATA = result.data;
@@ -192,6 +212,16 @@ export class RoomManagementComponent implements OnInit {
     if (data == "TC") {
       return "Thể chất";
     }
+  }
+
+  getFilter() {
+    console.log(this.filter);
+
+    this.isLoading = true;
+    this.paginator.pageIndex = 0;
+    this.pageSize = 8;
+    this.pageIndex = 1;
+    this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
   }
 
 

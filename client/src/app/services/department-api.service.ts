@@ -30,9 +30,7 @@ export class DepartmentApiService {
   // HttpClient API get() method => Fetch department list
   getDepartments(pageSize?: number, pageIndex?: number, filter?: any): Observable<any> {
 
-    const options = filter ? { params: new HttpParams().set('filter', filter) } : {};
-    console.log(options);
-
+    const options = filter ? { params: new HttpParams().set('filter', JSON.stringify(filter)) } : {};
 
     if (!pageIndex) {
       pageIndex = 1;
@@ -90,7 +88,6 @@ export class DepartmentApiService {
     if (!pageSize) {
       pageSize = 5;
     }
-    console.log(id);
 
     return this.http.get(this.apiURL + '/courses/' + id + `?size=${pageSize}&page=${pageIndex}`)
       .pipe(

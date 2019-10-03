@@ -21,7 +21,6 @@ import { DepartmentApiService } from './../../../../services/department-api.serv
 export class DepartmentManagementComponent implements OnInit {
 
   public displayedColumns: string[] = ['position', 'schoolId', 'name', 'actions'];
-  // public dataSource = new MatTableDataSource(ELEMENT_DATA);
 
   public dataSource = null;
   private ELEMENT_DATA: DepartmentElement[];
@@ -54,7 +53,10 @@ export class DepartmentManagementComponent implements OnInit {
     this.dataLength = 0;
     this.pageIndex = 1;
     this.pageSize = 8;
-    this.filter = {};
+    this.filter = {
+      schoolId: '',
+      name: ''
+    };
 
     this.getDepartmentsData(this.pageSize, this.pageIndex, this.filter);
   }
@@ -64,9 +66,6 @@ export class DepartmentManagementComponent implements OnInit {
       this.pageSize = event.pageSize;
       this.pageIndex = event.pageIndex + 1;
       this.getDepartmentsData(this.pageSize, this.pageIndex, this.filter);
-      // if ( !this.isLoading) {
-      //   this.index = event.pageSize * event.pageIndex;
-      // }
   }
 
   default() {
@@ -115,14 +114,9 @@ export class DepartmentManagementComponent implements OnInit {
   }
 
   getDepartmentsData(pageSize: number, pageIndex: number, filter: any) {
-    console.log(filter);
-
     this.departmentApi.getDepartments(pageSize, pageIndex, filter).subscribe(result => {
-      console.log(result);
 
       this.ELEMENT_DATA = result.data;
-      console.log(this.ELEMENT_DATA);
-
       this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.default();
@@ -188,34 +182,12 @@ export class DepartmentManagementComponent implements OnInit {
   }
 
   getFilter() {
-    console.log(123);
-
     this.isLoading = true;
+    this.paginator.pageIndex = 0;
+    this.pageSize = 8;
+    this.pageIndex = 1;
     this.getDepartmentsData(this.pageSize, this.pageIndex, this.filter);
   }
 
 
 }
-
-// const ELEMENT_DATA: DepartmentElement[] = [
-//   { _id: 'RM001', name: 'Hydrogen', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM002', name: 'Helium', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM003', name: 'Lithium', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM004', name: 'Beryllium', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM005', name: 'Boron', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM006', name: 'Carbon', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM007', name: 'Nitrogen', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM008', name: 'Oxygen', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM009', name: 'Fluorine', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM010', name: 'Neon', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM011', name: 'Sodium', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM012', name: 'Magnesium', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM013', name: 'Aluminum', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM014', name: 'Silicon', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM015', name: 'Phosphorus', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM016', name: 'Sulfur', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM017', name: 'Chlorine', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM018', name: 'Argon', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM019', name: 'Potassium', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM020', name: 'Calcium', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-// ];

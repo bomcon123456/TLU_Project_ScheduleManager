@@ -27,6 +27,7 @@ export class TeacherManagementComponent implements OnInit {
   private ELEMENT_DATA: TeacherElement[];
   private isLoading: boolean;
   private isFirstTime: boolean;
+  private isFilter: boolean;
   private action: string;
   private width: string;
   private height: string;
@@ -34,6 +35,7 @@ export class TeacherManagementComponent implements OnInit {
   private dataLength: number;
   private pageSize: number;
   private pageIndex: number;
+  private filter: any;
 
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -47,19 +49,27 @@ export class TeacherManagementComponent implements OnInit {
   ngOnInit() {
     this.isFirstTime = true;
     this.isLoading = false;
+    this.isFilter = false;
     this.index = 0;
     this.dataLength = 0;
     this.pageIndex = 1;
     this.pageSize = 8;
+    this.filter = {
+      _id: '',
+      name: '',
+      // department: {
+      //   name: ''
+      // }
+    }
 
-    this.getTeachersData(this.pageSize, this.pageIndex);
+    this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
   }
 
   getPageEvent(event) {
     this.isLoading = true;
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex + 1;
-    this.getTeachersData(this.pageSize, this.pageIndex);
+    this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
   }
 
   default() {
@@ -67,8 +77,12 @@ export class TeacherManagementComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  applyFilter(filterValue: string) {
+  applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  applyFilter() {
+    this.isFilter = !this.isFilter;
   }
 
   openDialog(action, obj): void {
@@ -103,8 +117,8 @@ export class TeacherManagementComponent implements OnInit {
     });
   }
 
-  getTeachersData(pageSize: number, pageIndex: number) {
-    this.teacherApi.getTeachers(pageSize, pageIndex).subscribe(result => {
+  getTeachersData(pageSize: number, pageIndex: number, filter: any) {
+    this.teacherApi.getTeachers(pageSize, pageIndex, filter).subscribe(result => {
       console.log(result);
 
       this.ELEMENT_DATA = result.data;
@@ -172,7 +186,13 @@ export class TeacherManagementComponent implements OnInit {
     return newData;
   }
 
-
+  getFilter() {
+    this.isLoading = true;
+    this.pageSize = 8;
+    this.pageIndex = 1;
+    this.paginator.pageIndex = 0;
+    this.getTeachersData(this.pageSize, this.pageIndex, this.filter)
+  }
 }
 
 // const ELEMENT_DATA: CourseElement[] = [

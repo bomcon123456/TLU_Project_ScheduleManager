@@ -1,11 +1,75 @@
 <div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
-  <div style="width: 100%;">
+  <div class="container-header">
     <mat-form-field class="search">
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
     </mat-form-field>
-    <button mat-raised-button (click)="openDialog('add',{})" mat-flat-button color="primary" class="add-button">
-      Thêm
-    </button>
+    <div class="action-button">
+
+      <button mat-raised-button matTooltip="Lọc" [matMenuTriggerFor]="menu" color="primary" class="button">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu" yPosition="below" xPosition="before" [hasBackdrop]='false' class="menu-filter">
+        <div class="content-filter">
+          <div (click)="$event.stopPropagation()" class="item-menu">
+            <mat-form-field appearance="outline" class="item-filter">
+              <mat-label>Mã học phần</mat-label>
+              <input matInput placeholder="" [(ngModel)]="filter._id">
+            </mat-form-field>
+            <mat-divider [vertical]="true"></mat-divider>
+            <mat-form-field appearance="outline" class="item-filter">
+              <mat-label>Tên học phần</mat-label>
+              <input matInput placeholder="" [(ngModel)]="filter.name">
+            </mat-form-field>
+            <mat-divider [vertical]="true"></mat-divider>
+            <mat-form-field appearance="outline" class="item-filter">
+              <mat-label>Từ: (Số tín chỉ)</mat-label>
+              <input matInput placeholder="" [(ngModel)]="filter.credits.min">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="item-filter">
+              <mat-label>Đến: (Số tín chỉ)</mat-label>
+              <input matInput placeholder="" [(ngModel)]="filter.credits.max">
+            </mat-form-field>
+            <!-- <mat-divider [vertical]="true"></mat-divider>
+            <mat-form-field appearance="outline" class="item-filter">
+              <mat-label>Bộ môn</mat-label>
+              <mat-select [formControl]="ServerSideCtrl">
+                <mat-option>
+                  <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl" [searching]="searching"></ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let department of filteredServerSide | async" [value]="department">
+                  {{bank.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field> -->
+            <mat-divider [vertical]="true"></mat-divider>
+            <mat-form-field appearance="outline" class="item-filter">
+              <mat-label>Bộ môn</mat-label>
+              <input matInput placeholder="" >
+            </mat-form-field>
+            <mat-divider [vertical]="true"></mat-divider>
+            <mat-form-field appearance="outline" class="item-filter">
+              <mat-label>Từ: (Số tín chỉ bắt buộc)</mat-label>
+              <input matInput placeholder="" [(ngModel)]="filter.creditPrerequisites.min">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="item-filter">
+              <mat-label>Đến: (Số tín chỉ bắt buộc)</mat-label>
+              <input matInput placeholder="" [(ngModel)]="filter.creditPrerequisites.max">
+            </mat-form-field>
+          </div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="action-filter">
+          <button mat-raised-button color="primary" class="button" (click)="getFilter()">
+            Lọc
+          </button>
+        </div>
+      </mat-menu>
+
+      <button mat-raised-button (click)="openDialog('add',{})" color="primary" class="button">
+        Thêm
+      </button>
+    </div>
   </div>
 
   <div class="mat-elevation-z8" style="position: relative">
@@ -82,10 +146,10 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element" class="actions-width">
-          <button mat-button class="actions-icon" (click)="openDialog('edit', element)">
+          <button mat-button matTooltip="Chỉnh sửa" class="actions-icon" (click)="openDialog('edit', element)">
             <mat-icon class="edit-icon">edit</mat-icon>
           </button>
-          <button mat-button class="actions-icon" (click)="openDialog('delete', element)">
+          <button mat-button matTooltip="Xóa" class="actions-icon" (click)="openDialog('delete', element)">
             <mat-icon class="delete-icon">delete</mat-icon>
           </button>
         </td>
