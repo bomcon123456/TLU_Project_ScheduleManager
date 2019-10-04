@@ -10,7 +10,7 @@ const createUserBodyValidator = [
   body("username")
     .withMessage("Please enter a valid username.")
     .custom((value, { req }) => {
-      return User.findOne({ email: value }).then(user => {
+      return User.findOne({ username: value }).then(user => {
         if (user) {
           return Promise.reject("account_existed");
         }
@@ -27,5 +27,7 @@ router.get("/", userController.getAll);
 router.get("/:userId", userController.get);
 
 router.post("/", createUserBodyValidator, userController.post);
+
+router.post("/:id", userController.put);
 
 module.exports = router;

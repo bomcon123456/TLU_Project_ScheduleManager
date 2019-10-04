@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("./model");
 
-exports.getAll = (req, res, next) => {
+const getAll = (req, res, next) => {
   return User.find()
     .then(data => {
       let usernames = data.map(each => {
@@ -17,13 +17,13 @@ exports.getAll = (req, res, next) => {
     });
 };
 
-exports.get = (req, res, next) => {
+const get = (req, res, next) => {
   const userId = req.params.userId;
   return User.findById(userId)
     .then(user => {
       if (!user) {
         const error = new Error("account_not_found");
-        error.statusCode = 400;
+        error.statusCode = 404;
         throw error;
       }
       res.status(200).json({
@@ -37,7 +37,7 @@ exports.get = (req, res, next) => {
     });
 };
 
-exports.post = (req, res, next) => {
+const post = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error("user_validation_faied");
@@ -47,7 +47,7 @@ exports.post = (req, res, next) => {
   }
   let resUser = null;
   let token = null;
-  const { email, name, password, division } = req.body;
+  const { email, name, password, department } = req.body;
   let username = null;
   let atIndex = email.indexOf("@");
   username = email.substring(0, atIndex);
@@ -58,8 +58,8 @@ exports.post = (req, res, next) => {
     password: password,
     email: email
   });
-  if (division) {
-    user.division = division;
+  if (department) {
+    user.department = department;
   }
   return user
     .save()
@@ -85,4 +85,32 @@ exports.post = (req, res, next) => {
     });
 };
 
-module.exports = { getAll, get, post };
+const put = (req, res, next) => {
+  const id = req.params.id;
+  User.findById(id)
+    .then(user => {
+      if (!user) {
+        const error = new Error("account_not_found");
+        error.statusCode = 404;
+        throw error;
+      }
+      const { email, name, description, gender, avatarURL } = req.body;
+      user.email = email || user.email;
+      user.name = name || user.name;
+      user.description = description || user.description;
+      user.gender = gender || user.gender;
+      user.avatarURL = avatarURL || user.avatarURL;
+      return user.save();
+    })
+    .then(data => {
+      res.status(200).json({
+        message: "update_user_successfully",
+        id: id
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
+
+module.exports = { getAll, get, post, put };
