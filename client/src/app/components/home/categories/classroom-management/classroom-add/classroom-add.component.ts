@@ -43,6 +43,7 @@ export class ClassroomAddComponent implements OnInit {
   private course: any;
   private timeTotal: any;
   private semesterSelected: any;
+  private unfinished: any[];
 
   private yearSelected: string;
 
@@ -75,7 +76,9 @@ export class ClassroomAddComponent implements OnInit {
               private toastr: ToastrService) {
 
       this.parentClass = [];
+      this.unfinished = []
       this.isLastClass = false;
+
       this.yearSelected = '2019-2020';
       this.semesterSelected = {
         key: {
@@ -90,6 +93,7 @@ export class ClassroomAddComponent implements OnInit {
         this.getYearSelected();
         this.getSemesterSelected();
       }
+
   }
 
   ngOnInit() {
@@ -97,10 +101,6 @@ export class ClassroomAddComponent implements OnInit {
     this.isFisrtTime = true;
     this.isLoading = false;
     this.isCreateClassDone = false;
-
-    this.index = 0;
-    this.pageIndex = 1;
-    this.pageSize = 8;
 
     this.theoryWeek = null;
     this.practiceWeek = null;
@@ -114,7 +114,7 @@ export class ClassroomAddComponent implements OnInit {
 
     const id = '5d833af963c4343292d1733a';
 
-    this.getClassroomsData(this.pageSize, this.pageIndex);
+    this.getClassroomsData();
     this.getCoursesByDepartmentId(id, this.pageSize, this.pageIndex);
     this.getTeacherByDepartmentId(this.pageSize, this.pageIndex);
     this.getRooms(this.pageSize, this.pageIndex);
@@ -130,6 +130,7 @@ export class ClassroomAddComponent implements OnInit {
 
       this.countClass = 1;
       this.numOfClass = value;
+      this.isLastClass = false;
 
       if ( this.countClass == this.numOfClass ) {
         this.isLastClass = true;
@@ -143,24 +144,73 @@ export class ClassroomAddComponent implements OnInit {
 
   setNextClass() {
 
-    this.countClass += 1;
-
-    if ( this.countClass == this.numOfClass ) {
-      this.isLastClass = true;
-    }
 
     if ( !this.parentClass[this.countClass - 1] ) {
 
       this.parentClass.push(this.ELEMENT_DATA);
       this.ELEMENT_DATA = [];
-      this.getClassroomsData(1,1);
       this.theoryWeek = this.timeTotal.theory;
       this.practiceWeek = this.timeTotal.practice;
       console.log(this.parentClass);
 
     }
     else {
-      this.ELEMENT_DATA = this.parentClass[this.countClass - 1];
+      this.parentClass[this.countClass - 1] = this.ELEMENT_DATA;
+      this.ELEMENT_DATA = this.parentClass[this.countClass];
+
+      let array = this.unfinished.filter( data => {
+
+        if ( (this.countClass + 1) == data.indexClass ) {
+          this.theoryWeek = data.theoryLeft;
+          this.practiceWeek = data.practiceLeft;
+        }
+        else {
+          return data;
+        }
+      })
+
+      this.unfinished = array;
+    }
+
+    this.countClass += 1;
+
+    if ( this.countClass == this.numOfClass ) {
+      this.isLastClass = true;
+    }
+
+    this.getClassroomsData();
+  }
+
+  setPreClass() {
+
+    this.countClass -= 1;
+
+    if ( this.isLastClass ) {
+      this.isLastClass = false;
+    }
+
+    if ( !this.parentClass[this.countClass] ) {
+
+      this.parentClass.push(this.ELEMENT_DATA);
+    }
+    else {
+
+      this.parentClass[this.countClass] = this.ELEMENT_DATA;
+    }
+
+    this.ELEMENT_DATA = this.parentClass[this.countClass];
+
+
+    if (this.theoryWeek != 0 || this.practiceWeek != 0) {
+
+      let obj = {
+        indexClass: this.countClass + 1,
+        theoryLeft: this.theoryWeek,
+        practiceLeft: this.practiceWeek
+      }
+
+      this.unfinished.push(obj);
+
       this.theoryWeek = 0;
       this.practiceWeek = 0;
     }
@@ -168,10 +218,12 @@ export class ClassroomAddComponent implements OnInit {
 
   courseSelected(event) {
     this.isChildDone = true;
+    this.numOfClass = null;
+    this.countClass = null;
     this.course = event.value;
     this.getHoursOfWeek(event.value.length.theory, event.value.length.practice);
     this.ELEMENT_DATA = [];
-    this.getClassroomsData(1, 1);
+    this.getClassroomsData();
   }
 
   /**
@@ -245,13 +297,25 @@ export class ClassroomAddComponent implements OnInit {
     };
 
     this.ELEMENT_DATA.push(temp);
-    this.getClassroomsData(1,1);
+    this.getClassroomsData();
 
+  }
+
+  deleteChildClass(index: number) {
+
+    this.ELEMENT_DATA.splice(index, 1);
+    this.theoryWeek = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
+    this.practiceWeek = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
+
+    if ( (this.ELEMENT_DATA.length == 0) || (index == this.ELEMENT_DATA.length) ) {
+
+      this.isChildDone = true;
+    }
+    this.getClassroomsData();
   }
 
   addClass() {
     this.parentClass.push(this.ELEMENT_DATA);
-    console.log(this.parentClass);
     this.route.navigate(['/classroom-management']);
 
   }
@@ -261,12 +325,8 @@ export class ClassroomAddComponent implements OnInit {
     for (let i = 0; i < array.length; i++) {
       if (array[i].type == type) {
 
-
         let temp = array[i].date.shift;
-        console.log(temp, temp.indexOf('-'));
         let indexCut = temp.indexOf('-');
-        console.log(indexCut);
-
 
         if (indexCut == -1) {
           time = time;
@@ -279,37 +339,46 @@ export class ClassroomAddComponent implements OnInit {
       }
 
     }
-    console.log(time);
 
     return time;
   }
 
   handleWithData(data, index, elm) {
-    console.log(data, index, elm);
 
     switch (elm) {
       case 'teacher': {
 
-        this.ELEMENT_DATA[index].teacher = {
-          _id: data._id,
-          name: data.name
-        }
-        console.log(this.ELEMENT_DATA);
+        this.teacherList.filter( result => {
+
+          if ( data == result._id ) {
+
+            this.ELEMENT_DATA[index].teacher = {
+              _id: result._id,
+              name: result.name
+            }
+          }
+        })
+
         return;
       };
       case 'room': {
 
         this.isChildDone = true;
-        this.ELEMENT_DATA[index].room = {
-          _id: data._id,
-          name: data.name
-        };
+
+        this.roomList.filter( result => {
+
+          if ( data == result._id ) {
+
+            this.ELEMENT_DATA[index].room = {
+              _id: result._id,
+              name: result.name
+            };
+          }
+        })
 
         if ( this.theoryWeek == 0 && this.practiceWeek == 0 ) {
           this.isCreateClassDone = true;
         }
-
-        console.log(this.ELEMENT_DATA);
 
         return;
       };
@@ -343,6 +412,9 @@ export class ClassroomAddComponent implements OnInit {
               this.practiceWeek = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
             }
             return;
+          };
+          case 'TC': {
+            this.ELEMENT_DATA[index].date.shift = '';
           }
         }
 
@@ -352,10 +424,14 @@ export class ClassroomAddComponent implements OnInit {
     }
   }
 
+  getClassroomsData() {
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
+  }
+
   // default() {
-  //   this.dataSource.paginator = null;
-  //   this.dataSource.sort = this.sort;
-  // }
+    //   this.dataSource.paginator = null;
+    //   this.dataSource.sort = this.sort;
+    // }
 
   /**
    * CRUD
@@ -386,25 +462,6 @@ export class ClassroomAddComponent implements OnInit {
       console.log(error);
 
     })
-  }
-
-  getClassroomsData(pageSize: number, pageIndex: number) {
-      // this.ELEMENT_DATA = ELEMENT_DATA;
-      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-    // this.courseApi.getDepartments(pageSize, pageIndex).subscribe(result => {
-    //   this.ELEMENT_DATA = result.data;
-    //   this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-    //   this.default();
-    //   this.index = pageSize * (pageIndex - 1);
-    //   this.isLoading = false;
-
-    //   if (this.isFisrtTime) {
-    //     this.isFisrtTime = false;
-    //     this.toastr.success(result.message);
-    //   }
-    // }, error => {
-    //   this.toastr.error(error.message)
-    // })
   }
 
   createDepartment(row_obj) {
