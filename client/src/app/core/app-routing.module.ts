@@ -27,7 +27,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'course-management'
+    redirectTo: 'schedule'
   }
 ];
 

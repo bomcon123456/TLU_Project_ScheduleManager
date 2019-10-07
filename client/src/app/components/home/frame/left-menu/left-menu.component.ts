@@ -21,9 +21,9 @@ export class LeftMenuComponent implements OnInit {
   public linkText: boolean = false;
 
   public pages: Page[] = [
+    { name: 'Thời khóa biểu', link: '/schedule', icon: 'date_range' },
     { name: 'Quản lý môn học', link: '/course-management', icon: 'menu_book' },
     { name: 'Quản lý phòng', link: '/room-management', icon: 'meeting_room' },
-    { name: 'Quản lý kỳ học', link: '/semester-management', icon: 'date_range' },
     { name: 'Quản lý giáo viên', link: '/teacher-management', icon: 'school' },
     { name: 'Quản lý bộ môn', link: '/department-management', icon: 'account_balance' },
     { name: 'Quản lý lớp học', link: '/classroom-management', icon: 'meeting_room'}

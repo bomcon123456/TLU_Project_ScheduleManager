@@ -61,15 +61,7 @@ export class TeacherManagementComponent implements OnInit {
     this.searching = false;
     this.index = 0;
     this.dataLength = 0;
-    this.pageIndex = 1;
-    this.pageSize = 8;
-    this.filter = {
-      _id: '',
-      name: '',
-      // department: {
-      //   name: ''
-      // }
-    }
+    this.setDefault()
 
     this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
 
@@ -96,7 +88,47 @@ export class TeacherManagementComponent implements OnInit {
         console.log(error);
 
       });
+  }
 
+  /**
+   * SET
+   */
+
+  setTable() {
+    this.dataSource.paginator = null;
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'department': return item.department.name;
+        default: return item[property];
+      }
+    }
+    this.dataSource.sort = this.sort;
+  }
+
+  setDefault() {
+    this.paginator.pageIndex = 0;
+    this.pageIndex = 1;
+    this.pageSize = 8;
+    this.filter = {};
+  }
+
+  setDepartmentId(data) {
+
+    if ( data ) {
+
+      return this.filter.department = data._id;
+    }
+    else {
+      return this.filter.department = '';
+    }
+  }
+
+  /**
+   * GET, ACTIONS
+   */
+
+  applySearch(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   getPageEvent(event) {
@@ -106,13 +138,12 @@ export class TeacherManagementComponent implements OnInit {
     this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
   }
 
-  default() {
-    this.dataSource.paginator = null;
-    this.dataSource.sort = this.sort;
-  }
-
-  applySearch(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  getFilter() {
+    this.isLoading = true;
+    this.pageSize = 8;
+    this.pageIndex = 1;
+    this.paginator.pageIndex = 0;
+    this.getTeachersData(this.pageSize, this.pageIndex, this.filter)
   }
 
   openDialog(action, obj): void {
@@ -121,7 +152,7 @@ export class TeacherManagementComponent implements OnInit {
 
     if (this.action != 'delete') {
       this.width = '780px';
-      this.height = '365px';
+      this.height = '280px';
     }
     else {
       this.width = '460px';
@@ -135,7 +166,13 @@ export class TeacherManagementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (!result || result.event == 'cancel') return;
+      if (!result || result.event == 'cancel') {
+
+        this.isLoading = true;
+        this.paginator.pageIndex = 0;
+        this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
+        return;
+      }
 
       if (this.action == 'add') {
         this.createTeacher(result.data);
@@ -146,6 +183,10 @@ export class TeacherManagementComponent implements OnInit {
       }
     });
   }
+
+  /**
+   * CRUD
+   */
 
   getDepartments(pageSize: number, pageIndex: number, filter: any) {
     return new Promise((resolve, reject) => {
@@ -159,18 +200,13 @@ export class TeacherManagementComponent implements OnInit {
     })
   }
 
-  setDepartmentId(data) {
-    return this.filter.department = data._id;
-  }
-
   getTeachersData(pageSize: number, pageIndex: number, filter: any) {
     this.teacherApi.getTeachers(pageSize, pageIndex, filter).subscribe(result => {
-      console.log(result);
 
       this.ELEMENT_DATA = result.data;
       this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-      this.default();
+      this.setTable();
       this.index = pageSize * (pageIndex-1);
       this.isLoading = false;
 
@@ -184,11 +220,12 @@ export class TeacherManagementComponent implements OnInit {
   }
 
   createTeacher(row_obj) {
+
     this.teacherApi.createTeacher(this.dataTranform(row_obj)).subscribe(result => {
 
-      this.ELEMENT_DATA.unshift(row_obj);
-      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-      this.default();
+      this.isLoading = true;
+      this.setDefault();
+      this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
       this.toastr.success(result.message)
     }, error => {
       this.toastr.error(error.message)
@@ -196,14 +233,14 @@ export class TeacherManagementComponent implements OnInit {
   }
 
   updateTeacher(row_obj) {
-    this.teacherApi.updateTeacher(row_obj._id, row_obj.name).subscribe(result => {
 
-      this.dataSource.data.filter((value, key) => {
-        if (value._id == row_obj._id) {
-          value = Object.assign(value, row_obj);
-        }
-        return true;
-      });
+    let data = { name: row_obj.name };
+
+    this.teacherApi.updateTeacher(row_obj.id, data).subscribe(result => {
+
+      this.isLoading = true;
+      this.paginator.pageIndex = 0;
+      this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
       this.toastr.success(result.message);
     }, error => {
       this.toastr.error(error.message);
@@ -212,54 +249,27 @@ export class TeacherManagementComponent implements OnInit {
   }
 
   deleteTeacher(row_obj) {
-    this.teacherApi.deleteTeacher(row_obj._id).subscribe(result => {
+    this.teacherApi.deleteTeacher(row_obj.id).subscribe(result => {
 
-      this.dataSource.data = this.dataSource.data.filter(item => {
-
-        return item._id != row_obj._id;
-      });
+      this.isLoading = true;
+      this.setDefault();
+      this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
       this.toastr.success(result.message);
     }, error => {
       this.toastr.error(error.message);
     })
   }
 
+  /**
+   * TRANSFORM DATA
+   */
+
   dataTranform(data) {
     let newData = {
       name: data.name,
-      department: data.department._id,
+      department: data.department.id,
     }
     return newData;
   }
 
-  getFilter() {
-    this.isLoading = true;
-    this.pageSize = 8;
-    this.pageIndex = 1;
-    this.paginator.pageIndex = 0;
-    this.getTeachersData(this.pageSize, this.pageIndex, this.filter)
-  }
 }
-
-// const ELEMENT_DATA: CourseElement[] = [
-//   { _id: 'RM001', name: 'Hydrogen', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM002', name: 'Helium', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM003', name: 'Lithium', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM004', name: 'Beryllium', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM005', name: 'Boron', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM006', name: 'Carbon', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM007', name: 'Nitrogen', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM008', name: 'Oxygen', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM009', name: 'Fluorine', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM010', name: 'Neon', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM011', name: 'Sodium', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM012', name: 'Magnesium', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM013', name: 'Aluminum', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM014', name: 'Silicon', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM015', name: 'Phosphorus', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM016', name: 'Sulfur', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM017', name: 'Chlorine', credits: 20, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM018', name: 'Argon', credits: 30, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM019', name: 'Potassium', credits: 40, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-//   { _id: 'RM020', name: 'Calcium', credits: 50, department: { _id: '5d833af963c4343292d1735a', name: 'Bộ môn Kinh tế quản lý' }, length: { theory: 40, practice: null }, coursePrerequisites: [ 'Giải tích 1', 'Đại số tuyến tính' ], creditPrerequisites: 60 },
-// ];

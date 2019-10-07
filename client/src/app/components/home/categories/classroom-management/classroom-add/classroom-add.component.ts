@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
@@ -8,20 +9,12 @@ import { ToastrService } from 'ngx-toastr';
 import { DepartmentApiService } from './../../../../../services/department-api.service';
 import { TeacherApiService } from './../../../../../services/teacher-api.service';
 import { RoomApiService } from './../../../../../services/room-api.service';
+import { StorageService } from '../storage/storage.service'
 import { CourseElement, TeacherElement, RoomElement } from '../../../interface/dialog-data';
+import { DAYS, SHIFTS } from '../storage/data-storage'
 
 
 
-const days = [ "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" ];
-const shifts = [
-  "1-1", "1-2", "1-3", "1-4", "1-5",
-  "2-2", "2-3", "2-5", "3-3", "3-4",
-  "3-5", "4-4", "4-5", "5-5", "6-6",
-  "6-7", "6-8", "6-9", "6-10", "7-7",
-  "7-8", "7-10", "8-8", "8-9", "8-10",
-  "9-10", "9-9", "10-10", "10-11", "10-12",
-  "10-13", "12-13",
-];
 
 /**
  * @title Table with pagination
@@ -36,10 +29,12 @@ export class ClassroomAddComponent implements OnInit {
   public displayedColumns: string[] = ['position','name', 'students', 'type', 'teacher', 'day', 'shift', 'room'];
   // public dataSource = new MatTableDataSource(ELEMENT_DATA);
 
+  private days = DAYS;
+  private shifts = SHIFTS;
+
   public dataSource = null;
   public parentClass: any[];
 
-  private childClass: any[];
   private coursesList: CourseElement[];
   private teacherList: TeacherElement[];
   private roomList: RoomElement[];
@@ -47,19 +42,24 @@ export class ClassroomAddComponent implements OnInit {
   private ELEMENT_DATA: any;
   private course: any;
   private timeTotal: any;
+  private semesterSelected: any;
+
+  private yearSelected: string;
 
   private isLoading: boolean;
   private isFisrtTime: boolean;
   private isChildDone: boolean;
+  private isCreateClassDone: boolean;
+  private isLastClass: boolean;
 
   private index: number;
   private pageSize: number;
   private pageIndex: number;
   private theoryWeek: number;
   private practiceWeek: number;
+  private numOfClass: number;
+  private countClass: number
 
-  days: any;
-  shifts: any;
   undefined = "1-1";
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -67,57 +67,103 @@ export class ClassroomAddComponent implements OnInit {
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
 
   constructor(public dialog: MatDialog,
+              private route: Router,
               private departmentApi: DepartmentApiService,
               private teacherApi: TeacherApiService,
               private roomApi: RoomApiService,
-              private toastr: ToastrService) { }
+              private storageService: StorageService,
+              private toastr: ToastrService) {
+
+      this.parentClass = [];
+      this.isLastClass = false;
+      this.yearSelected = '2019-2020';
+      this.semesterSelected = {
+        key: {
+          semester: "Semester 1",
+          group: "Group 1"
+        },
+        value: "Học kì I Nhóm 1"
+      }
+
+      if ( this.storageService.yearSelected ) {
+
+        this.getYearSelected();
+        this.getSemesterSelected();
+      }
+  }
 
   ngOnInit() {
+
     this.isFisrtTime = true;
     this.isLoading = false;
+    this.isCreateClassDone = false;
+
     this.index = 0;
     this.pageIndex = 1;
     this.pageSize = 8;
+
     this.theoryWeek = null;
     this.practiceWeek = null;
+    this.numOfClass = null;
+    this.countClass = null;
+
     this.timeTotal = {
       theory: null,
       practice: null
     }
 
-    this.days = days;
-    this.shifts = shifts;
-
-    // this.childClass = {
-
-    // }
-
-
     const id = '5d833af963c4343292d1733a';
 
-    this.getDepartmentsData(this.pageSize, this.pageIndex);
+    this.getClassroomsData(this.pageSize, this.pageIndex);
     this.getCoursesByDepartmentId(id, this.pageSize, this.pageIndex);
     this.getTeacherByDepartmentId(this.pageSize, this.pageIndex);
     this.getRooms(this.pageSize, this.pageIndex);
   }
 
-  async getPageEvent(event) {
-    this.isLoading = true;
-    this.pageSize = event.pageSize;
-    this.pageIndex = event.pageIndex + 1;
-    this.getDepartmentsData(this.pageSize, this.pageIndex);
-    // if ( !this.isLoading) {
-    //   this.index = event.pageSize * event.pageIndex;
-    // }
+  /**
+   * SET
+   */
+
+  setNumOfClass(value) {
+
+    if ( value ) {
+
+      this.countClass = 1;
+      this.numOfClass = value;
+
+      if ( this.countClass == this.numOfClass ) {
+        this.isLastClass = true;
+      }
+    }
+    else {
+      this.numOfClass = null;
+
+    }
   }
 
-  default() {
-    this.dataSource.paginator = null;
-    this.dataSource.sort = this.sort;
-  }
+  setNextClass() {
 
-  applySearch(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.countClass += 1;
+
+    if ( this.countClass == this.numOfClass ) {
+      this.isLastClass = true;
+    }
+
+    if ( !this.parentClass[this.countClass - 1] ) {
+
+      this.parentClass.push(this.ELEMENT_DATA);
+      this.ELEMENT_DATA = [];
+      this.getClassroomsData(1,1);
+      this.theoryWeek = this.timeTotal.theory;
+      this.practiceWeek = this.timeTotal.practice;
+      console.log(this.parentClass);
+
+    }
+    else {
+      this.ELEMENT_DATA = this.parentClass[this.countClass - 1];
+      this.theoryWeek = 0;
+      this.practiceWeek = 0;
+    }
   }
 
   courseSelected(event) {
@@ -125,7 +171,55 @@ export class ClassroomAddComponent implements OnInit {
     this.course = event.value;
     this.getHoursOfWeek(event.value.length.theory, event.value.length.practice);
     this.ELEMENT_DATA = [];
-    this.getDepartmentsData(1, 1);
+    this.getClassroomsData(1, 1);
+  }
+
+  /**
+   * GET, ACTION
+   */
+
+  getYearSelected() {
+    this.yearSelected = this.storageService.yearSelected;
+  }
+
+  getSemesterSelected() {
+    this.semesterSelected = this.storageService.semesterSelected;
+  }
+
+  getHoursOfWeek(theory, practice) {
+
+    this.getTheoryHours(theory);
+    if (practice == 0) {
+      this.timeTotal.practice = this.practiceWeek = 0;
+      return;
+    }
+    else {
+      if (practice % 10 == 0) {
+        this.timeTotal.practice = this.practiceWeek = practice / 10;
+        return;
+      }
+      else {
+        this.timeTotal.practice = this.practiceWeek = practice / 9;
+        return;
+      }
+    }
+  }
+
+  getTheoryHours(theory) {
+    if (theory == 0) {
+      this.timeTotal.theory = this.theoryWeek = 0;
+      return;
+    }
+    else {
+      if (theory % 10 == 0) {
+        this.timeTotal.theory = this.theoryWeek = theory / 10;
+        return;
+      }
+      else {
+        this.timeTotal.theory = this.theoryWeek = theory / 9;
+        return;
+      }
+    }
   }
 
   addChildClass() {
@@ -142,7 +236,7 @@ export class ClassroomAddComponent implements OnInit {
       },
       date: {
         day: '',
-        shift: undefined
+        shift: ''
       },
       room: {
         _id: '',
@@ -151,91 +245,15 @@ export class ClassroomAddComponent implements OnInit {
     };
 
     this.ELEMENT_DATA.push(temp);
-    this.getDepartmentsData(1,1);
+    this.getClassroomsData(1,1);
 
   }
 
-  getCoursesByDepartmentId(id: string, pageSize: number, pageIndex: number) {
-    this.departmentApi.getCoursesById(id, pageSize, pageIndex).subscribe(result => {
-      this.coursesList = result.data;
-    }, error => {
-      console.log(error);
+  addClass() {
+    this.parentClass.push(this.ELEMENT_DATA);
+    console.log(this.parentClass);
+    this.route.navigate(['/classroom-management']);
 
-    })
-  }
-
-  getTeacherByDepartmentId(pageSize: number, pageIndex: number) {
-    this.teacherApi.getTeachers(pageSize, pageIndex).subscribe(result => {
-      this.teacherList = result.data;
-    }, error => {
-      console.log(error);
-
-    })
-  }
-
-  getRooms(pageSize: number, pageIndex: number) {
-    this.roomApi.getRooms(pageSize, pageIndex).subscribe(result => {
-      this.roomList = result.data;
-    }, error => {
-      console.log(error);
-
-    })
-  }
-
-  handleWithData(data, index, elm) {
-    switch (elm) {
-      case 'teacher': {
-        this.ELEMENT_DATA[index].teacher = {
-          _id: data._id,
-          name: data.name
-        }
-        console.log(this.ELEMENT_DATA);
-        return;
-      };
-      case 'room': {
-        this.isChildDone = true;
-        this.ELEMENT_DATA[index].room = {
-          _id: data._id,
-          name: data.name
-        };
-        return;
-      };
-      case 'shift': {
-        let temp = this.ELEMENT_DATA[index].date.shift;
-        this.ELEMENT_DATA[index].date.shift = data;
-        switch (this.ELEMENT_DATA[index].type) {
-          case 'LT': {
-            let timeLeft = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
-            if (timeLeft >= 0) {
-              this.theoryWeek = timeLeft;
-            }
-            else {
-              this.ELEMENT_DATA[index].date.shift = temp;
-              this.theoryWeek = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
-            }
-            console.log(this.ELEMENT_DATA);
-            return;
-          };
-          case 'TH': {
-            console.log(1);
-
-            let timeLeft = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
-            if (timeLeft >= 0) {
-              this.practiceWeek = timeLeft;
-            }
-            else {
-              this.ELEMENT_DATA[index].date.shift = temp;
-              this.practiceWeek = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
-            }
-            console.log(this.ELEMENT_DATA);
-            return;
-          }
-        }
-
-
-        return;
-      }
-    }
   }
 
   takeTimeLeft(time, array, type) {
@@ -266,19 +284,111 @@ export class ClassroomAddComponent implements OnInit {
     return time;
   }
 
-  tranformToVn(data) {
-    switch (data) {
-      case 'monday': return 'Thứ Hai';
-      case 'tuesday': return 'Thứ Ba';
-      case 'wednesday': return 'Thứ Tư';
-      case 'thursday': return 'Thứ Năm';
-      case 'friday': return 'Thứ Sáu';
-      case 'saturday': return 'Thứ Bảy';
-      case 'sunday': return 'Chủ Nhật';
+  handleWithData(data, index, elm) {
+    console.log(data, index, elm);
+
+    switch (elm) {
+      case 'teacher': {
+
+        this.ELEMENT_DATA[index].teacher = {
+          _id: data._id,
+          name: data.name
+        }
+        console.log(this.ELEMENT_DATA);
+        return;
+      };
+      case 'room': {
+
+        this.isChildDone = true;
+        this.ELEMENT_DATA[index].room = {
+          _id: data._id,
+          name: data.name
+        };
+
+        if ( this.theoryWeek == 0 && this.practiceWeek == 0 ) {
+          this.isCreateClassDone = true;
+        }
+
+        console.log(this.ELEMENT_DATA);
+
+        return;
+      };
+      case 'shift': {
+
+        this.ELEMENT_DATA[index].date.shift = data;
+
+        switch (this.ELEMENT_DATA[index].type) {
+          case 'LT': {
+
+            let timeLeft = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
+
+            if (timeLeft >= 0) {
+              this.theoryWeek = timeLeft;
+            }
+            else {
+              this.ELEMENT_DATA[index].date.shift = '';
+              this.theoryWeek = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
+            }
+            return;
+          };
+          case 'TH': {
+
+            let timeLeft = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
+
+            if (timeLeft >= 0) {
+              this.practiceWeek = timeLeft;
+            }
+            else {
+              this.ELEMENT_DATA[index].date.shift = '';
+              this.practiceWeek = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
+            }
+            return;
+          }
+        }
+
+
+        return;
+      }
     }
   }
 
-  getDepartmentsData(pageSize: number, pageIndex: number) {
+  // default() {
+  //   this.dataSource.paginator = null;
+  //   this.dataSource.sort = this.sort;
+  // }
+
+  /**
+   * CRUD
+   */
+
+  getCoursesByDepartmentId(id: string, pageSize: number, pageIndex: number) {
+    this.departmentApi.getCoursesById(id, pageSize, pageIndex).subscribe(result => {
+      this.coursesList = result.data;
+    }, error => {
+      console.log(error);
+
+    })
+  }
+
+  getTeacherByDepartmentId(pageSize: number, pageIndex: number) {
+    this.teacherApi.getTeachers(pageSize, pageIndex).subscribe(result => {
+      this.teacherList = result.data;
+    }, error => {
+      console.log(error);
+
+    })
+  }
+
+  getRooms(pageSize: number, pageIndex: number) {
+    this.roomApi.getRooms(pageSize, pageIndex).subscribe(result => {
+      this.roomList = result.data;
+    }, error => {
+      console.log(error);
+
+    })
+  }
+
+  getClassroomsData(pageSize: number, pageIndex: number) {
       // this.ELEMENT_DATA = ELEMENT_DATA;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
     // this.courseApi.getDepartments(pageSize, pageIndex).subscribe(result => {
@@ -338,6 +448,10 @@ export class ClassroomAddComponent implements OnInit {
     // })
   }
 
+  /**
+   * TRANSFORM DATA
+   */
+
   dataTranform(data) {
     let newData = {
       schoolId: data.schoolId,
@@ -346,41 +460,18 @@ export class ClassroomAddComponent implements OnInit {
     return newData;
   }
 
-  getHoursOfWeek(theory, practice) {
-
-    this.getTheoryHours(theory);
-    if ( practice == 0) {
-      this.timeTotal.practice = this.practiceWeek = 0;
-      return;
-    }
-    else {
-      if ( practice % 10 == 0) {
-        this.timeTotal.practice = this.practiceWeek = practice/10;
-        return;
-      }
-      else {
-        this.timeTotal.practice = this.practiceWeek = practice/9;
-        return;
-      }
+  tranformToVn(data) {
+    switch (data) {
+      case 'monday': return 'Thứ Hai';
+      case 'tuesday': return 'Thứ Ba';
+      case 'wednesday': return 'Thứ Tư';
+      case 'thursday': return 'Thứ Năm';
+      case 'friday': return 'Thứ Sáu';
+      case 'saturday': return 'Thứ Bảy';
+      case 'sunday': return 'Chủ Nhật';
     }
   }
 
-  getTheoryHours(theory) {
-    if (theory == 0) {
-      this.timeTotal.theory = this.theoryWeek = 0;
-      return;
-    }
-    else {
-      if (theory % 10 == 0) {
-        this.timeTotal.theory = this.theoryWeek = theory / 10;
-        return;
-      }
-      else {
-        this.timeTotal.theory = this.theoryWeek = theory / 9;
-        return;
-      }
-    }
-  }
 
 
 }

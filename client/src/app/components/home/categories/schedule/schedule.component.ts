@@ -8,10 +8,10 @@ import { MatTableDataSource } from '@angular/material/table';
  */
 @Component({
   selector: 'app-semester-management',
-  templateUrl: './semester-management.component.html',
-  styleUrls: ['./semester-management.component.scss']
+  templateUrl: './schedule.component.html',
+  styleUrls: ['./schedule.component.scss']
 })
-export class SemesterManagementComponent implements OnInit {
+export class ScheduleComponent implements OnInit {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
 

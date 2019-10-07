@@ -55,7 +55,9 @@ export class TeacherApiService {
 
   // HttpClient API post() method => Create teacher
   createTeacher(teacher): Observable<any> {
-    return this.http.post(this.apiURL, JSON.stringify(teacher), this.httpOptions)
+    console.log(teacher);
+
+    return this.http.post(this.apiURL + '/' , JSON.stringify(teacher), this.httpOptions)
       .pipe(
         retry(1),
         catchError(this.handleError)

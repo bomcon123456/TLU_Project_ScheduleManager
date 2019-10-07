@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, delay, tap, filter, map, takeUntil, switchMap } from 'rxjs/operators'
+import { ReplaySubject } from 'rxjs';
+import { debounceTime, delay, tap, filter, switchMap } from 'rxjs/operators'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
@@ -23,20 +23,24 @@ export class CourseManagementComponent implements OnInit {
 
   public displayedColumns: string[] = ['position', '_id', 'name', 'credits', 'department', 'theory', 'practice', 'coursePrereq', 'creditPrereq', 'actions'];
 
-  public dataSource = null;
+  public dataSource: any;
+  private filter: any;
+
   private ELEMENT_DATA: CourseElement[];
   private departmentList: DepartmentElement[];
+
+  public searching: boolean;
   private isLoading: boolean;
   private isFirstTime: boolean;
-  public searching: boolean;
+
   private action: string;
   private width: string;
   private height: string;
+
   private index: number;
   private dataLength: number;
   private pageSize: number;
   private pageIndex: number;
-  private filter: any;
 
   public ServerSideCtrl: FormControl = new FormControl();
   public ServerSideFilteringCtrl: FormControl = new FormControl();
@@ -47,6 +51,11 @@ export class CourseManagementComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
 
+  @ViewChild('minCredits', { static: true }) minCredits: ElementRef;
+  @ViewChild('maxCredits', { static: true }) maxCredits: ElementRef;
+  @ViewChild('minCreditPrerequisites', { static: true }) minCreditPrerequisites: ElementRef;
+  @ViewChild('maxCreditPrerequisites', { static: true }) maxCreditPrerequisites: ElementRef;
+
   constructor(public dialog: MatDialog,
               private courseApi: CourseApiService,
               private departmentApi: DepartmentApiService,
@@ -54,27 +63,12 @@ export class CourseManagementComponent implements OnInit {
 
   ngOnInit() {
     this.isFirstTime = true;
-    this.isLoading = false;
     this.searching = false;
     this.index = 0;
     this.dataLength = 0;
-    this.pageIndex = 1;
-    this.pageSize = 8;
-    this.filter = {
-      _id: '',
-      name: '',
-      credits: {
-        min: 0,
-        max: 1000
-      },
-      department: '',
-      creditPrerequisites: {
-        min: 0,
-        max: 1000
-      }
-    };
+    this.setDefault();
 
-    this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
+    this.getCoursesData(this.pageSize, this.pageIndex, {});
 
     this.ServerSideFilteringCtrl.valueChanges
       .pipe(
@@ -102,14 +96,11 @@ export class CourseManagementComponent implements OnInit {
 
   }
 
-  getPageEvent(event) {
-    this.isLoading = true;
-    this.pageSize = event.pageSize;
-    this.pageIndex = event.pageIndex + 1;
-    this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
-  }
+  /**
+   * SET
+   */
 
-  default() {
+  setTable() {
     this.dataSource.paginator = null;
     this.dataSource.sortingDataAccessor = (item, property) => {
       switch (property) {
@@ -124,8 +115,81 @@ export class CourseManagementComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
+  setDefault() {
+    this.paginator.pageIndex = 0;
+    this.pageIndex = 1;
+    this.pageSize = 8;
+    this.filter = {};
+  }
+
+  setDepartmentId(data) {
+
+    if ( data ) {
+
+      return this.filter.department = data._id;
+    }
+    else {
+      return this.filter.department = '';
+    }
+  }
+
+  setCredits(data, obj: string) {
+
+    if ( !this.filter.credits ) {
+      this.filter.credits = {};
+      this.filter.credits[obj] = data;
+    }
+    else {
+      this.filter.credits[obj] = data;
+    }
+  }
+
+  setCreditPrerequisites(data, obj: string) {
+
+    if ( !this.filter.creditPrerequisites ) {
+      this.filter.creditPrerequisites = {};
+      this.filter.creditPrerequisites[obj] = data;
+    }
+    else {
+      this.filter.creditPrerequisites[obj] = data;
+    }
+  }
+
+  /**
+   * GET, ACTION
+   */
+
   applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  getPageEvent(event) {
+    this.isLoading = true;
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex + 1;
+    this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
+  }
+
+  getFilter() {
+
+    if ( !this.filter.credits || !this.filter.credits.min || !this.filter.credits.max ) {
+      delete this.filter.credits;
+      this.minCredits.nativeElement.value = null;
+      this.maxCredits.nativeElement.value = null;
+    }
+
+    if ( !this.filter.creditPrerequisites || !this.filter.creditPrerequisites.min || !this.filter.creditPrerequisites.max ) {
+
+      delete this.filter.creditPrerequisites;
+      this.minCreditPrerequisites.nativeElement.value = null;
+      this.maxCreditPrerequisites.nativeElement.value = null;
+    }
+
+    this.isLoading = true;
+    this.pageSize = 8;
+    this.pageIndex = 1;
+    this.paginator.pageIndex = 0;
+    this.getCoursesData(this.pageSize, this.pageIndex, this.filter)
   }
 
   openDialog(action, obj): void {
@@ -148,7 +212,14 @@ export class CourseManagementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (!result || result.event == 'cancel') return;
+
+      if (!result || result.event == 'cancel') {
+
+        this.isLoading = true;
+        this.paginator.pageIndex = 0;
+        this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
+        return;
+      }
 
       if (this.action == 'add') {
         this.createCourse(result.data);
@@ -159,6 +230,10 @@ export class CourseManagementComponent implements OnInit {
       }
     });
   }
+
+  /**
+   * CRUD
+   */
 
   getDepartments(pageSize: number, pageIndex: number, filter: any) {
     return new Promise((resolve, reject) => {
@@ -172,10 +247,6 @@ export class CourseManagementComponent implements OnInit {
     })
   }
 
-  setDepartmentId(data) {
-    return this.filter.department = data._id;
-  }
-
   getCoursesData(pageSize: number, pageIndex: number, filter: any) {
 
     this.courseApi.getCourses(pageSize, pageIndex, filter).subscribe( result => {
@@ -183,12 +254,12 @@ export class CourseManagementComponent implements OnInit {
       this.dataLength = result.size;
 
       for ( let i=0; i<this.ELEMENT_DATA.length; i++) {
-        this.ELEMENT_DATA[i].length = this.timeTranform(this.ELEMENT_DATA[i].length, true);
+        this.ELEMENT_DATA[i].length = this.timeTransform(this.ELEMENT_DATA[i].length, true);
 
       }
 
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-      this.default();
+      this.setTable();
       this.index = pageSize * (pageIndex-1);
       this.isLoading = false;
 
@@ -203,13 +274,13 @@ export class CourseManagementComponent implements OnInit {
 
   createCourse(row_obj) {
 
-    row_obj.length = this.timeTranform(row_obj.length, false);
+    row_obj.length = this.timeTransform(row_obj.length, false);
 
-    this.courseApi.createCourse(this.dataTranform(row_obj)).subscribe(result => {
+    this.courseApi.createCourse(row_obj).subscribe(result => {
 
-      this.ELEMENT_DATA.unshift(row_obj);
-      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-      this.default();
+      this.isLoading = true
+      this.setDefault();
+      this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
       this.toastr.success(result.message)
     }, error => {
       this.toastr.error(error.message)
@@ -218,16 +289,13 @@ export class CourseManagementComponent implements OnInit {
 
   updateCourse(row_obj) {
 
-    row_obj.length = this.timeTranform(row_obj.length, false);
+    row_obj.length = this.timeTransform(row_obj.length, false);
 
-    this.courseApi.updateCourse(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
+    this.courseApi.updateCourse(row_obj.id, row_obj).subscribe(result => {
 
-      this.dataSource.data.filter((value, key) => {
-        if (value._id == row_obj._id) {
-          value = Object.assign(value, row_obj);
-        }
-        return true;
-      });
+      this.isLoading = true;
+      this.paginator.pageIndex = 0;
+      this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
       this.toastr.success(result.message);
     }, error => {
       this.toastr.error(error.message);
@@ -236,44 +304,21 @@ export class CourseManagementComponent implements OnInit {
   }
 
   deleteCourse(row_obj) {
-    this.courseApi.deleteCourse(row_obj._id).subscribe(result => {
+    this.courseApi.deleteCourse(row_obj.id).subscribe(result => {
 
-      this.dataSource.data = this.dataSource.data.filter(item => {
-
-        return item._id != row_obj._id;
-      });
+      this.setDefault();
+      this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
       this.toastr.success(result.message);
     }, error => {
       this.toastr.error(error.message);
     })
   }
 
-  dataTranform(data) {
-    let newData = {
-      _id: data._id,
-      name: data.name,
-      capacity: data.credits,
-      department: data.department._id,
-      length: {
-        theory: data.length.theory,
-        practice: data.length.practice,
-        combined: data.length.combined
-      },
-      coursePrerequisites: data.coursePrerequisites,
-      creditPrerequisites: data.creditPrerequisites
-    }
-    return newData;
-  }
+  /**
+   * TRANSFORM DATA
+   */
 
-  getFilter() {
-    this.isLoading = true;
-    this.pageSize = 8;
-    this.pageIndex = 1;
-    this.paginator.pageIndex = 0;
-    this.getCoursesData(this.pageSize, this.pageIndex, this.filter)
-  }
-
-  timeTranform(data, getData: boolean) {
+  timeTransform(data, getData: boolean) {
 
     let length;
 
@@ -303,63 +348,6 @@ export class CourseManagementComponent implements OnInit {
         return length;
       }
     }
-
-    // if ( getData == true ) {
-    //   if ( data.combined==0 ) {
-    //     return data
-    //   }
-    //   else {
-    //     if ( data.combined%9 == 0 ) {
-    //       let timeTotal = data.combined / 9;
-    //       if ( timeTotal%2 == 0 ) {
-    //         length = {
-    //           theory: timeTotal / 2 * 9,
-    //           practice: timeTotal / 2 * 9,
-    //           combined: data.combined
-    //         }
-    //       }
-    //       else {
-    //         length = {
-    //           theory: ((timeTotal / 2) + 0.5) * 9,
-    //           practice: ((timeTotal / 2) - 0.5) * 9,
-    //           combined: data.combined
-    //         }
-    //       }
-    //       return length;
-    //     }
-    //     else {
-    //       let timeTotal = data.combined * 60 / 50 / 9;
-    //       if ( timeTotal%2 == 0 ) {
-    //         length = {
-    //           theory: timeTotal / 2 * 9 * 50 / 60,
-    //           practice: timeTotal / 2 * 9 * 50 / 60,
-    //           combined: data.combined
-    //         }
-    //       }
-    //       else {
-    //         length = {
-    //           theory: ((timeTotal / 2) + 0.5) * 9 * 50 / 60,
-    //           practice: ((timeTotal / 2) - 0.5) * 9 * 50 / 60,
-    //           combined: data.combined
-    //         }
-    //       }
-    //       return length;
-    //     }
-    //   }
-    // }
-    // else {
-    //   if ( data.combined==0 ) {
-    //     return data;
-    //   }
-    //   else {
-    //     length = {
-    //       theory: 0,
-    //       practice: 0,
-    //       combined: data.theory + data.practice
-    //     }
-    //     return length;
-    //   }
-    // }
   }
 
 }

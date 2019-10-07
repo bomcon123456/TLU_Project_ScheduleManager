@@ -57,7 +57,7 @@ export class RoomApiService {
 
   // HttpClient API post() method => Create room
   createRoom(room): Observable<any> {
-    return this.http.post(this.apiURL, JSON.stringify(room), this.httpOptions)
+    return this.http.post(this.apiURL + '/', JSON.stringify(room), this.httpOptions)
       .pipe(
         retry(1),
         catchError(this.handleError)

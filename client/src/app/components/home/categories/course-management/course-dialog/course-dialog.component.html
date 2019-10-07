@@ -3,87 +3,106 @@
   <strong *ngIf="action == 'edit'">Chỉnh sửa thông tin học phần</strong>
   <strong *ngIf="action == 'delete'">Xoá học phần</strong>
 </h1>
-<div mat-dialog-content *ngIf="action != 'delete'; else elseTemplate" style="overflow: unset">
-  <div class="example-container">
+<form [formGroup]="courseForm" autocomplete="off">
+  <div mat-dialog-content *ngIf="action != 'delete'; else elseTemplate" style="overflow: unset">
+    <div class="example-container">
 
-    <mat-form-field>
-      <input placeholder="Mã học phần" matInput [(ngModel)]="local_data._id">
-    </mat-form-field>
+      <mat-form-field>
+        <input placeholder="Mã học phần" matInput [(ngModel)]="local_data._id"
+               [formControl]="_idFormControl" required>
+        <mat-error *ngIf="hasError('_id', 'required')">Mã học phần không được để trống.</mat-error>
+        <mat-error *ngIf="hasError('_id', 'minlength')">Mã học phần không được ít hơn 5 ký tự.</mat-error>
+      </mat-form-field>
 
-    <mat-form-field>
-      <input placeholder="Tên học phần" matInput [(ngModel)]="local_data.name">
-    </mat-form-field>
+      <mat-form-field>
+        <input placeholder="Tên học phần" matInput [(ngModel)]="local_data.name"
+               [formControl]="nameFormControl" required>
+        <mat-error *ngIf="hasError('name', 'required')">Tên học phần không được để trống.</mat-error>
+        <mat-error *ngIf="hasError('name', 'maxlength')">Tên học phần không được nhiều hơn 100 ký tự.</mat-error>
+      </mat-form-field>
 
-    <mat-form-field>
-      <input placeholder="Số tín chỉ" matInput [(ngModel)]="local_data.credits" type="number">
-    </mat-form-field>
+      <mat-form-field>
+        <input placeholder="Số tín chỉ" matInput [(ngModel)]="local_data.credits" type="number"
+               [formControl]="creditsFormControl" required>
+        <mat-error *ngIf="hasError('credits', 'required')">Số tín chỉ không được để trống.</mat-error>
+        <mat-error *ngIf="hasError('credits', 'min')">Số tín chỉ không được ít hơn 1 tín chỉ.</mat-error>
+      </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Bộ môn</mat-label>
-      <mat-select [value]="local_data.department.name"
-                  (selectionChange)="departmentSelected($event)">
-        <mat-option>None</mat-option>
-        <mat-option *ngFor="let item of departments" [value]="item.name"> {{item.name}} </mat-option>
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>Bộ môn</mat-label>
+        <mat-select
+                    (selectionChange)="departmentSelected($event.value)"
+                    [formControl]="departmentFormControl" required>
+          <mat-option>None</mat-option>
+          <mat-option *ngFor="let item of departments" [value]="item._id"> {{item.name}} </mat-option>
+        </mat-select>
+        <mat-error *ngIf="hasError('department', 'required')">Bộ môn không được để trống.</mat-error>
+        <!-- <mat-error *ngIf="hasError('department', 'minlength')">Mã giáo viên không được ít hơn 5 ký tự.</mat-error> -->
+      </mat-form-field>
 
-    <mat-label class="location-label">Tổng số giờ</mat-label>
-    <mat-form-field class="location">
-      <input placeholder="Số giờ lý thuyết" matInput [(ngModel)]="local_data.length.theory" type="number">
-    </mat-form-field>
-    <mat-form-field class="location">
-      <input [readonly]='isCombined==true? true : false'
-            placeholder="Số giờ thực hành" matInput
-            [(ngModel)]="local_data.length.practice" type="number">
-    </mat-form-field>
+      <mat-label class="location-label">Tổng số giờ</mat-label>
+      <mat-form-field class="location">
+        <input placeholder="Số giờ lý thuyết" matInput
+              type="number" [(ngModel)]="local_data.length.theory"
+              (change)="setRequiredLength()"
+              [formControl]="theoryFormControl" [required]="isTheoryRequired? true : false">
+              <!-- [(ngModel)]="local_data.length.theory"  -->
+        <mat-error *ngIf="hasError('theory', 'required') && isTheoryRequired">Giờ lý thuyết không được để trống.</mat-error>
+      </mat-form-field>
+      <mat-form-field class="location">
+        <input [readonly]='isCombined==true? true : false'
+              placeholder="Số giờ thực hành" matInput
+              [(ngModel)]="local_data.length.practice" type="number"
+              (change)="setRequiredLength()"
+              [formControl]="practiceFormControl" [required]="isPracticeRequired? true : false">
+        <mat-error *ngIf="hasError('practice', 'required') && isPracticeRequired">Giờ thực hành không được để trống.</mat-error>
+      </mat-form-field>
 
-    <div class="checkbox">
-      <mat-checkbox [checked]='local_data.length.combined == 0 || local_data.length.combined == null? 0 : 1'
-                    (change)="onChange($event)"
-                    labelPosition="before">Gộp giờ thực hành với giờ lý thuyết</mat-checkbox>
-      <div style="width: 50% !important"></div>
+      <div class="checkbox">
+        <mat-checkbox [checked]='local_data.length.combined == 0 || local_data.length.combined == null? 0 : 1'
+                      (change)="onChange($event)" matTooltip="Phải nhập giờ lý thuyết hoặc giờ thực hành."
+                      labelPosition="before" [disabled]="isTheoryRequired && isPracticeRequired ? true : false">Gộp giờ thực hành với giờ lý thuyết</mat-checkbox>
+        <div style="width: 50% !important"></div>
+      </div>
+
+      <mat-form-field>
+        <mat-chip-list #chipList aria-label="Courses prerequisite selection">
+          <mat-chip *ngFor="let course of coursesSelected"
+                    [removable]="true"
+                    (removed)="remove(course)">
+            {{course}}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+          <input  placeholder="Học phần bắt buộc"
+                  #courseInput [formControl]="courseCtrl" [matAutocomplete]="auto"
+                  [matChipInputFor]="chipList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let course of filteredCourses | async" [value]="course._id">
+            {{course._id}} - {{course.name}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input placeholder="Số tín chỉ bắt buộc" type="number"
+              [formControl]="creditsPrereqFormControl" matInput [(ngModel)]="local_data.creditPrerequisites">
+      </mat-form-field>
     </div>
-
-    <mat-form-field>
-      <mat-chip-list #chipList aria-label="Courses prerequisite selection">
-        <mat-chip *ngFor="let course of coursesSelected"
-                  [removable]="true"
-                  (removed)="remove(course)">
-          {{course}}
-          <mat-icon matChipRemove>cancel</mat-icon>
-        </mat-chip>
-        <input  placeholder="Học phần bắt buộc"
-                #courseInput [formControl]="courseCtrl" [matAutocomplete]="auto"
-                [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
-      </mat-chip-list>
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-        <mat-option *ngFor="let course of filteredCourses | async" [value]="course._id">
-          {{course._id}} - {{course.name}}
-        </mat-option>
-      </mat-autocomplete>
-      <!-- <mat-label>Chọn học phần bắt buộc</mat-label>
-      <mat-select [(value)]="local_data.coursePrerequisites">
-        <mat-option>None</mat-option>
-        <mat-option value="1">1</mat-option>
-        <mat-option value="2">2</mat-option>
-        <mat-option value="3">3</mat-option>
-      </mat-select> -->
-    </mat-form-field>
-    <mat-form-field>
-      <input placeholder="Số tín chỉ bắt buộc" type="number" matInput [(ngModel)]="local_data.creditPrerequisites">
-    </mat-form-field>
   </div>
-</div>
-<div mat-dialog-content>
-  <ng-template #elseTemplate>
-    <label>Bạn chắc chắn muốn xóa học phần này?</label><br>
-    <b>{{local_data._id}}</b> - <b>{{local_data.name}}</b>
-  </ng-template>
-</div>
-<div mat-dialog-actions style="float: right; margin: 25px 15px 0px">
-  <button mat-stroked-button *ngIf="action == 'add'" color="primary" (click)="doAction()">Thêm</button>
-  <button mat-stroked-button *ngIf="action == 'edit'" color="primary" (click)="doAction()">Sửa</button>
-  <button mat-stroked-button *ngIf="action == 'delete'" color="warn" (click)="doAction()">Xóa</button>
-  <button mat-stroked-button (click)="closeDialog()" mat-flat-button>Hủy bỏ</button>
-</div>
+  <div mat-dialog-content>
+    <ng-template #elseTemplate>
+      <label>Bạn chắc chắn muốn xóa học phần này?</label><br>
+      <b>{{local_data._id}}</b> - <b>{{local_data.name}}</b>
+    </ng-template>
+  </div>
+  <div mat-dialog-actions style="float: right; margin: 25px 15px 0px">
+    <button mat-stroked-button *ngIf="action == 'add'" color="primary" (click)="doAction()"
+            [disabled]="courseForm.invalid || (isPracticeRequired && isTheoryRequired)">Thêm</button>
+    <button mat-stroked-button *ngIf="action == 'edit'" color="primary" (click)="doAction()"
+            [disabled]="courseForm.invalid || (isPracticeRequired && isTheoryRequired)">Sửa</button>
+    <button mat-stroked-button *ngIf="action == 'delete'" color="warn" (click)="doAction()">Xóa</button>
+    <button mat-stroked-button (click)="closeDialog()" mat-flat-button>Hủy bỏ</button>
+  </div>
+</form>

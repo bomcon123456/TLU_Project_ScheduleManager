@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DepartmentElement } from '../../../interface/dialog-data';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 
 @Component({
@@ -8,10 +9,19 @@ import { DepartmentElement } from '../../../interface/dialog-data';
   templateUrl: './department-dialog.component.html',
   styleUrls: ['./department-dialog.component.scss']
 })
-export class DepartmentDialogComponent {
+export class DepartmentDialogComponent implements OnInit {
 
   private action: string;
   private local_data: DepartmentElement;
+  public departmentForm: FormGroup;
+  public schoolIdFormControl = new FormControl('', [
+    Validators.required,
+    Validators.minLength(4),
+  ]);
+  public nameFormControl = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(50),
+  ]);
 
   constructor(
     public dialogRef: MatDialogRef<DepartmentDialogComponent>,
@@ -32,6 +42,18 @@ export class DepartmentDialogComponent {
     this.action = this.local_data.action;
     console.log(this.local_data);
 
+  }
+
+  ngOnInit(): void {
+    this.departmentForm = new FormGroup({
+      schoolId: this.schoolIdFormControl,
+      name: this.nameFormControl,
+    });
+
+  }
+
+  public hasError = (controlName: string, errorName: string) => {
+    return this.departmentForm.controls[controlName].hasError(errorName);
   }
 
   doAction() {

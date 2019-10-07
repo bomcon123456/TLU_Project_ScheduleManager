@@ -3,32 +3,44 @@
   <strong *ngIf="action == 'edit'">Chỉnh sửa thông tin giáo viên</strong>
   <strong *ngIf="action == 'delete'">Xoá giáo viên</strong>
 </h1>
-<div mat-dialog-content *ngIf="action != 'delete'; else elseTemplate" style="overflow: unset">
-  <div class="example-container">
-    <mat-form-field>
-      <input placeholder="Mã giáo viên" matInput [(ngModel)]="local_data._id">
-    </mat-form-field>
-    <mat-form-field>
-      <input placeholder="Tên giáo viên" matInput [(ngModel)]="local_data.name">
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Bộ môn</mat-label>
-      <mat-select [(value)]="local_data.department.name">
-        <mat-option>None</mat-option>
-        <mat-option *ngFor="let item of departments" [value]="item.name">{{item.name}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+<form [formGroup]="teacherForm" autocomplete="off">
+  <div mat-dialog-content *ngIf="action != 'delete'; else elseTemplate" style="overflow: unset">
+    <div class="example-container">
+      <!-- <mat-form-field>
+        <input placeholder="Mã giáo viên" matInput [(ngModel)]="local_data._id" [formControl]="idFormControl" required readonly>
+        <mat-error *ngIf="hasError('_id', 'required')">Mã giáo viên không được để trống.</mat-error>
+        <mat-error *ngIf="hasError('_id', 'minlength')">Mã giáo viên không được ít hơn 5 ký tự.</mat-error>
+      </mat-form-field> -->
+      <mat-form-field>
+        <input placeholder="Tên giáo viên" matInput [(ngModel)]="local_data.name" [formControl]="nameFormControl" required>
+        <!-- <mat-hint align="end">Not more then 60 characters long.</mat-hint> -->
+        <mat-error *ngIf="hasError('name', 'required')">Tên giáo viên không được để trống.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Bộ môn</mat-label>
+        <mat-select [value]="local_data.department._id"
+                    (selectionChange)="setDepartmentId($event.value)"
+                    [formControl]="departmentFormControl" required
+                    [disabled]="action=='edit' ? true : false">
+          <mat-option>None</mat-option>
+          <mat-option *ngFor="let item of departments" [value]="item._id">{{item.name}}</mat-option>
+        </mat-select>
+        <!-- <mat-hint align="end">Not more then 60 characters long.</mat-hint> -->
+        <mat-error *ngIf="hasError('department', 'required')">Bộ môn không được để trống.</mat-error>
+      </mat-form-field>
+    </div>
   </div>
-</div>
-<div mat-dialog-content>
-  <ng-template #elseTemplate>
-    <label>Bạn chắc chắn muốn xóa giáo viên này?</label><br>
-    <b>{{local_data._id}}</b> - <b>{{local_data.name}}</b>
-  </ng-template>
-</div>
-<div mat-dialog-actions style="float: right; margin: 25px 15px 0px">
-  <button mat-stroked-button *ngIf="action == 'add'" color="primary" (click)="doAction()">Thêm</button>
-  <button mat-stroked-button *ngIf="action == 'edit'" color="primary" (click)="doAction()">Sửa</button>
-  <button mat-stroked-button *ngIf="action == 'delete'" color="warn" (click)="doAction()">Xóa</button>
-  <button mat-stroked-button (click)="closeDialog()" mat-flat-button>Hủy bỏ</button>
-</div>
+  <div mat-dialog-content>
+    <ng-template #elseTemplate>
+      <label>Bạn chắc chắn muốn xóa giáo viên này?</label><br>
+      <b>{{local_data._id}}</b> - <b>{{local_data.name}}</b>
+    </ng-template>
+  </div>
+  <div mat-dialog-actions style="float: right; margin: 25px 15px 0px">
+    <button mat-stroked-button *ngIf="action == 'add'" color="primary" (click)="doAction()" [disabled]="teacherForm.invalid">Thêm</button>
+    <button mat-stroked-button *ngIf="action == 'edit'" color="primary" (click)="doAction()" [disabled]="teacherForm.invalid">Sửa</button>
+    <button mat-stroked-button *ngIf="action == 'delete'" color="warn" (click)="doAction()">Xóa</button>
+    <button mat-stroked-button (click)="closeDialog()" mat-flat-button>Hủy bỏ</button>
+  </div>
+</form>

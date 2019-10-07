@@ -9,6 +9,8 @@ import { ToastrService } from 'ngx-toastr';
 import { ClassroomDialogComponent } from './classroom-dialog/classroom-dialog.component';
 import { ClassroomElement } from '../../interface/dialog-data';
 import { RoomApiService } from './../../../../services/room-api.service';
+import { StorageService } from './storage/storage.service'
+import { SEMESTERS, YEARS } from './storage/data-storage';
 
 /**
  * @title Table with pagination
@@ -21,24 +23,27 @@ import { RoomApiService } from './../../../../services/room-api.service';
 export class ClassroomManagementComponent implements OnInit {
 
   public displayedColumns: string[] = ['position', 'name', 'students', 'course', 'room', 'teacher', 'shift', 'day', 'actions'];
-  // public dataSource = new MatTableDataSource(ELEMENT_DATA);
 
-  public dataSource = null;
+  private years = YEARS;
+  private semesters = SEMESTERS;
+
   private ELEMENT_DATA: ClassroomElement[];
+
+  public dataSource: any = null;
+  public semesterSelected: any;
+
   private isLoading: boolean;
   private isFirstTime: boolean;
+
   private action: string;
   private width: string;
   private height: string;
+  public yearSelected: string;
+
   private index: number;
   private dataLength: number;
   private pageSize: number;
   private pageIndex: number;
-  public year: string;
-  public semesterSelected:any;
-
-  years = years;
-  semester = Semester;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -47,6 +52,7 @@ export class ClassroomManagementComponent implements OnInit {
   constructor(public dialog: MatDialog,
               private roomApi: RoomApiService,
               private toastr: ToastrService,
+              private storageService: StorageService,
               private route: Router) { }
 
   ngOnInit() {
@@ -57,11 +63,8 @@ export class ClassroomManagementComponent implements OnInit {
     this.pageIndex = 1;
     this.pageSize = 8;
 
-    this.year = '';
-    this.semesterSelected = '';
-
-    console.log(this.year, this.semester);
-
+    this.yearSelected = '';
+    this.semesterSelected = {};
 
     this.getRoomsData(this.pageSize, this.pageIndex);
   }
@@ -72,6 +75,26 @@ export class ClassroomManagementComponent implements OnInit {
     // this.pageIndex = event.pageIndex + 1;
     // this.index = event.pageSize * event.pageIndex;
     // this.getRoomsData(this.pageSize, this.pageIndex);
+  }
+
+  setYearSelected(value: string) {
+
+    console.log(value);
+
+    this.storageService.yearSelected = value;
+
+    console.log(this.storageService.yearSelected);
+
+  }
+
+  setSemesterSelected(value: any) {
+
+    console.log(value);
+
+    this.storageService.semesterSelected = value;
+
+    console.log(this.storageService.semesterSelected);
+
   }
 
   goToAdd() {
@@ -223,74 +246,3 @@ const ELEMENT_DATA: ClassroomElement[] = [
 
 ];
 
-const Semester: any[] = [
-  {
-    key: {
-      semester: "Semester 1",
-      group: "Group 1"
-    },
-    value: "Học kì I Nhóm 1"
-  }, {
-    key: {
-      semester: "Semester 1",
-      group: "Group 2"
-    },
-    value: "Học kì I Nhóm 2"
-  }, {
-    key: {
-      semester: "Semester 1",
-      group: "Group 3"
-    },
-    value: "Học kì I Nhóm 3"
-  }, {
-    key: {
-      semester: "Semester 2",
-      group: "Group 1"
-    },
-    value: "Học kì II Nhóm 1"
-  }, {
-    key: {
-      semester: "Semester 2",
-      group: "Group 2"
-    },
-    value: "Học kì II Nhóm 2"
-  }, {
-    key: {
-      semester: "Semester 2",
-      group: "Group 3"
-    },
-    value: "Học kì II Nhóm 3"
-  }, {
-    key: {
-      semester: "Semester 3",
-      group: "Group 1"
-    },
-    value: "Học kì III Nhóm 1"
-  }, {
-    key: {
-      semester: "Semester 3",
-      group: "Group 2"
-    },
-    value: "Học kì III Nhóm 2"
-  }, {
-    key: {
-      semester: "Semester 3",
-      group: "Group 3"
-    },
-    value: "Học kì III Nhóm 3"
-  },
-]
-
-const years = [
-  "2019-2020",
-  "2020-2021",
-  "2021-2022",
-  "2022-2023",
-  "2023-2024",
-  "2024-2025",
-  "2025-2026",
-  "2026-2027",
-  "2027-2028",
-  "2028-2029",
-  "2029-2030"
-];

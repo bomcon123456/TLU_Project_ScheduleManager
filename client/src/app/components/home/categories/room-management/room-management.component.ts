@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
@@ -41,6 +41,11 @@ export class RoomManagementComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
 
+  @ViewChild('building', { static: true }) building: ElementRef;
+  @ViewChild('floor', { static: true }) floor: ElementRef;
+  @ViewChild('minCapacity', { static: true }) minCapacity: ElementRef;
+  @ViewChild('maxCapacity', { static: true }) maxCapacity: ElementRef;
+
   constructor(public dialog: MatDialog,
               private roomApi: RoomApiService,
               private toastr: ToastrService) { }
@@ -49,26 +54,78 @@ export class RoomManagementComponent implements OnInit {
     this.isFirstTime = true;
     this.isLoading = false;
     this.isMulti = false;
-    this.dataLength = 0;
     this.index = 0;
-    this.pageIndex = 1;
-    this.pageSize = 8;
-    this.filter = {
-      location: {
-        building: '',
-        floor: null
-        // floor: {
-        //   min: 1,
-        //   max: 100
-        // }
-      },
-      capacity: {
-        min: 0,
-        max: 1000
+    this.setDefault()
+
+    this.getRoomsData(this.pageSize, this.pageIndex, {});
+  }
+
+  /**
+   * SET
+   */
+
+  setTable() {
+    this.dataSource.paginator = null;
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'location': return item.location.floor;
+        default: return item[property];
       }
     }
+    this.dataSource.sort = this.sort;
+  }
 
-    this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
+  setDefault() {
+    this.paginator.pageIndex = 0;
+    this.pageIndex = 1;
+    this.pageSize = 8;
+    this.filter = {};
+  }
+
+  setLocation(data, obj: string) {
+
+    if ( !this.filter.location ) {
+      this.filter.location = {};
+      this.filter.location[obj] = data;
+    }
+    else {
+      this.filter.location[obj] = data;
+
+      if ( !this.filter.location[obj] ) {
+        delete this.filter.location[obj];
+      }
+    }
+  }
+
+  setCapacity(data, obj: string) {
+
+    if ( !this.filter.capacity ) {
+      this.filter.capacity = {};
+      this.filter.capacity[obj] = data;
+    }
+    else {
+      this.filter.capacity[obj] = data;
+    }
+  }
+
+  setMulti() {
+
+    this.isMulti = !this.isMulti;
+
+    if ( !this.isMulti ) {
+      delete this.filter.capacity;
+    }
+
+    this.minCapacity.nativeElement.value = null;
+    this.maxCapacity.nativeElement.value = null;
+  }
+
+  /**
+   * GET, ACTION
+   */
+
+  applySearch(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   getPageEvent(event) {
@@ -78,13 +135,45 @@ export class RoomManagementComponent implements OnInit {
     this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
   }
 
-  default() {
-    this.dataSource.paginator = null;
-    this.dataSource.sort = this.sort;
-  }
+  getFilter() {
+    console.log(this.filter);
 
-  applySearch(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    // CHECK CAPACITY
+
+    if (!this.filter.capacity || !this.filter.capacity.min || !this.filter.capacity.max ) {
+
+      delete this.filter.capacity;
+      this.minCapacity.nativeElement.value = null;
+      this.maxCapacity.nativeElement.value = null;
+    }
+
+    // CHECK LOCATION
+
+    if ( !this.filter.location ) {
+
+      delete this.filter.location;
+    }
+    else {
+      if ( this.filter.location.building ) {
+
+        this.filter.location.building = this.filter.location.building.toUpperCase();
+      }
+    }
+
+    // CHECK MULTI
+
+    if ( this.isMulti ) {
+
+      this.filter.capacity = {};
+      this.filter.capacity.min = -1;
+      this.filter.capacity.max = -1;
+    }
+
+    this.isLoading = true;
+    this.paginator.pageIndex = 0;
+    this.pageSize = 8;
+    this.pageIndex = 1;
+    this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
   }
 
   openDialog(action, obj): void {
@@ -108,10 +197,13 @@ export class RoomManagementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if ( !result || result.event == 'cancel' ) return;
+      if ( !result || result.event == 'cancel' ) {
 
-      console.log(result);
-
+        this.isLoading = true;
+        this.paginator.pageIndex = 0;
+        this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
+        return;
+      }
 
       if (this.action == 'add') {
         this.createRoom(result.data);
@@ -123,18 +215,18 @@ export class RoomManagementComponent implements OnInit {
     });
   }
 
+  /**
+   * CRUD
+   */
+
   getRoomsData(pageSize: number, pageIndex: number, filter: any) {
 
-    this.checkMulti(-1);
-
     this.roomApi.getRooms(pageSize, pageIndex, filter).subscribe( result => {
-      console.log(result);
-      this.checkMulti(0);
 
       this.ELEMENT_DATA = result.data;
       this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-      this.default();
+      this.setTable();
       this.index = pageSize * (pageIndex-1);
       this.isLoading = false;
 
@@ -151,9 +243,9 @@ export class RoomManagementComponent implements OnInit {
 
     this.roomApi.createRoom(this.dataTranform(row_obj)).subscribe( result => {
 
-      this.ELEMENT_DATA.unshift(row_obj);
-      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-      this.default();
+      this.isLoading = true;
+      this.setDefault();
+      this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
       this.toastr.success(result.message)
     }, error => {
       this.toastr.error(error.message)
@@ -164,12 +256,9 @@ export class RoomManagementComponent implements OnInit {
 
     this.roomApi.updateRoom(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
 
-      this.dataSource.data.filter((value, key) => {
-        if (value._id == row_obj._id) {
-          value = Object.assign(value, row_obj);
-        }
-        return true;
-      });
+      this.isLoading = true;
+      this.paginator.pageIndex = 0;
+      this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
       this.toastr.success(result.message);
     }, error => {
       this.toastr.error(error.message);
@@ -181,15 +270,18 @@ export class RoomManagementComponent implements OnInit {
 
     this.roomApi.deleteRoom(row_obj._id).subscribe(result => {
 
-      this.dataSource.data = this.dataSource.data.filter(item => {
-
-        return item._id != row_obj._id;
-      });
+      this.isLoading = true;
+      this.setDefault();
+      this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
       this.toastr.success(result.message);
     }, error => {
       this.toastr.error(error.message);
     })
   }
+
+  /**
+   * TRANSFORM DATA
+   */
 
   dataTranform(data) {
     let newData = {
@@ -216,53 +308,5 @@ export class RoomManagementComponent implements OnInit {
     }
   }
 
-  getFilter() {
-    console.log(this.filter);
-    this.filter.location.building = this.filter.location.building.toUpperCase();
-
-    this.isLoading = true;
-    this.paginator.pageIndex = 0;
-    this.pageSize = 8;
-    this.pageIndex = 1;
-    this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
-  }
-
-  multiClass() {
-    this.isMulti = !this.isMulti;
-    this.filter.capacity.min = 0;
-    this.filter.capacity.max = 0;
-  }
-
-  checkMulti(num) {
-
-    if (this.isMulti) {
-      this.filter.capacity.min = num;
-      this.filter.capacity.max = num;
-    }
-  }
-
 
 }
-
-// const ELEMENT_DATA: RoomElement[] = [
-//   { _id: 'RM001', name: 'Hydrogen', capacity: 20, location: { building: 'B', floor: 4 }, roomType: '1'},
-//   { _id: 'RM002', name: 'Helium', capacity: 30, location: { building: 'B', floor: 4 }, roomType: '1'},
-//   { _id: 'RM003', name: 'Lithium', capacity: 40, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM004', name: 'Beryllium', capacity: 50, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM005', name: 'Boron', capacity: 50, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM006', name: 'Carbon', capacity: 40, location: { building: 'B', floor: 4 }, roomType: '1'},
-//   { _id: 'RM007', name: 'Nitrogen', capacity: 30, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM008', name: 'Oxygen', capacity: 20, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM009', name: 'Fluorine', capacity: 20, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM010', name: 'Neon', capacity: 30, location: { building: 'B', floor: 4 }, roomType: '1'},
-//   { _id: 'RM011', name: 'Sodium', capacity: 40, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM012', name: 'Magnesium', capacity: 50, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM013', name: 'Aluminum', capacity: 50, location: { building: 'B', floor: 4 }, roomType: '1'},
-//   { _id: 'RM014', name: 'Silicon', capacity: 40, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM015', name: 'Phosphorus', capacity: 30, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM016', name: 'Sulfur', capacity: 20, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM017', name: 'Chlorine', capacity: 20, location: { building: 'B', floor: 4 }, roomType: '1'},
-//   { _id: 'RM018', name: 'Argon', capacity: 30, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM019', name: 'Potassium', capacity: 40, location: { building: 'B', floor: 4 }, roomType: '1' },
-//   { _id: 'RM020', name: 'Calcium', capacity: 50, location: { building: 'B', floor: 4 }, roomType: '1'},
-// ];

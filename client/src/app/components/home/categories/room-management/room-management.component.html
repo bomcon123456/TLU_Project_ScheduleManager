@@ -14,24 +14,30 @@
           <div (click)="$event.stopPropagation()" class="item-menu">
             <mat-form-field appearance="outline" class="item-filter">
               <mat-label>Tòa nhà</mat-label>
-              <input matInput placeholder="" [(ngModel)]="filter.location.building">
+              <input matInput placeholder="" #building
+                    (change)="setLocation($event.target.value, 'building')">
             </mat-form-field>
             <mat-divider [vertical]="true"></mat-divider>
             <mat-form-field appearance="outline" class="item-filter">
               <mat-label>Tầng</mat-label>
-              <input matInput placeholder="" [(ngModel)]="filter.location.floor" type="number">
+              <input matInput placeholder="" type="number" #floor
+                    (change)="setLocation($event.target.valueAsNumber, 'floor')">
             </mat-form-field>
             <mat-divider [vertical]="true"></mat-divider>
             <mat-form-field appearance="outline" class="item-filter w-6rem">
               <mat-label>Từ: (Số lượng sinh viên)</mat-label>
-              <input matTooltip="Từ: (Số lượng sinh viên)" matInput placeholder="" [(ngModel)]="filter.capacity.min" [readonly]="isMulti? true : false" type="number">
+              <input matTooltip="Từ: (Số lượng sinh viên)" matInput placeholder=""
+                    (change)="setCapacity($event.target.valueAsNumber, 'min')"
+                    [readonly]="isMulti? true : false" type="number" #minCapacity>
             </mat-form-field>
             <mat-form-field appearance="outline" class="item-filter w-6rem">
               <mat-label>Đến: (Số lượng sinh viên)</mat-label>
-              <input matTooltip="Đến: (Số lượng sinh viên)" matInput placeholder="" [(ngModel)]="filter.capacity.max" [readonly]="isMulti? true : false" type="number">
+              <input matTooltip="Đến: (Số lượng sinh viên)" matInput placeholder=""
+                    (change)="setCapacity($event.target.valueAsNumber, 'max')"
+                    [readonly]="isMulti? true : false" type="number" #maxCapacity>
             </mat-form-field>
             <mat-divider [vertical]="true"></mat-divider>
-            <mat-checkbox labelPosition="before" class="item-filter" (change)="multiClass()">Dùng được cho nhiều lớp</mat-checkbox>
+            <mat-checkbox labelPosition="before" class="item-filter" (change)="setMulti()">Dùng được cho nhiều lớp</mat-checkbox>
           </div>
         </div>
         <mat-divider [vertical]="true"></mat-divider>

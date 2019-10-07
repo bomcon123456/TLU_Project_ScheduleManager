@@ -7,17 +7,19 @@
 
       <mat-form-field style="margin: 0 20px">
         <mat-label>Học kỳ</mat-label>
-        <mat-select [(value)]="year">
+        <mat-select [(value)]="semesterSelected"
+                    (selectionChange)="setSemesterSelected($event.value)">
           <mat-option>None</mat-option>
-          <mat-option *ngFor="let item of semester" value="item.key">{{item.value}}</mat-option>
+          <mat-option *ngFor="let item of semesters" [value]="item">{{item.value}}</mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field style="margin: 0 20px">
         <mat-label>Năm học</mat-label>
-        <mat-select [(value)]="semesterSelected">
+        <mat-select [(value)]="yearSelected"
+                    (selectionChange)="setYearSelected($event.value)">
           <mat-option>None</mat-option>
-          <mat-option *ngFor="let item of years" value="item">{{item}}</mat-option>
+          <mat-option *ngFor="let item of years" [value]="item">{{item}}</mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -47,7 +49,7 @@
         </div>
       </mat-menu> -->
 
-      <button mat-raised-button [disabled]="year && semesterSelected ? 'false' : 'true'" (click)="goToAdd()" color="primary" class="button">
+      <button mat-raised-button [disabled]="yearSelected && semesterSelected ? 'false' : 'true'" (click)="goToAdd()" color="primary" class="button">
         Thêm
       </button>
     </div>

@@ -61,7 +61,8 @@ export class CourseApiService {
 
   // HttpClient API post() method => Create course
   createCourse(course): Observable<any> {
-    return this.http.post(this.apiURL, JSON.stringify(course), this.httpOptions)
+
+    return this.http.post(this.apiURL + '/', JSON.stringify(course), this.httpOptions)
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -70,6 +71,7 @@ export class CourseApiService {
 
   // HttpClient API put() method => Update course
   updateCourse(id, course): Observable<any> {
+
     return this.http.put(this.apiURL + '/' + id, JSON.stringify(course), this.httpOptions)
       .pipe(
         retry(1),

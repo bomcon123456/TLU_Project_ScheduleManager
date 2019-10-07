@@ -1,21 +1,52 @@
 import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { RoomElement } from '../../../interface/dialog-data';
+
+function roomCapacityValidator(control: FormControl) {
+  let capacity = control.value
+  if (capacity == -1 || capacity >= 30) {
+    return null;
+  }
+  return {
+    capacity: capacity
+  }
+}
 
 @Component({
   selector: 'app-room-dialog',
   templateUrl: './room-dialog.component.html',
   styleUrls: ['./room-dialog.component.scss']
 })
-export class RoomDialogComponent {
 
-  action: string;
-  local_data: RoomElement;
+export class RoomDialogComponent implements OnInit {
+
+  private action: string;
+  private local_data: RoomElement;
+  public roomForm: FormGroup;
+  public nameFormControl = new FormControl('', [
+    Validators.required,
+    Validators.minLength(4),
+  ]);
+  public capacityFormControl = new FormControl('', [
+    Validators.required,
+    roomCapacityValidator,
+  ]);
+  public buildingFormControl = new FormControl('', [
+    Validators.required,
+  ]);
+  public floorFormControl = new FormControl('', [
+    Validators.required,
+  ]);
+  public roomTypeFormControl = new FormControl('', [
+    Validators.required,
+  ]);
+
 
   constructor(
     public dialogRef: MatDialogRef<RoomDialogComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: RoomElement) {
-      console.log(data);
+
       this.local_data = {
         _id: '',
         name: '',
@@ -29,21 +60,34 @@ export class RoomDialogComponent {
 
       if (data._id) {
         this.local_data = { ...data };
+        this.roomTypeFormControl.setValue(this.local_data.roomType);
       }
       else {
         this.local_data.action = 'add'
       }
 
       this.action = this.local_data.action;
-      console.log(this.local_data);
-
      }
 
+  ngOnInit(): void {
+    this.roomForm = new FormGroup({
+      // _id: this.idFormControl,
+      name: this.nameFormControl,
+      capacity: this.capacityFormControl,
+      building: this.buildingFormControl,
+      floor: this.floorFormControl,
+      roomType: this.roomTypeFormControl
+    });
+  }
+
+  public hasError = (controlName: string, errorName: string) => {
+    return this.roomForm.controls[controlName].hasError(errorName);
+  }
+
   doAction() {
-    console.log(this.local_data);
 
     let newData = {
-      _id: this.local_data._id,
+      id: this.local_data._id,
       name: this.local_data.name,
       capacity: this.local_data.capacity,
       location: {
@@ -52,7 +96,6 @@ export class RoomDialogComponent {
       },
       roomType: this.local_data.roomType,
     }
-    console.log(newData);
 
     this.dialogRef.close({ event: this.action, data: newData });
   }
