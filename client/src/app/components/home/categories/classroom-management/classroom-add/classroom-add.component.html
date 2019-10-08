@@ -12,7 +12,7 @@
     <div class="some-actions">
       <mat-form-field class="mg-l-r-30 w-40">
         <mat-label>Chọn học phần</mat-label>
-        <mat-select (selectionChange)="courseSelected($event)">
+        <mat-select (selectionChange)="setCourseSelected($event)">
           <mat-option *ngFor="let course of coursesList" [value]="course">
             {{course.name}}
           </mat-option>
@@ -46,7 +46,8 @@
       <ng-container matColumnDef="position">
         <th mat-header-cell *matHeaderCellDef class="custom-col-1">
           <button mat-icon-button matTooltip="Thêm lớp con"
-                  [disabled]="course && isChildDone && numOfClass && ( theoryWeek!=0 || practiceWeek!=0) ? false : true"
+                  [disabled]="courseSelected && isChildDone && numOfClass &&
+                              isTypeInvalid && ( theoryWeek!=0 || practiceWeek!=0) ? false : true"
                   (click)="addChildClass()" color="primary">
             <mat-icon>add_circle</mat-icon>
           </button>
@@ -81,7 +82,8 @@
         <td mat-cell *matCellDef="let element; let i = index">
           <mat-form-field>
             <mat-label>Loại phòng</mat-label>
-            <mat-select [(value)]="ELEMENT_DATA[i].type">
+            <mat-select [value]="ELEMENT_DATA[i].type"
+                        (selectionChange)="handleWithData($event.value, i, elm = 'type')">
               <mat-option value="LT">Lý thuyết</mat-option>
               <mat-option value="TH">Thực hành</mat-option>
               <mat-option value="TC">Thể chất</mat-option>
@@ -127,18 +129,11 @@
       <ng-container matColumnDef="shift">
         <th mat-header-cell *matHeaderCellDef> Ca </th>
         <td mat-cell *matCellDef="let element; let i = index">
-          <!-- <mat-form-field>
-            <mat-label>Ca</mat-label>
-            <mat-select [value]="ELEMENT_DATA[i].date.shift"
-                        (selectionChange)="handleWithData($event.value, i, elm = 'shift')">
-              <mat-option *ngFor="let shift of shifts" [value]="shift"> {{shift}} </mat-option>
-            </mat-select>
-          </mat-form-field> -->
           <mat-form-field>
             <mat-label>Ca</mat-label>
             <mat-select [value]="ELEMENT_DATA[i].date.shift"
                         (selectionChange)="handleWithData($event.value, i, elm = 'shift')"
-                        [disabled]="ELEMENT_DATA[i].date.day && ELEMENT_DATA[i].type ? false : true ">
+                        [disabled]="ELEMENT_DATA[i].date.day && isTypeInvalid ? false : true ">
               <mat-option *ngFor="let shift of shifts"
                           [value]="shift"> {{shift}}
               </mat-option>
@@ -155,7 +150,7 @@
             <mat-label>Phòng</mat-label>
             <mat-select [value]="ELEMENT_DATA[i].room._id"
                         (selectionChange)="handleWithData($event.value, i, elm = 'room')"
-                        [disabled]="!ELEMENT_DATA[i].date.shift ? true : false ">
+                        [disabled]="ELEMENT_DATA[i].date.shift && isTypeInvalid ? false : true ">
               <mat-option *ngFor="let room of roomList"
                           [value]="room._id">
                 {{room.name}}
@@ -185,14 +180,14 @@
 
         <div style="width: 40%; display: flex; justify-content: flex-end">
           <button mat-icon-button color="primary" (click)="setNextClass()"
-                  [disabled]="theoryWeek==0 && practiceWeek==0 && isCreateClassDone? false : true"
+                  [disabled]="theoryWeek==0 && practiceWeek==0 && isCreateClassDone && isTypeInvalid? false : true"
                   *ngIf="!isLastClass; else addDone">
             <mat-icon>arrow_right</mat-icon>
           </button>
 
           <ng-template #addDone>
             <button mat-raised-button color="primary" (click)="addClass()"
-                    [disabled]="theoryWeek==0 && practiceWeek==0 && isCreateClassDone? false : true">
+                    [disabled]="theoryWeek==0 && practiceWeek==0 && isCreateClassDone && isTypeInvalid? false : true">
               Thêm lớp học
             </button>
           </ng-template>

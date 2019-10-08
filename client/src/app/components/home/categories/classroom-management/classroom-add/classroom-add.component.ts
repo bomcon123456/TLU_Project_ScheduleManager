@@ -40,7 +40,7 @@ export class ClassroomAddComponent implements OnInit {
   private roomList: RoomElement[];
 
   private ELEMENT_DATA: any;
-  private course: any;
+  private courseSelected: any;
   private timeTotal: any;
   private semesterSelected: any;
   private unfinished: any[];
@@ -52,6 +52,7 @@ export class ClassroomAddComponent implements OnInit {
   private isChildDone: boolean;
   private isCreateClassDone: boolean;
   private isLastClass: boolean;
+  private isTypeInvalid: boolean;
 
   private index: number;
   private pageSize: number;
@@ -101,6 +102,7 @@ export class ClassroomAddComponent implements OnInit {
     this.isFisrtTime = true;
     this.isLoading = false;
     this.isCreateClassDone = false;
+    this.isTypeInvalid = false;
 
     this.theoryWeek = null;
     this.practiceWeek = null;
@@ -172,6 +174,9 @@ export class ClassroomAddComponent implements OnInit {
       this.unfinished = array;
     }
 
+    console.log(this.parentClass);
+
+
     this.countClass += 1;
 
     if ( this.countClass == this.numOfClass ) {
@@ -184,6 +189,7 @@ export class ClassroomAddComponent implements OnInit {
   setPreClass() {
 
     this.countClass -= 1;
+    this.isTypeInvalid = true;
 
     if ( this.isLastClass ) {
       this.isLastClass = false;
@@ -198,7 +204,7 @@ export class ClassroomAddComponent implements OnInit {
       this.parentClass[this.countClass] = this.ELEMENT_DATA;
     }
 
-    this.ELEMENT_DATA = this.parentClass[this.countClass];
+    this.ELEMENT_DATA = this.parentClass[this.countClass-1];
 
 
     if (this.theoryWeek != 0 || this.practiceWeek != 0) {
@@ -214,13 +220,16 @@ export class ClassroomAddComponent implements OnInit {
       this.theoryWeek = 0;
       this.practiceWeek = 0;
     }
+
+    this.getClassroomsData();
   }
 
-  courseSelected(event) {
+  setCourseSelected(event) {
     this.isChildDone = true;
+    this.isTypeInvalid = true
     this.numOfClass = null;
     this.countClass = null;
-    this.course = event.value;
+    this.courseSelected = event.value;
     this.getHoursOfWeek(event.value.length.theory, event.value.length.practice);
     this.ELEMENT_DATA = [];
     this.getClassroomsData();
@@ -277,9 +286,10 @@ export class ClassroomAddComponent implements OnInit {
   addChildClass() {
 
     this.isChildDone = false;
+    this.isTypeInvalid = false;
 
     let temp = {
-      name: this.course.name,
+      name: this.courseSelected.name,
       students: null,
       type: '',
       teacher: {
@@ -310,6 +320,7 @@ export class ClassroomAddComponent implements OnInit {
     if ( (this.ELEMENT_DATA.length == 0) || (index == this.ELEMENT_DATA.length) ) {
 
       this.isChildDone = true;
+      this.isTypeInvalid = true;
     }
     this.getClassroomsData();
   }
@@ -360,6 +371,36 @@ export class ClassroomAddComponent implements OnInit {
         })
 
         return;
+      };
+      case 'type': {
+
+        this.ELEMENT_DATA[index].type = data;
+
+        this.isTypeInvalid = true;
+
+        switch (data) {
+          case 'LT': {
+
+            if ( this.theoryWeek==0 && this.timeTotal.theory==0 ) {
+
+              this.isTypeInvalid = false;
+            }
+            return;
+          };
+          case 'TH': {
+
+            if ( this.practiceWeek==0 && this.timeTotal.practice==0 ) {
+
+              this.isTypeInvalid = false;
+            }
+            return;
+          };
+          case 'TC': {
+
+            this.isTypeInvalid = false;
+            return;
+          }
+        }
       };
       case 'room': {
 
