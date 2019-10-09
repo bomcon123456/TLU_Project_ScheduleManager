@@ -1,9 +1,9 @@
 <div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
-  <div class="header-top">
-    <div>
+  <div class="header-top" style="margin-top: 50px; justify-content: center; text-align: center; height: unset !important;">
+    <div style="font-size: 35px; font-weight: bold">
       {{semesterSelected.value}}
     </div>
-    <div>
+    <div style="font-size: 20px;">
       {{yearSelected}}
     </div>
   </div>
@@ -12,7 +12,7 @@
     <div class="some-actions">
       <mat-form-field class="mg-l-r-30 w-40">
         <mat-label>Chọn học phần</mat-label>
-        <mat-select (selectionChange)="setCourseSelected($event)">
+        <mat-select (selectionChange)="setCourseSelected($event.value)">
           <mat-option *ngFor="let course of coursesList" [value]="course">
             {{course.name}}
           </mat-option>
@@ -25,30 +25,73 @@
 
       <mat-checkbox labelPosition='before' class="mg-l-r-30 w-30">Gộp lớp</mat-checkbox>
     </div>
-
-    <div class="some-text">
-
-      <mat-card class="frame-text">
-        <mat-card-content class="text-tittle">Số giờ còn lại</mat-card-content>
-        <div>
-          <mat-card-content class="text-content">
-            <span>Lý thuyết: <strong>{{theoryWeek}}</strong></span>
-            <span>Thực hành: <strong>{{practiceWeek}}</strong></span>
-          </mat-card-content>
-        </div>
-      </mat-card>
-    </div>
   </div>
 
   <div class="mat-elevation-z8">
+    <div style="display: flex">
+      <mat-card style="width: 75% !important">
+        <mat-card-actions class="justify" style="margin: 8px !important">
+
+          <div style="width: 40%">
+            <button mat-icon-button color="primary" (click)="setPreClass()"
+              [disabled]="countClass==1 || !countClass ? true : false">
+              <mat-icon>arrow_left</mat-icon>
+            </button>
+          </div>
+
+          <div style="width: 20%; text-align: center; align-self: center">
+            <label *ngIf="countClass">{{courseSelected.name}}.{{countClass}}</label>
+          </div>
+
+          <div style="width: 40%; display: flex; justify-content: flex-end">
+            <button mat-icon-button color="primary" (click)="setNextClass()"
+              [disabled]="(( theoryWeek==0 && practiceWeek==0 ) || combinedWeek==0 ) && isCreateClassDone ? false : true"
+              *ngIf="!isLastClass; else addDone">
+              <!-- && isTypeInvalid -->
+              <mat-icon>arrow_right</mat-icon>
+            </button>
+
+            <ng-template #addDone>
+              <button mat-raised-button color="primary" (click)="addClass()"
+                [disabled]="(( theoryWeek==0 && practiceWeek==0 ) || combinedWeek==0 ) && isCreateClassDone ? false : true">
+                <!-- && isTypeInvalid -->
+                Thêm lớp học
+              </button>
+            </ng-template>
+          </div>
+
+        </mat-card-actions>
+      </mat-card>
+
+      <div class="some-text" style="width: 25% !important; margin: unset !important; max-width: unset !important;">
+
+        <mat-card class="frame-text" style="width: unset !important">
+          <mat-card-content class="text-tittle">Số giờ còn lại</mat-card-content>
+          <div *ngIf="!timeTotal.combined; else combined">
+            <mat-card-content class="text-content">
+              <span>Lý thuyết: <strong>{{theoryWeek}}</strong></span>
+              <span>Thực hành: <strong>{{practiceWeek}}</strong></span>
+            </mat-card-content>
+          </div>
+          <ng-template #combined>
+            <div>
+              <mat-card-content class="text-content">
+                <span>Tổng thời gian học: <strong>{{combinedWeek}}</strong></span>
+              </mat-card-content>
+            </div>
+          </ng-template>
+        </mat-card>
+      </div>
+
+    </div>
     <table mat-table [dataSource]="dataSource" #myTable>
 
       <ng-container matColumnDef="position">
         <th mat-header-cell *matHeaderCellDef class="custom-col-1">
           <button mat-icon-button matTooltip="Thêm lớp con"
-                  [disabled]="courseSelected && isChildDone && numOfClass &&
-                              isTypeInvalid && ( theoryWeek!=0 || practiceWeek!=0) ? false : true"
+                  [disabled]="courseSelected && isChildDone && numOfClass && ( combinedWeek>0 || theoryWeek>0 || practiceWeek>0 ) ? false : true"
                   (click)="addChildClass()" color="primary">
+                  <!-- isTypeInvalid && -->
             <mat-icon>add_circle</mat-icon>
           </button>
         </th>
@@ -78,15 +121,15 @@
 
 
       <ng-container matColumnDef="type">
-        <th mat-header-cell *matHeaderCellDef> Loại </th>
+        <th mat-header-cell *matHeaderCellDef> Loại lớp </th>
         <td mat-cell *matCellDef="let element; let i = index">
           <mat-form-field>
-            <mat-label>Loại phòng</mat-label>
+            <mat-label>Loại lớp</mat-label>
             <mat-select [value]="ELEMENT_DATA[i].type"
                         (selectionChange)="handleWithData($event.value, i, elm = 'type')">
-              <mat-option value="LT">Lý thuyết</mat-option>
-              <mat-option value="TH">Thực hành</mat-option>
-              <mat-option value="TC">Thể chất</mat-option>
+              <mat-option value="LT" *ngIf="timeTotal.theory!=0">Lý thuyết</mat-option>
+              <mat-option value="TH" *ngIf="timeTotal.practice!=0">Thực hành</mat-option>
+              <mat-option value="BT" *ngIf="timeTotal.practice!=0">Bài tập</mat-option>
             </mat-select>
           </mat-form-field>
         </td>
@@ -133,7 +176,8 @@
             <mat-label>Ca</mat-label>
             <mat-select [value]="ELEMENT_DATA[i].date.shift"
                         (selectionChange)="handleWithData($event.value, i, elm = 'shift')"
-                        [disabled]="ELEMENT_DATA[i].date.day && isTypeInvalid ? false : true ">
+                        [disabled]="ELEMENT_DATA[i].date.day && ELEMENT_DATA[i].type ? false : true ">
+                        <!-- && isTypeInvalid -->
               <mat-option *ngFor="let shift of shifts"
                           [value]="shift"> {{shift}}
               </mat-option>
@@ -150,7 +194,8 @@
             <mat-label>Phòng</mat-label>
             <mat-select [value]="ELEMENT_DATA[i].room._id"
                         (selectionChange)="handleWithData($event.value, i, elm = 'room')"
-                        [disabled]="ELEMENT_DATA[i].date.shift && isTypeInvalid ? false : true ">
+                        [disabled]="ELEMENT_DATA[i].date.shift ? false : true ">
+                        <!-- && isTypeInvalid -->
               <mat-option *ngFor="let room of roomList"
                           [value]="room._id">
                 {{room.name}}
@@ -163,38 +208,6 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-
-    <mat-card>
-      <mat-card-actions class="justify">
-
-        <div style="width: 40%">
-          <button mat-icon-button color="primary" (click)="setPreClass()"
-                  [disabled]="countClass==1 || !countClass ? true : false">
-            <mat-icon>arrow_left</mat-icon>
-          </button>
-        </div>
-
-        <div style="width: 20%; text-align: center; align-self: center">
-          <label>{{countClass}}</label>
-        </div>
-
-        <div style="width: 40%; display: flex; justify-content: flex-end">
-          <button mat-icon-button color="primary" (click)="setNextClass()"
-                  [disabled]="theoryWeek==0 && practiceWeek==0 && isCreateClassDone && isTypeInvalid? false : true"
-                  *ngIf="!isLastClass; else addDone">
-            <mat-icon>arrow_right</mat-icon>
-          </button>
-
-          <ng-template #addDone>
-            <button mat-raised-button color="primary" (click)="addClass()"
-                    [disabled]="theoryWeek==0 && practiceWeek==0 && isCreateClassDone && isTypeInvalid? false : true">
-              Thêm lớp học
-            </button>
-          </ng-template>
-        </div>
-
-      </mat-card-actions>
-    </mat-card>
   </div>
 </div>
 <div [ngStyle]="{'display': isFirstTime? 'block' : 'none'}" class="spinner-loading">

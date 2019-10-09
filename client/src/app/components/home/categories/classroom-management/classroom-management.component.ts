@@ -63,8 +63,8 @@ export class ClassroomManagementComponent implements OnInit {
     this.pageIndex = 1;
     this.pageSize = 8;
 
-    this.yearSelected = '';
-    this.semesterSelected = {};
+    this.yearSelected = null;
+    this.semesterSelected = null;
 
     this.getRoomsData(this.pageSize, this.pageIndex);
   }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import * as jwt_decode from 'jwt-decode'
 
 import { environment } from '../../../environments/environment';
 import { UserData } from './../home/interface/dialog-data';
@@ -36,10 +37,8 @@ export class AuthenticationService {
 
     return this.http.post<{ token: string }>(this.apiURL, loginUser, this.httpOptions)
       .pipe(tap(user => {
-        console.log(2);
-
         // store user details and jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem('currentUser', JSON.stringify({token: user.token}));
         this.currentUserSubject.next(user);
         // return user;
       }));

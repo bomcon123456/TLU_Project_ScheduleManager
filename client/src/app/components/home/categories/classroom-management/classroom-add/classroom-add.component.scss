@@ -70,6 +70,8 @@
 .justify {
   display: flex !important;
   justify-content: space-between !important;
+  margin-bottom: unset !important;
+  padding: unset !important;
 
   ::ng-deep .mat-icon-button{
     height: 40px !important;
