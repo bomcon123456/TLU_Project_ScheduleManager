@@ -1,0 +1,11 @@
+Ky 1 nhom 1 -> YOLO
+1. Ky 2 nhom 1 -> Ky 1 nhom 3
+2. Ky 3 nhom 1 -> Ky 2 nhom 3
+
+Ky 1 nhom 2 -> Ky 1 nhom 1
+1. Ky 2 nhom 2 -> Ky 2 nhom 1
+2. Ky 3 nhom 2 -> Ky 3 nhom 1
+
+Ky 1 nhom 3 -> Ky 1 nhom 2
+1. Ky 2 nhom 3 -> Ky 2 nhom 2
+2. Ky 3 nhom 3 -> Ky 3 nhom 2
