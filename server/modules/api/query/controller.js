@@ -20,6 +20,7 @@ const getFreeRooms = (req, res, next) => {
     }
   }
   let shiftQuery = new RegExp(str, "i");
+  let used = [];
   Classroom.find({
     "date.year": year,
     "date.group": group,
@@ -28,10 +29,12 @@ const getFreeRooms = (req, res, next) => {
     "date.shift": shiftQuery
   })
     .select({ roomId: 1, _id: 0 })
+    .populate("roomId", "name") // remove this for more performance
     .then(data => {
+      used = data;
       let rooms = [];
       data.map(each => {
-        rooms.push(each.roomId);
+        rooms.push(each.roomId._id);
       });
       console.log("Used rooms: " + rooms);
       return Room.find({ _id: { $nin: rooms } }).select({ name: 1 });
@@ -39,7 +42,8 @@ const getFreeRooms = (req, res, next) => {
     .then(data => {
       res.status(200).json({
         message: "fetched_freerooms_successfully",
-        data: data
+        data: data,
+        used: used
       });
     })
     .catch(err => next(err));
