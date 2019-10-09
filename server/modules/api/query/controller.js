@@ -1,6 +1,9 @@
 const Classroom = require("../classrooms/model");
 const Room = require("../rooms/model");
 
+const shifts = require("../../common/constants/shifts");
+const days = require("../../common/constants/days");
+
 const getFreeRooms = (req, res, next) => {
   const { year, group, semester, day, shift } = req.query;
   console.log(req.query);
@@ -42,4 +45,54 @@ const getFreeRooms = (req, res, next) => {
     .catch(err => next(err));
 };
 
-module.exports = { getFreeRooms };
+const getFreeShifts = (req, res, next) => {
+  const { year, group, semester, day, roomId } = req.query;
+  Classroom.find({
+    "date.year": year,
+    "date.group": group,
+    "date.semesters": semester,
+    "date.day": day,
+    roomId: roomId
+  })
+    .select({ date: 1, _id: 0 })
+    .then(data => {
+      let usedShifts = new Set();
+      let allShifts = new Set(shifts);
+      data.map(each => {
+        usedShifts.add(each.data.shift);
+      });
+      let result = new Set([...allShifts]).filter(x => !usedShifts.has(x));
+      res.status(200).json({
+        message: "fetched_freeshifts_successfully",
+        data: result
+      });
+    })
+    .catch(err => next(err));
+};
+
+const getFreeDays = (req, res, next) => {
+  const { year, group, semester, shift, roomId } = req.query;
+  Classroom.find({
+    "date.year": year,
+    "date.group": group,
+    "date.semesters": semester,
+    "date.shift": shift,
+    roomId: roomId
+  })
+    .select({ date: 1, _id: 0 })
+    .then(data => {
+      let usedDays = new Set();
+      let allDays = new Set(days);
+      data.map(each => {
+        usedDays.add(each.data.day);
+      });
+      let result = new Set([...allDays]).filter(x => !usedDays.has(x));
+      res.status(200).json({
+        message: "fetched_freeday_successfully",
+        data: result
+      });
+    })
+    .catch(err => next(err));
+};
+
+module.exports = { getFreeRooms, getFreeShifts, getFreeDays };

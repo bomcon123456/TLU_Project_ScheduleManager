@@ -1,0 +1,9 @@
+1. Moi toanh
+  1. Chon GV: thoải mái
+  2. Chon thứ : thoải mái
+  3. Chon ca : query: trả những ca mà giáo viên có thể dạy trong thứ+năm đó,kỳ-nhóm theo hk.txt
+  4. Chon phong: query: chọn những phòng trống những ca trên trong thứ+năm đó, kỳ-nhom theo hk.txt
+
+2. Da du het
+  1. Chon GV: query: Xoá thứ,ca,phòng
+  2. Chọn Ca: query: xoá phòng
