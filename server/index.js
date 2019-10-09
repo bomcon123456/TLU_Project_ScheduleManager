@@ -69,6 +69,10 @@ mongoose
     const port = process.env.PORT;
     console.warn("Listening at port:", port);
     app.listen(process.env.PORT);
+    const {
+      createUserForDep
+    } = require("./modules/common/util/create-user-for-dep");
+    createUserForDep();
     /* HTTPs
     // https
     //   .createServer(
