@@ -6,7 +6,7 @@ const days = require("../../common/constants/days");
 
 const {
   getNearbyGroupSem,
-  genPerdiodFromShift
+  getFreeShiftsFromUsedShifts
 } = require("../../common/util/query-util");
 
 const getTeacherFreeShifts = (req, res, next) => {
@@ -49,24 +49,7 @@ const getTeacherFreeShifts = (req, res, next) => {
     }
   ])
     .then(data => {
-      let usedPeriods = new Set();
-      console.log(data);
-      data[0].shifts.map(each => {
-        genPerdiodFromShift(each).forEach(item => usedPeriods.add(item));
-      });
-      let result = [];
-      let temp = [];
-      for (let i = 1; i < 14; i++) {
-        if (usedPeriods.has(i)) {
-          if (temp.length > 1) {
-            result.push(temp);
-          }
-          temp = [];
-          continue;
-        }
-        temp.push(i);
-      }
-      result.push(temp);
+      let result = getFreeShiftsFromUsedShifts(data[0].shifts);
       res.status(200).json(result);
     })
     .catch(err => next(err));
