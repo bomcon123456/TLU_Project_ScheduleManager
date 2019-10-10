@@ -34,3 +34,16 @@ const getNearbyGroupSem = (group, semester) => {
   }
   return res;
 };
+
+const genPerdiodFromShift = shift => {
+  let numbers = shift.split("-");
+  let start = parseInt(numbers[0]);
+  let end = parseInt(numbers[1]);
+  let res = [];
+  for (let i = start; i < end + 1; i++) {
+    res.push(i);
+  }
+  return res;
+};
+
+module.exports = { getNearbyGroupSem, genPerdiodFromShift };
