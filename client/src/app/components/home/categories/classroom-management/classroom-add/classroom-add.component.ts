@@ -81,10 +81,8 @@ export class ClassroomAddComponent implements OnInit {
               private storageService: StorageService,
               private toastr: ToastrService) {
 
-    let token = JSON.parse(localStorage.getItem('currentUser'));
+      let token = JSON.parse(localStorage.getItem('currentUser'));
       this.dataUser = jwt_decode(token.token);
-      // console.log(jwt_decode(this.dataUser.token));
-
 
       this.parentClass = [];
       this.unfinished = []
@@ -203,10 +201,6 @@ export class ClassroomAddComponent implements OnInit {
         this.theoryWeek = this.timeTotal.theory;
         this.practiceWeek = this.timeTotal.practice;
       }
-
-      // console.log(this.timeTotal);
-
-
     }
     else {
       this.parentClass[this.countClass - 1] = this.ELEMENT_DATA;
@@ -299,8 +293,6 @@ export class ClassroomAddComponent implements OnInit {
     this.setToDefault();
     this.isChildDone = true;
     this.courseSelected = data;
-    console.log(genClassroomName(this.courseSelected.name));
-
     this.getHoursOfWeek(data.length);
 
     this.ELEMENT_DATA = [];
@@ -409,7 +401,33 @@ export class ClassroomAddComponent implements OnInit {
 
   deleteChildClass(index: number) {
 
+    let typeDelete = this.ELEMENT_DATA[index].type;
     this.ELEMENT_DATA.splice(index, 1);
+
+    let originName = genClassroomName(this.courseSelected.name) + `.${this.countClass}`;
+    let count = 0;
+    let number = 1;
+
+    for (let i = 0; i < this.ELEMENT_DATA.length; i++) {
+
+      if (this.ELEMENT_DATA[i].type == typeDelete) {
+        count++;
+      }
+    }
+
+    for (let i = 0; i < this.ELEMENT_DATA.length; i++) {
+
+      if (this.ELEMENT_DATA[i].type == typeDelete) {
+        if (count == 1) {
+          this.ELEMENT_DATA[i].name = originName + `_${typeDelete}`;
+        }
+        else if (count > 1) {
+          this.ELEMENT_DATA[i].name = originName + `.${number}` + `_${typeDelete}`;
+          number++;
+        }
+      }
+    }
+
 
     if ( this.timeTotal.combined ) {
       this.combinedWeek = this.takeTimeLeft(this.timeTotal.combined, this.ELEMENT_DATA);
@@ -502,10 +520,10 @@ export class ClassroomAddComponent implements OnInit {
         let oldType = this.ELEMENT_DATA[index].type;
         this.ELEMENT_DATA[index].type = data;
 
+        let originName = genClassroomName(this.courseSelected.name) + `.${this.countClass}`;
         let numberNewType = 1;
         let numberOldType = 1
         let count = 0;
-        let originName = genClassroomName(this.courseSelected.name) + `.${this.countClass}`;
 
         for (let i = 0; i < this.ELEMENT_DATA.length; i++) {
           if ( i != index ) {
@@ -690,11 +708,6 @@ export class ClassroomAddComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
   }
 
-  // default() {
-    //   this.dataSource.paginator = null;
-    //   this.dataSource.sort = this.sort;
-    // }
-
   /**
    * CRUD
    */
@@ -762,11 +775,4 @@ export class ClassroomAddComponent implements OnInit {
     }
   }
 
-
-
 }
-
-const ELEMENT_DATA = [
-  { name: 'Hydrogen', students: 20, type: 'Thực hành', teacher: { _id: '12345678', name: 'Nguyễn Văn A' }, date: { day: '40', shift: '2' }, room: { _id: '123456789', name: 'A303'} },
-];
-
