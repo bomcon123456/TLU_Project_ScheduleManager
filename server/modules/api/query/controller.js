@@ -65,7 +65,6 @@ const getFreeRooms = (req, res, next) => {
     .catch(err => next(err));
 };
 
-// @TODO: RE DO THIS SHIT, WTF IS THIS GARBAGE?
 const getFreeShifts = (req, res, next) => {
   const { year, group, semester, day, roomId, teacherId } = req.query;
   let teacherFreeShifts;
