@@ -6,51 +6,16 @@ const days = require("../../common/constants/days");
 
 const {
   getNearbyGroupSem,
-  getFreeShiftsFromUsedShifts
+  getTeacherFreeShiftsPromise
 } = require("../../common/util/query-util");
 
 const getTeacherFreeShifts = (req, res, next) => {
   const { year, group, semester, day, teacherId } = req.query;
-  dates = getNearbyGroupSem(group, semester);
-  orQueries = dates.map(each => {
-    return {
-      "date.group": each.group,
-      "date.semesters": each.semester
-    };
-  });
-  // Classroom.find({ "date.year": year, "date.day": day, teacherId: teacherId })
-  //   .or(orQueries)
-  //   .select({ "date.shift": 1, _id: 0 })
-  Classroom.aggregate([
-    {
-      $match: {
-        "date.year": year,
-        "date.day": day,
-        teacherId: teacherId,
-        $or: orQueries
-      }
-    },
-    {
-      $project: {
-        shift: "$date.shift",
-        _id: "1"
-      }
-    },
-    {
-      $group: {
-        _id: "1",
-        shifts: { $push: "$shift" }
-      }
-    },
-    {
-      $project: {
-        _id: 0
-      }
-    }
-  ])
+  getTeacherFreeShiftsPromise(year, group, semester, day, teacherId)
     .then(data => {
-      let result = getFreeShiftsFromUsedShifts(data[0].shifts);
-      res.status(200).json(result);
+      res
+        .status(200)
+        .json({ message: "fetch_teacher_freeshifts_successfully", data: data });
     })
     .catch(err => next(err));
 };
@@ -103,29 +68,32 @@ const getFreeRooms = (req, res, next) => {
 // @TODO: RE DO THIS SHIT, WTF IS THIS GARBAGE?
 const getFreeShifts = (req, res, next) => {
   const { year, group, semester, day, roomId, teacherId } = req.query;
-  Classroom.find({
-    "date.year": year,
-    "date.group": group,
-    "date.semesters": semester,
-    "date.day": day,
-    roomId: roomId
-  })
-    .select({ date: 1, _id: 0 })
+  let teacherFreeShifts;
+  let roomFreeShifts;
+  getTeacherFreeShiftsPromise(year, group, semester, day, teacherId)
     .then(data => {
-      let usedShifts = new Set();
-      let allShifts = new Set(shifts);
-      data.map(each => {
-        usedShifts.add(each.data.shift);
-      });
-      let result = new Set([...allShifts]).filter(x => !usedShifts.has(x));
-      if (!teacherId) {
-        res.status(200).json({
-          message: "fetched_freeshifts_successfully",
-          data: result
-        });
-      } else {
-        // @TODO: Find again in classroom for that teacher's used shifts
+      if (!data) {
+        let error = new Error("cant_find_teacher_freeshifts");
+        error.statusCode = 500;
+        throw error;
       }
+      teacherFreeShifts = new Set(data);
+      return getRoomFreeShiftsPromise(year, group, semester, day, roomId);
+    })
+    .then(data => {
+      if (!data) {
+        let error = new Error("cant_find_room_freeshifts");
+        error.statusCode = 500;
+        throw error;
+      }
+      roomFreeShifts = new Set(data);
+      let intersection = new Set(
+        [...roomFreeShifts].filter(x => teacherFreeShifts.has(x))
+      );
+      let result = Array.from(intersection);
+      res
+        .status(200)
+        .json({ message: "fetch_teacher_freeshifts_successfully", data: data });
     })
     .catch(err => next(err));
 };

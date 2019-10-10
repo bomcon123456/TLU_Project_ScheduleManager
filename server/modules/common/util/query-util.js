@@ -1,3 +1,5 @@
+const Classroom = require("../../api/classrooms/model");
+
 const shifts = require("../../common/constants/shifts");
 
 const getNearbyGroupSem = (group, semester) => {
@@ -83,8 +85,108 @@ const getFreeShiftsFromUsedShifts = data => {
   return Array.from(intersection);
 };
 
+const getTeacherFreeShiftsPromise = (year, group, semester, day, teacherId) => {
+  return new Promise((resolve, reject) => {
+    dates = getNearbyGroupSem(group, semester);
+    orQueries = dates.map(each => {
+      return {
+        "date.group": each.group,
+        "date.semesters": each.semester
+      };
+    });
+    Classroom.aggregate([
+      {
+        $match: {
+          "date.year": year,
+          "date.day": day,
+          teacherId: teacherId,
+          $or: orQueries
+        }
+      },
+      {
+        $project: {
+          shift: "$date.shift",
+          _id: "1"
+        }
+      },
+      {
+        $group: {
+          _id: "1",
+          shifts: { $push: "$shift" }
+        }
+      },
+      {
+        $project: {
+          _id: 0
+        }
+      }
+    ])
+      .then(data => {
+        if (data.length === 0) {
+          let error = new Error("teacher_not_exists");
+          error.statusCode = 404;
+          throw error;
+        }
+        let result = getFreeShiftsFromUsedShifts(data[0].shifts);
+        resolve(result);
+      })
+      .catch(err => reject(err));
+  });
+};
+
+const getRoomFreeShiftsPromise = (year, group, semester, day, roomId) => {
+  return new Promise((resolve, reject) => {
+    dates = getNearbyGroupSem(group, semester);
+    orQueries = dates.map(each => {
+      return {
+        "date.group": each.group,
+        "date.semesters": each.semester
+      };
+    });
+    Classroom.aggregate([
+      {
+        $match: {
+          "date.year": year,
+          "date.day": day,
+          roomId: roomId,
+          $or: orQueries
+        }
+      },
+      {
+        $project: {
+          shift: "$date.shift",
+          _id: "1"
+        }
+      },
+      {
+        $group: {
+          _id: "1",
+          shifts: { $push: "$shift" }
+        }
+      },
+      {
+        $project: {
+          _id: 0
+        }
+      }
+    ])
+      .then(data => {
+        if (data.length === 0) {
+          let error = new Error("room_not_exists");
+          error.statusCode = 404;
+          throw error;
+        }
+        let result = getFreeShiftsFromUsedShifts(data[0].shifts);
+        resolve(result);
+      })
+      .catch(err => reject(err));
+  });
+};
+
 module.exports = {
   getNearbyGroupSem,
   genPerdiodFromShift,
-  getFreeShiftsFromUsedShifts
+  getFreeShiftsFromUsedShifts,
+  getTeacherFreeShiftsPromise,
+  getRoomFreeShiftsPromise
 };
