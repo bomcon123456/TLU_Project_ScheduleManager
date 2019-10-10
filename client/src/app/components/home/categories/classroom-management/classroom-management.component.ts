@@ -5,6 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import * as jwt_decode from 'jwt-decode';
 
 import { ClassroomDialogComponent } from './classroom-dialog/classroom-dialog.component';
 import { ClassroomElement } from '../../interface/dialog-data';
@@ -22,7 +23,7 @@ import { SEMESTERS, YEARS } from './storage/data-storage';
 })
 export class ClassroomManagementComponent implements OnInit {
 
-  public displayedColumns: string[] = ['position', 'name', 'students', 'course', 'room', 'teacher', 'shift', 'day', 'actions'];
+  public displayedColumns: string[] = ['position', 'name', 'students', 'course', 'room', 'teacher', 'shift', 'day', 'confirm', 'actions'];
 
   private years = YEARS;
   private semesters = SEMESTERS;
@@ -31,6 +32,7 @@ export class ClassroomManagementComponent implements OnInit {
 
   public dataSource: any = null;
   public semesterSelected: any;
+  private dataUser: any;
 
   private isLoading: boolean;
   private isFirstTime: boolean;
@@ -53,7 +55,13 @@ export class ClassroomManagementComponent implements OnInit {
               private roomApi: RoomApiService,
               private toastr: ToastrService,
               private storageService: StorageService,
-              private route: Router) { }
+              private route: Router) {
+
+    let token = JSON.parse(localStorage.getItem('currentUser'));
+    this.dataUser = jwt_decode(token.token);
+    console.log(this.dataUser);
+
+  }
 
   ngOnInit() {
     this.isFirstTime = true;
@@ -99,6 +107,12 @@ export class ClassroomManagementComponent implements OnInit {
 
   goToAdd() {
     this.route.navigate(['/classroom-management/classroom-add']);
+  }
+
+  confirmClass(index) {
+    this.ELEMENT_DATA[index].confirm = true;
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+
   }
 
   default() {
@@ -242,7 +256,8 @@ export class ClassroomManagementComponent implements OnInit {
 }
 
 const ELEMENT_DATA: ClassroomElement[] = [
-  { name: 'Hydrogen', students: 20, courseId: { _id: 'B', name: 'abc' }, roomId: { _id: 'B', name: 'abc' }, teacherId: { _id: 'B', name: 'abc' }, date: { shift: 'abc', day: 'abc', group: 'abc', semester: 'abc', year: 'abc'} },
+  { name: 'Hydrogen', students: 20, courseId: { _id: 'B', name: 'abc' }, roomId: { _id: 'B', name: 'abc' }, teacherId: { _id: 'B', name: 'abc' }, date: { shift: 'abc', day: 'abc', group: 'abc', semester: 'abc', year: 'abc'}, confirm: false },
+  { name: 'Hydrogen', students: 20, courseId: { _id: 'B', name: 'abc' }, roomId: { _id: 'B', name: 'abc' }, teacherId: { _id: 'B', name: 'abc' }, date: { shift: 'abc', day: 'abc', group: 'abc', semester: 'abc', year: 'abc'}, confirm: true },
 
 ];
 

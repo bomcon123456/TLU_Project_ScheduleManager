@@ -84,10 +84,6 @@ export class ClassroomAddComponent implements OnInit {
       let token = JSON.parse(localStorage.getItem('currentUser'));
       this.dataUser = jwt_decode(token.token);
 
-      this.parentClass = [];
-      this.unfinished = []
-      this.isLastClass = false;
-
       this.yearSelected = '2019-2020';
       this.semesterSelected = {
         key: {
@@ -164,6 +160,9 @@ export class ClassroomAddComponent implements OnInit {
     this.numOfClass = null;
     this.countClass = null;
     this.timeTotal = {};
+    this.parentClass = [];
+    this.unfinished = []
+    this.isLastClass = false;
   }
 
   setNumOfClass(value) {
@@ -244,6 +243,7 @@ export class ClassroomAddComponent implements OnInit {
   setPreClass() {
 
     this.countClass -= 1;
+    this.isCreateClassDone = true
     // this.isTypeInvalid = true;
 
     if ( this.isLastClass ) {
@@ -374,6 +374,7 @@ export class ClassroomAddComponent implements OnInit {
   addChildClass() {
 
     this.isChildDone = false;
+    this.isCreateClassDone = false;
     // this.isTypeInvalid = false;
 
     let temp = {
@@ -385,8 +386,8 @@ export class ClassroomAddComponent implements OnInit {
         name: null,
       },
       date: {
-        day: null,
-        shift: null
+        day: '',
+        shift: ''
       },
       room: {
         _id: null,
@@ -460,6 +461,7 @@ export class ClassroomAddComponent implements OnInit {
 
       for (let i = 0; i < array.length; i++) {
         let shift = array[i].date.shift;
+
         let indexCut = shift.indexOf('-');
 
         if (indexCut == -1) {
@@ -562,33 +564,6 @@ export class ClassroomAddComponent implements OnInit {
         }
 
         return;
-
-        // this.isTypeInvalid = true;
-
-        // switch (data) {
-          //   case 'LT': {
-
-        //     if ( this.theoryWeek==0 && this.timeTotal.theory==0 ) {
-
-        //       // this.isTypeInvalid = false;
-        //     }
-        //     return;
-        //   };
-        //   case 'BT':
-        //   case 'TH': {
-
-        //     if ( this.practiceWeek==0 && this.timeTotal.practice==0 ) {
-
-        //       // this.isTypeInvalid = false;
-        //     }
-        //     return;
-        //   };
-        //   default: {
-
-        //     // this.isTypeInvalid = false;
-        //     return;
-        //   }
-        // }
       };
       case 'room': {
 

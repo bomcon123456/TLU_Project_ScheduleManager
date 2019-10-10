@@ -77,5 +77,6 @@ export interface ClassroomElement {
     group?: string;
     semester?: string;
     year?: string;
-  }
+  },
+  confirm: boolean;
 }

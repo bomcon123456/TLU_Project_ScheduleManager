@@ -1,5 +1,5 @@
 <div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
-  <div class="header-top" style="margin-top: 50px; justify-content: center; text-align: center; height: unset !important;">
+  <div class="header-top" style="margin-top: 50px; justify-content: center; text-align: center; height: unset !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
     <div style="font-size: 35px; font-weight: bold">
       {{semesterSelected.value}}
     </div>
@@ -66,7 +66,7 @@
       <div class="some-text" style="width: 25% !important; margin: unset !important; max-width: unset !important;">
 
         <mat-card class="frame-text" style="width: unset !important">
-          <mat-card-content class="text-tittle">Số giờ còn lại</mat-card-content>
+          <mat-card-content class="text-tittle">Số giờ dạy còn lại trong tuần</mat-card-content>
           <div *ngIf="!timeTotal.combined; else combined">
             <mat-card-content class="text-content">
               <span>Lý thuyết: <strong>{{theoryWeek}}</strong></span>
