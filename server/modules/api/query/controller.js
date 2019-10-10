@@ -90,9 +90,10 @@ const getFreeShifts = (req, res, next) => {
         [...roomFreeShifts].filter(x => teacherFreeShifts.has(x))
       );
       let result = Array.from(intersection);
-      res
-        .status(200)
-        .json({ message: "fetch_teacher_freeshifts_successfully", data: data });
+      res.status(200).json({
+        message: "fetch_teacher_freeshifts_successfully",
+        data: result
+      });
     })
     .catch(err => next(err));
 };
