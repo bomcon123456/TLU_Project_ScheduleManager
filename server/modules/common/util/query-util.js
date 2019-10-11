@@ -123,7 +123,7 @@ const getTeacherFreeShiftsPromise = (year, group, semester, day, teacherId) => {
     ])
       .then(data => {
         if (data.length === 0) {
-          resolve(shifts);
+          resolve(shifts.shifts);
         }
         let result = getFreeShiftsFromUsedShifts(data[0].shifts);
         resolve(result);
