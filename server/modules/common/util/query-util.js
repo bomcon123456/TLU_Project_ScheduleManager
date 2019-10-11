@@ -123,9 +123,7 @@ const getTeacherFreeShiftsPromise = (year, group, semester, day, teacherId) => {
     ])
       .then(data => {
         if (data.length === 0) {
-          let error = new Error("teacher_not_exists");
-          error.statusCode = 404;
-          throw error;
+          resolve(shifts);
         }
         let result = getFreeShiftsFromUsedShifts(data[0].shifts);
         resolve(result);

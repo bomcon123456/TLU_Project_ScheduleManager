@@ -1,4 +1,5 @@
 const Classroom = require("../classrooms/model");
+const Teacher = require("../teachers/model");
 const Room = require("../rooms/model");
 
 const shifts = require("../../common/constants/shifts");
@@ -11,7 +12,15 @@ const {
 
 const getTeacherFreeShifts = (req, res, next) => {
   const { year, group, semester, day, teacherId } = req.query;
-  getTeacherFreeShiftsPromise(year, group, semester, day, teacherId)
+  Teacher.findById(teacherId)
+    .then(teach => {
+      if (!teach) {
+        let error = new Error("teacher_not_exists");
+        error.statusCode = 404;
+        throw error;
+      }
+      return getTeacherFreeShiftsPromise(year, group, semester, day, teacherId);
+    })
     .then(data => {
       res
         .status(200)
