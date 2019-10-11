@@ -6,8 +6,10 @@ const shifts = require("../../common/constants/shifts");
 const days = require("../../common/constants/days");
 
 const {
+  genPerdiodFromShift,
   getNearbyGroupSem,
-  getTeacherFreeShiftsPromise
+  getTeacherFreeShiftsPromise,
+  getRoomFreeShiftsPromise
 } = require("../../common/util/query-util");
 
 const getTeacherFreeShifts = (req, res, next) => {
@@ -36,14 +38,19 @@ const getFreeRooms = (req, res, next) => {
   let start = parseInt(numbers[0]);
   let end = parseInt(numbers[1]);
   let str = "[" + numbers[0] + ",";
-  for (let i = start + 1; i < end + 1; i++) {
-    str += i.toString();
-    if (i !== end) {
-      str += ",";
-    } else {
-      str += "]";
+  if (start === end) {
+    str += numbers[0] + "]";
+  } else {
+    for (let i = start + 1; i < end + 1; i++) {
+      str += i.toString();
+      if (i !== end) {
+        str += ",";
+      } else {
+        str += "]";
+      }
     }
   }
+
   let shiftQuery = new RegExp(str, "i");
   let used = [];
   Classroom.find({
@@ -100,7 +107,7 @@ const getFreeShifts = (req, res, next) => {
       );
       let result = Array.from(intersection);
       res.status(200).json({
-        message: "fetch_teacher_freeshifts_successfully",
+        message: "fetch_freeshifts_successfully",
         data: result
       });
     })
@@ -109,24 +116,40 @@ const getFreeShifts = (req, res, next) => {
 
 const getFreeDays = (req, res, next) => {
   const { year, group, semester, shift, roomId } = req.query;
+  periods = genPerdiodFromShift(shift);
+  let shiftQuery = "[";
+  if (periods.length === 1) {
+    shiftQuery += periods[0].toString() + "," + periods[0].toString() + "]";
+  } else {
+    periods.forEach((value, index) => {
+      if (index !== periods.length - 1) {
+        shiftQuery += value.toString() + ",";
+      } else {
+        shiftQuery += value.toString() + "]";
+      }
+    });
+  }
+  let shiftRegex = new RegExp(shiftQuery, "i");
+  console.log(shiftQuery);
   Classroom.find({
     "date.year": year,
     "date.group": group,
     "date.semesters": semester,
-    "date.shift": shift,
+    "date.shift": shiftRegex,
     roomId: roomId
   })
     .select({ date: 1, _id: 0 })
     .then(data => {
       let usedDays = new Set();
-      let allDays = new Set(days);
+      let allDays = new Set(days.days);
       data.map(each => {
-        usedDays.add(each.data.day);
+        usedDays.add(each.date.day);
       });
-      let result = new Set([...allDays]).filter(x => !usedDays.has(x));
+      // let result = new Set([...allDays]).filter(x => !usedDays.has(x));
+      let intersection = new Set([...allDays].filter(x => !usedDays.has(x)));
       res.status(200).json({
         message: "fetched_freeday_successfully",
-        data: result
+        data: Array.from(intersection)
       });
     })
     .catch(err => next(err));

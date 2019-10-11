@@ -170,9 +170,7 @@ const getRoomFreeShiftsPromise = (year, group, semester, day, roomId) => {
     ])
       .then(data => {
         if (data.length === 0) {
-          let error = new Error("room_not_exists");
-          error.statusCode = 404;
-          throw error;
+          resolve(shifts.shifts);
         }
         let result = getFreeShiftsFromUsedShifts(data[0].shifts);
         resolve(result);
