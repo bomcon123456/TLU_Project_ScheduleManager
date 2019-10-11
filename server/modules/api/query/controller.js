@@ -119,14 +119,15 @@ const getFreeDays = (req, res, next) => {
     .select({ date: 1, _id: 0 })
     .then(data => {
       let usedDays = new Set();
-      let allDays = new Set(days);
+      let allDays = new Set(days.days);
       data.map(each => {
         usedDays.add(each.data.day);
       });
-      let result = new Set([...allDays]).filter(x => !usedDays.has(x));
+      // let result = new Set([...allDays]).filter(x => !usedDays.has(x));
+      let intersection = new Set([...allDays].filter(x => !usedDays.has(x)));
       res.status(200).json({
         message: "fetched_freeday_successfully",
-        data: result
+        data: Array.from(intersection)
       });
     })
     .catch(err => next(err));
