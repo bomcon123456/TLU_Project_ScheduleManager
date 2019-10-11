@@ -6,6 +6,7 @@ const shifts = require("../../common/constants/shifts");
 const days = require("../../common/constants/days");
 
 const {
+  genPerdiodFromShift,
   getNearbyGroupSem,
   getTeacherFreeShiftsPromise
 } = require("../../common/util/query-util");
@@ -109,11 +110,23 @@ const getFreeShifts = (req, res, next) => {
 
 const getFreeDays = (req, res, next) => {
   const { year, group, semester, shift, roomId } = req.query;
+  periods = genPerdiodFromShift(shift);
+  console.log(periods);
+  let shiftQuery = "[";
+  periods.forEach((value, index) => {
+    if (index !== periods.length - 1) {
+      shiftQuery += value.toString() + ",";
+    } else {
+      shiftQuery += value.toString() + "]";
+    }
+  });
+  let shiftRegex = new RegExp(shiftQuery, "i");
+  console.log(shiftQuery);
   Classroom.find({
     "date.year": year,
     "date.group": group,
     "date.semesters": semester,
-    "date.shift": shift,
+    "date.shift": shiftRegex,
     roomId: roomId
   })
     .select({ date: 1, _id: 0 })
@@ -121,7 +134,7 @@ const getFreeDays = (req, res, next) => {
       let usedDays = new Set();
       let allDays = new Set(days.days);
       data.map(each => {
-        usedDays.add(each.data.day);
+        usedDays.add(each.date.day);
       });
       // let result = new Set([...allDays]).filter(x => !usedDays.has(x));
       let intersection = new Set([...allDays].filter(x => !usedDays.has(x)));
