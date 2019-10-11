@@ -8,7 +8,8 @@ const days = require("../../common/constants/days");
 const {
   genPerdiodFromShift,
   getNearbyGroupSem,
-  getTeacherFreeShiftsPromise
+  getTeacherFreeShiftsPromise,
+  getRoomFreeShiftsPromise
 } = require("../../common/util/query-util");
 
 const getTeacherFreeShifts = (req, res, next) => {
@@ -37,14 +38,19 @@ const getFreeRooms = (req, res, next) => {
   let start = parseInt(numbers[0]);
   let end = parseInt(numbers[1]);
   let str = "[" + numbers[0] + ",";
-  for (let i = start + 1; i < end + 1; i++) {
-    str += i.toString();
-    if (i !== end) {
-      str += ",";
-    } else {
-      str += "]";
+  if (start === end) {
+    str += numbers[0] + "]";
+  } else {
+    for (let i = start + 1; i < end + 1; i++) {
+      str += i.toString();
+      if (i !== end) {
+        str += ",";
+      } else {
+        str += "]";
+      }
     }
   }
+
   let shiftQuery = new RegExp(str, "i");
   let used = [];
   Classroom.find({
@@ -101,7 +107,7 @@ const getFreeShifts = (req, res, next) => {
       );
       let result = Array.from(intersection);
       res.status(200).json({
-        message: "fetch_teacher_freeshifts_successfully",
+        message: "fetch_freeshifts_successfully",
         data: result
       });
     })
@@ -111,15 +117,18 @@ const getFreeShifts = (req, res, next) => {
 const getFreeDays = (req, res, next) => {
   const { year, group, semester, shift, roomId } = req.query;
   periods = genPerdiodFromShift(shift);
-  console.log(periods);
   let shiftQuery = "[";
-  periods.forEach((value, index) => {
-    if (index !== periods.length - 1) {
-      shiftQuery += value.toString() + ",";
-    } else {
-      shiftQuery += value.toString() + "]";
-    }
-  });
+  if (periods.length === 1) {
+    shiftQuery += periods[0].toString() + "," + periods[0].toString() + "]";
+  } else {
+    periods.forEach((value, index) => {
+      if (index !== periods.length - 1) {
+        shiftQuery += value.toString() + ",";
+      } else {
+        shiftQuery += value.toString() + "]";
+      }
+    });
+  }
   let shiftRegex = new RegExp(shiftQuery, "i");
   console.log(shiftQuery);
   Classroom.find({
