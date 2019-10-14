@@ -6,7 +6,7 @@ const omit = require("lodash/omit");
 const { validationResult } = require("express-validator/check");
 
 exports.getAuthenUser = (req, res, next) => {
-  const userId = req.userId;
+  const userId = req.user.id;
   return User.findById(userId)
     .select(
       "_id avatarUrl birthday description email gender name role username department"
@@ -69,7 +69,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.update = (req, res, next) => {
-  let id = req.userId;
+  let id = req.user.id;
   User.findById(id)
     .then(user => {
       if (!user) {
