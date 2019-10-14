@@ -205,10 +205,9 @@
 
       <ng-container matColumnDef="shift">
         <th mat-header-cell *matHeaderCellDef> Ca </th>
-        <td mat-cell *matCellDef="let element; let i = index" style="position: relative;">
-          <div class="background-loading" *ngIf="!ELEMENT_DATA[i].date.shift && !shifts && isLoadingShift "
-              style=" width: 10rem !important; height: unset !important; background-color: unset !important" >
-            <div class="lds-ellipsis position-loading" style="left: 25% !important; top: unset !important;">
+        <td mat-cell *matCellDef="let element; let i = index" class="pos-relative">
+          <div class="background-loading background" *ngIf="!ELEMENT_DATA[i].date.shift && !shifts && isLoadingShift " >
+            <div class="lds-ellipsis position-loading loading">
               <div></div>
               <div></div>
               <div></div>
@@ -241,10 +240,9 @@
 
       <ng-container matColumnDef="room">
         <th mat-header-cell *matHeaderCellDef> Phòng</th>
-        <td mat-cell *matCellDef="let element; let i = index" style="position: relative;">
-          <div class="background-loading" *ngIf="!ELEMENT_DATA[i].room._id && !roomList && isLoadingRoom "
-            style=" width: 10rem !important; height: unset !important; background-color: unset !important">
-            <div class="lds-ellipsis position-loading" style="left: 25% !important; top: unset !important;">
+        <td mat-cell *matCellDef="let element; let i = index" class="pos-relative">
+          <div class="background-loading background" *ngIf="!ELEMENT_DATA[i].room._id && !roomList && isLoadingRoom ">
+            <div class="lds-ellipsis position-loading loading">
               <div></div>
               <div></div>
               <div></div>

@@ -56,7 +56,7 @@ export class ClassroomApiService {
 
   // HttpClient API post() method => Create department
   createClassroom(classroom): Observable<any> {
-    return this.http.post(this.apiURL, JSON.stringify(classroom), this.httpOptions)
+    return this.http.post(this.apiURL + '/', JSON.stringify(classroom), this.httpOptions)
       .pipe(
         retry(1),
         catchError(this.handleError)

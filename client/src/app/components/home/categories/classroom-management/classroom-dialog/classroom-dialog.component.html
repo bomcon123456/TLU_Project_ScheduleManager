@@ -1,1 +1,148 @@
-<p>classroom-dialog works!</p>
+<h1 mat-dialog-title>
+  <strong *ngIf="action == 'edit'">Chỉnh sửa thông tin lớp học</strong>
+  <strong *ngIf="action == 'delete'">Xoá lớp học</strong>
+</h1>
+<form [formGroup]="classroomForm" autocomplete="off">
+  <mat-card>
+    <mat-card-content>
+      <div mat-dialog-content *ngIf="action != 'delete'; else elseTemplate" style="overflow: unset">
+        <div class="example-container">
+          <mat-form-field>
+            <input placeholder="Tên lớp học" matInput
+                  [ngModel]="local_data.name"
+                  [formControl]="nameFormControl" readonly>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input placeholder="Môn học" matInput
+                  [ngModel]="local_data.courseId.name"
+                  [formControl]="courseFormControl"readonly>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input placeholder="Số lượng sinh viên" type="number" matInput [(ngModel)]="local_data.students"
+                  [formControl]="studentsFormControl" required>
+            <mat-error *ngIf="hasError('students', 'required')">Số lượng sinh viên không được để trống.</mat-error>
+            <mat-error *ngIf="hasError('students', 'min')">Số lượng sinh viên không được ít hơn 30 sinh viên.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Giáo viên</mat-label>
+            <mat-select [(value)]="local_data.teacherId._id"
+                        [formControl]="teacherFormControl" required>
+              <mat-option>
+                <ngx-mat-select-search [formControl]="TeacherFilteringCtrl" [searching]="teacherSearching" placeholderLabel=''>
+                </ngx-mat-select-search>
+              </mat-option>
+              <mat-option *ngFor="let teacher of teacherList" [value]="teacher._id">
+                {{teacher.name}}
+              </mat-option>
+              <mat-optgroup label="Giáo viên đã chọn">
+                <mat-option [value]="teacherSelected._id">{{teacherSelected.name}}</mat-option>
+              </mat-optgroup>
+            </mat-select>
+            <mat-error *ngIf="hasError('teacher', 'required')">Giáo viên không được để trống.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Năm học</mat-label>
+            <mat-select [(value)]="local_data.date.year" [formControl]="yearFormControl" required>
+              <mat-option *ngFor="let year of yearList" [value]="year">{{year}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="hasError('year', 'required')">Năm học không được để trống.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Nhóm học</mat-label>
+            <mat-select [(value)]="local_data.date.group" [formControl]="groupFormControl" required>
+              <mat-option value="Group 1">Nhóm 1</mat-option>
+              <mat-option value="Group 2">Nhóm 2</mat-option>
+              <mat-option value="Group 3">Nhóm 3</mat-option>
+            </mat-select>
+            <mat-error *ngIf="hasError('group', 'required')">Nhóm học không được để trống.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Kỳ học</mat-label>
+            <mat-select [(value)]="local_data.date.semesters" [formControl]="semesterFormControl" required>
+              <mat-option value="Semester 1">Kỳ 1</mat-option>
+              <mat-option value="Semester 2">Kỳ 2</mat-option>
+              <mat-option value="Semester 3">Kỳ 3</mat-option>
+            </mat-select>
+            <mat-error *ngIf="hasError('semester', 'required')">Kỳ học không được để trống.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Thứ</mat-label>
+            <mat-select [(value)]="local_data.date.day"
+                        (selectionChange)="getShiftFree()"
+                        [formControl]="dayFormControl" required>
+              <mat-option *ngFor="let day of dayList" [value]="day">{{tranformToVn(day)}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="hasError('day', 'required')">Thứ không được để trống.</mat-error>
+          </mat-form-field>
+
+          <div class="pos-relative custom">
+            <div class="background-loading background" *ngIf="isLoadingShift ">
+              <div class="lds-ellipsis position-loading loading">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+            <mat-form-field>
+              <mat-label>Ca học</mat-label>
+              <mat-select [(value)]="local_data.date.shift"
+                          (selectionChange)="getRoomFree()"
+                          [formControl]="shiftFormControl" required>
+                <mat-option *ngFor="let shift of shiftList" [value]="shift">{{shift}}</mat-option>
+                <mat-optgroup label="Ca học đã chọn">
+                  <mat-option [value]="shiftSelected">{{shiftSelected}}</mat-option>
+                </mat-optgroup>
+              </mat-select>
+              <mat-error *ngIf="hasError('shift', 'required')">Ca học không được để trống.</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="pos-relative custom">
+            <div class="background-loading background" *ngIf="isLoadingRoom ">
+              <div class="lds-ellipsis position-loading loading">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+            <mat-form-field>
+              <mat-label>Phòng học</mat-label>
+              <mat-select [(value)]="local_data.roomId._id" [formControl]="roomFormControl" required>
+                <mat-option *ngFor="let room of roomList" [value]="room._id">{{room.name}}</mat-option>
+                <mat-optgroup label="Phòng học đã chọn">
+                  <mat-option [value]="roomSelected._id">{{roomSelected.name}}</mat-option>
+                </mat-optgroup>
+              </mat-select>
+              <mat-error *ngIf="hasError('room', 'required')">Phòng học không được để trống.</mat-error>
+            </mat-form-field>
+          </div>
+
+        </div>
+      </div>
+      <div mat-dialog-content>
+        <ng-template #elseTemplate>
+          <label>Bạn chắc chắn muốn xóa lớp học này?</label><br>
+          <b>{{local_data.name}}</b>
+        </ng-template>
+      </div>
+    </mat-card-content>
+    <mat-card-actions style="height: 3rem;">
+      <div style="float: right;">
+        <button mat-stroked-button *ngIf="action == 'edit'" color="primary" (click)="doAction()"
+          [disabled]="classroomForm.invalid">Sửa</button>
+        <button mat-stroked-button *ngIf="action == 'delete'" color="warn" (click)="doAction()">Xóa</button>
+        <button mat-stroked-button (click)="closeDialog()" mat-flat-button>Hủy bỏ</button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</form>

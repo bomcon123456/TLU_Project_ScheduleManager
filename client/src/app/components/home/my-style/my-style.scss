@@ -134,3 +134,19 @@ th.mat-sort-header-sorted {
 .w-6rem {
   width: 6rem !important;;
 }
+
+.pos-relative {
+  position: relative;
+
+  .background {
+    width: 10rem !important;
+    height: unset !important;
+    background-color: unset !important;
+
+    .loading {
+      left: 25% !important;
+      top: -7px !important;
+    }
+  }
+}
+

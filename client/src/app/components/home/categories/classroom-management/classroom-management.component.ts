@@ -10,6 +10,7 @@ import * as jwt_decode from 'jwt-decode';
 import { ClassroomDialogComponent } from './classroom-dialog/classroom-dialog.component';
 import { ClassroomElement } from '../../interface/dialog-data';
 import { RoomApiService } from './../../../../services/room-api.service';
+import { ClassroomApiService } from './../../../../services/classroom-api.service'
 import { StorageService } from '../../storage/storage.service';
 import { SEMESTERS, YEARS } from '../../storage/data-storage';
 
@@ -23,7 +24,7 @@ import { SEMESTERS, YEARS } from '../../storage/data-storage';
 })
 export class ClassroomManagementComponent implements OnInit {
 
-  public displayedColumns: string[] = ['position', 'name', 'students', 'course', 'room', 'teacher', 'shift', 'day', 'confirm', 'actions'];
+  public displayedColumns: string[] = ['position', 'name', 'students', 'course', 'room', 'teacher', 'shift', 'day', 'verified', 'actions'];
 
   private years = YEARS;
   private semesters = SEMESTERS;
@@ -33,6 +34,7 @@ export class ClassroomManagementComponent implements OnInit {
   public dataSource: any = null;
   public semesterSelected: any;
   private dataUser: any;
+  private filter: any;
 
   private isLoading: boolean;
   private isFirstTime: boolean;
@@ -53,6 +55,7 @@ export class ClassroomManagementComponent implements OnInit {
 
   constructor(public dialog: MatDialog,
               private roomApi: RoomApiService,
+              private classroomApi: ClassroomApiService,
               private toastr: ToastrService,
               private storageService: StorageService,
               private route: Router) {
@@ -65,24 +68,21 @@ export class ClassroomManagementComponent implements OnInit {
 
   ngOnInit() {
     this.isFirstTime = true;
-    this.isLoading = true;
     this.index = 0;
     this.dataLength = 0;
-    this.pageIndex = 1;
-    this.pageSize = 8;
+    this.setDefault();
 
     this.yearSelected = null;
     this.semesterSelected = null;
 
-    this.getRoomsData(this.pageSize, this.pageIndex);
+    this.getClassroomsData(this.pageSize, this.pageIndex);
   }
 
   getPageEvent(event) {
-    // console.log(event);
-    // this.pageSize = event.pageSize;
-    // this.pageIndex = event.pageIndex + 1;
-    // this.index = event.pageSize * event.pageIndex;
-    // this.getRoomsData(this.pageSize, this.pageIndex);
+    this.isLoading = true;
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex + 1;
+    this.getClassroomsData(this.pageSize, this.pageIndex);
   }
 
   setYearSelected(value: string) {
@@ -109,12 +109,28 @@ export class ClassroomManagementComponent implements OnInit {
     this.route.navigate(['/classroom-management/classroom-add']);
   }
 
-  default() {
+  setTable() {
     this.dataSource.paginator = null;
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'course': return item.courseId._id;
+        case 'room': return item.roomId._id;
+        case 'teacher': return item.teacherId._id;
+        case 'shift': return item.date.shift;
+        default: return item[property];
+      }
+    }
     this.dataSource.sort = this.sort;
   }
 
-  applyFilter(filterValue: string) {
+  setDefault() {
+    this.paginator.pageIndex = 0;
+    this.pageIndex = 1;
+    this.pageSize = 7;
+    this.filter = {};
+  }
+
+  applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
@@ -125,7 +141,7 @@ export class ClassroomManagementComponent implements OnInit {
 
     if ( this.action != 'delete' ) {
       this.width = '780px';
-      this.height = '450px';
+      this.height = '580px';
     }
     else {
       this.width = '460px';
@@ -144,92 +160,75 @@ export class ClassroomManagementComponent implements OnInit {
       console.log(result);
 
       if (this.action == 'edit') {
-        this.updateRoom(result.data);
-      } else if (this.action == 'delete') {
+        this.updateClassroom(result.data);
+      }
+      else {
         this.deleteRoom(result.data);
       }
     });
   }
 
-  getRoomsData(pageSize: number, pageIndex: number) {
-    this.ELEMENT_DATA = ELEMENT_DATA;
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-    this.default();
-    this.isLoading = false;
-    this.isFirstTime = false;
+  getClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
 
-    // this.roomApi.getRooms(pageSize, pageIndex).subscribe( result => {
-    //   console.log(result);
+    this.classroomApi.getClassrooms(pageSize, pageIndex).subscribe( result => {
+      console.log(result);
+      console.log(pageSize, pageIndex);
 
-    //   this.ELEMENT_DATA = result.data;
-    //   this.dataLength = result.size;
+      this.ELEMENT_DATA = result.data;
+      this.dataLength = result.size;
 
-    //   this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
-    //   this.default();
+      this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
+      this.setTable();
+      this.index = pageSize * (pageIndex - 1);
+      this.isLoading = false;
 
-    //   if (this.isFirstTime) {
-    //     this.isLoading = false;
-    //     this.isFirstTime = false;
-    //     this.toastr.success(result.message);
-    //   }
-    // }, error => {
-    //   this.toastr.error(error.message)
-    // })
+      if (this.isFirstTime) {
+        this.isFirstTime = false;
+        this.toastr.success(result.message);
+      }
+    }, error => {
+      this.toastr.error(error.message)
+    })
   }
 
-  createRoom(row_obj){
+  updateClassroom(row_obj) {
 
-    // this.roomApi.createRoom(this.dataTranform(row_obj)).subscribe( result => {
+    this.classroomApi.updateClassroom(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
 
-    //   this.ELEMENT_DATA.unshift(row_obj);
-    //   this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    //   this.default();
-    //   this.toastr.success(result.message)
-    // }, error => {
-    //   this.toastr.error(error.message)
-    // })
-  }
-
-  updateRoom(row_obj){
-
-    // this.roomApi.updateRoom(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
-
-    //   this.dataSource.data.filter((value, key) => {
-    //     if (value._id == row_obj._id) {
-    //       value = Object.assign(value, row_obj);
-    //     }
-    //     return true;
-    //   });
-    //   this.toastr.success(result.message);
-    // }, error => {
-    //   this.toastr.error(error.message);
-    // })
+      this.isLoading = true;
+      this.paginator.pageIndex = 0;
+      this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
+      this.toastr.success(result.message);
+    }, error => {
+      this.toastr.error(error.message);
+    })
 
   }
 
   deleteRoom(row_obj){
 
-    // this.roomApi.deleteRoom(row_obj._id).subscribe(result => {
+    this.classroomApi.deleteClassroom(row_obj._id).subscribe(result => {
 
-    //   this.dataSource.data = this.dataSource.data.filter(item => {
-
-    //     return item._id != row_obj._id;
-    //   });
-    //   this.toastr.success(result.message);
-    // }, error => {
-    //   this.toastr.error(error.message);
-    // })
+      this.setDefault();
+      this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
+      this.toastr.success(result.message);
+    }, error => {
+      this.toastr.error(error.message);
+    })
   }
 
   dataTranform(data) {
     let newData = {
-      name: data.name,
-      capacity: data.capacity,
-      location: {
-        building: data.location.building,
-        floor: data.location.floor
-      },
-      roomType: data.roomType
+      students: data.students,
+      roomId: data.roomId._id,
+      teacherId: data.teacherId._id,
+      date: {
+        shift: data.date.shift,
+        day: data.date.day,
+        group: data.date.group,
+        semesters: data.date.semesters,
+        year: data.date.year
+      }
     }
     return newData;
   }
@@ -246,12 +245,18 @@ export class ClassroomManagementComponent implements OnInit {
     }
   }
 
+  tranformToVn(data) {
+    switch (data) {
+      case 'Monday': return 'Thứ Hai';
+      case 'Tuesday': return 'Thứ Ba';
+      case 'Wednesday': return 'Thứ Tư';
+      case 'Thursday': return 'Thứ Năm';
+      case 'Friday': return 'Thứ Sáu';
+      case 'Saturday': return 'Thứ Bảy';
+      case 'Sunday': return 'Chủ Nhật';
+    }
+  }
+
 
 }
-
-const ELEMENT_DATA: ClassroomElement[] = [
-  { name: 'Hydrogen', students: 20, courseId: { _id: 'B', name: 'abc' }, roomId: { _id: 'B', name: 'abc' }, teacherId: { _id: 'B', name: 'abc' }, date: { shift: 'abc', day: 'abc', group: 'abc', semester: 'abc', year: 'abc'}, verified: false },
-  { name: 'Hydrogen', students: 20, courseId: { _id: 'B', name: 'abc' }, roomId: { _id: 'B', name: 'abc' }, teacherId: { _id: 'B', name: 'abc' }, date: { shift: 'abc', day: 'abc', group: 'abc', semester: 'abc', year: 'abc' }, verified: true },
-
-];
 

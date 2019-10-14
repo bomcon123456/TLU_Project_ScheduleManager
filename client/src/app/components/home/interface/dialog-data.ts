@@ -64,19 +64,19 @@ export interface ClassroomElement {
     name?: string;
   },
   roomId?: {
-    _id: string;
+    _id?: string;
     name?: string;
   },
   teacherId?: {
-    _id: string;
+    _id?: string;
     name?: string;
   },
   date?: {
     shift?: string;
     day?: string;
     group?: string;
-    semester?: string;
+    semesters?: string;
     year?: string;
   },
-  verified: boolean;
+  verified?: boolean;
 }

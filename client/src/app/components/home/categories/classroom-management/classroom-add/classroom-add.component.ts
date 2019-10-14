@@ -684,14 +684,15 @@ export class ClassroomAddComponent implements OnInit {
       this.parentClass.push(this.ELEMENT_DATA);
     }
 
+    let allClass = [];
     for ( let x = 0; x < this.parentClass.length; x++) {
       let classData = this.parentClass[x];
       for ( let y = 0; y < classData.length; y++) {
-        this.parentClass[x][y] = this.dataTranform(classData[y]);
+        allClass.push(this.dataTranform(classData[y]));
       }
     }
-    console.log(this.parentClass);
-    this.createClassroom(this.parentClass);
+    console.log(allClass);
+    this.createClassroom(allClass);
 
     this.route.navigate(['/classroom-management']);
 
