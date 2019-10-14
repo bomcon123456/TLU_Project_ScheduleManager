@@ -8,6 +8,9 @@ const { validationResult } = require("express-validator/check");
 exports.getAuthenUser = (req, res, next) => {
   const userId = req.userId;
   return User.findById(userId)
+    .select(
+      "_id avatarUrl birthday description email gender name role username department"
+    )
     .then(user => {
       if (!user) {
         const error = new Error("account_not_found");
