@@ -64,3 +64,31 @@ exports.login = (req, res, next) => {
       next(error);
     });
 };
+
+exports.update = (req, res, next) => {
+  let id = req.userId;
+  User.findById(id)
+    .then(user => {
+      if (!user) {
+        const error = new Error("account_not_found");
+        error.statusCode = 404;
+        throw error;
+      }
+      const { email, name, description, gender, avatarURL } = req.body;
+      user.email = email || user.email;
+      user.name = name || user.name;
+      user.description = description || user.description;
+      user.gender = gender || user.gender;
+      user.avatarURL = avatarURL || user.avatarURL;
+      return user.save();
+    })
+    .then(data => {
+      res.status(200).json({
+        message: "update_user_successfully",
+        id: id
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
