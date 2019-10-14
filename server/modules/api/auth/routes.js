@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post("/", authController.login);
 
-router.post("/", authController.update);
+router.put("/", authController.update);
 
 router.get("/", isAuth, authController.getAuthenUser);
 
