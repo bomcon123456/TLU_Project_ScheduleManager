@@ -50,7 +50,7 @@ export class DepartmentManagementComponent implements OnInit {
     this.index = 0;
     this.dataLength = 0;
     this.pageIndex = 1;
-    this.pageSize = 8;
+    this.pageSize = 7;
     this.filter = {};
 
     this.getDepartmentsData(this.pageSize, this.pageIndex, this.filter);

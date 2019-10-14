@@ -9,6 +9,7 @@ import { TeacherManagementComponent } from './../categories/teacher-management/t
 import { DepartmentManagementComponent } from './../categories/department-management/department-management.component';
 import { ClassroomManagementComponent } from './../categories/classroom-management/classroom-management.component';
 import { ClassroomAddComponent } from '../categories/classroom-management/classroom-add/classroom-add.component';
+import { ScheduleManagementComponent } from './../categories/schedule-management/schedule-management.component';
 
 
 const routes: Routes = [
@@ -39,6 +40,10 @@ const routes: Routes = [
   {
     path: 'classroom-management/classroom-add',
     component: ClassroomAddComponent
+  },
+  {
+    path: 'schedule-management',
+    component: ScheduleManagementComponent
   }
 ];
 

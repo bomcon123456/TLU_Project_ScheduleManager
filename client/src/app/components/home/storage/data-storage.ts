@@ -70,7 +70,15 @@ export const YEARS = [
   "2029-2030"
 ];
 
-export const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+export const DAYS = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday"
+];
 
 export const SHIFTS = [
   "1-1", "1-2", "1-3", "1-4", "1-5",

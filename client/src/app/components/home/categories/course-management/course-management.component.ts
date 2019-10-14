@@ -68,6 +68,7 @@ export class CourseManagementComponent implements OnInit {
     this.dataLength = 0;
     this.setDefault();
 
+    this.getDepartments(this.pageSize, this.pageIndex);
     this.getCoursesData(this.pageSize, this.pageIndex, {});
 
     this.ServerSideFilteringCtrl.valueChanges
@@ -118,7 +119,7 @@ export class CourseManagementComponent implements OnInit {
   setDefault() {
     this.paginator.pageIndex = 0;
     this.pageIndex = 1;
-    this.pageSize = 8;
+    this.pageSize = 7;
     this.filter = {};
   }
 
@@ -189,6 +190,8 @@ export class CourseManagementComponent implements OnInit {
     this.pageSize = 8;
     this.pageIndex = 1;
     this.paginator.pageIndex = 0;
+    console.log(this.filter);
+
     this.getCoursesData(this.pageSize, this.pageIndex, this.filter)
   }
 
@@ -235,10 +238,13 @@ export class CourseManagementComponent implements OnInit {
    * CRUD
    */
 
-  getDepartments(pageSize: number, pageIndex: number, filter: any) {
+  getDepartments(pageSize: number, pageIndex: number, filter?: any) {
     return new Promise((resolve, reject) => {
       this.departmentApi.getDepartments(pageSize, pageIndex, filter).subscribe(result => {
 
+        if ( this.isFirstTime ) {
+          this.filteredServerSide.next(result.data);
+        }
         resolve(result.data);
       }, error => {
         reject(error);

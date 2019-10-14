@@ -1,4 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { ReplaySubject } from 'rxjs';
+import { debounceTime, delay, tap, filter, switchMap } from 'rxjs/operators'
 import { Router } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -11,9 +14,11 @@ import { DepartmentApiService } from './../../../../../services/department-api.s
 import { TeacherApiService } from './../../../../../services/teacher-api.service';
 import { RoomApiService } from './../../../../../services/room-api.service';
 import { CourseApiService } from './../../../../../services/course-api.service';
-import { StorageService } from '../storage/storage.service';
+import { GetFreeApiService } from './../../../../../services/get-free-api.service';
+import { ClassroomApiService } from './../../../../../services/classroom-api.service';
+import { StorageService } from '../../../storage/storage.service';
 import { CourseElement, TeacherElement, RoomElement } from '../../../interface/dialog-data';
-import { DAYS, SHIFTS } from '../storage/data-storage';
+import { DAYS, SHIFTS } from '../../../storage/data-storage';
 import { genClassroomName } from './helpers/gen-classroom-name';
 
 
@@ -33,10 +38,12 @@ export class ClassroomAddComponent implements OnInit {
   // public dataSource = new MatTableDataSource(ELEMENT_DATA);
 
   private days = DAYS;
-  private shifts = SHIFTS;
+  private shifts: any;
+  // private shifts = SHIFTS;
 
   public dataSource = null;
   public parentClass: any[];
+  private courseSelectedList: any[];
 
   private coursesList: CourseElement[];
   private teacherList: TeacherElement[];
@@ -52,11 +59,15 @@ export class ClassroomAddComponent implements OnInit {
   private yearSelected: string;
 
   private isLoading: boolean;
-  private isFisrtTime: boolean;
+  private isCourseFisrtTime: boolean;
+  private isTeacherFisrtTime: boolean;
   private isChildDone: boolean;
   private isCreateClassDone: boolean;
   private isLastClass: boolean;
-  // private isTypeInvalid: boolean;
+  private courseSearching: boolean;
+  private teacherSearching: boolean;
+  private isLoadingShift: boolean;
+  private isLoadingRoom: boolean;
 
   private index: number;
   private pageSize: number;
@@ -66,6 +77,13 @@ export class ClassroomAddComponent implements OnInit {
   private combinedWeek: number;
   private numOfClass: number;
   private countClass: number
+
+  public CourseCtrl: FormControl = new FormControl();
+  public CourseFilteringCtrl: FormControl = new FormControl();
+  public filteredCourses: ReplaySubject<any> = new ReplaySubject<any>(1);
+
+  public TeacherFilteringCtrl: FormControl = new FormControl();
+  // public filteredTeachers: ReplaySubject<any> = new ReplaySubject<any>(2);
 
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -78,6 +96,8 @@ export class ClassroomAddComponent implements OnInit {
               private teacherApi: TeacherApiService,
               private roomApi: RoomApiService,
               private courseApi: CourseApiService,
+              private getFreeApi: GetFreeApiService,
+              private classroomApi: ClassroomApiService,
               private storageService: StorageService,
               private toastr: ToastrService) {
 
@@ -92,6 +112,7 @@ export class ClassroomAddComponent implements OnInit {
         },
         value: "Học kì I Nhóm 1"
       }
+      this.courseSelectedList = [];
 
       if ( this.storageService.yearSelected ) {
 
@@ -103,49 +124,101 @@ export class ClassroomAddComponent implements OnInit {
 
   ngOnInit() {
 
-    this.isFisrtTime = true;
-    this.isLoading = false;
     this.isCreateClassDone = false;
+    this.isTeacherFisrtTime = true;
+    this.isCourseFisrtTime = true;
+    this.isLoading = false;
+    this.pageIndex = 1;
+    this.pageSize = 10;
+    this.setToDefault();
     // this.isTypeInvalid = false;
 
-    this.setToDefault();
+    /**
+     * SEARCH COURSE
+     */
+    this.CourseFilteringCtrl.valueChanges
+      .pipe(
+        filter(search => !!search),
+        tap(() => this.courseSearching = true),
+        debounceTime(1000),
+        switchMap(async search => {
+          let filter;
+          if ( this.dataUser.role == 99 ) {
+            filter = {
+              name: search
+            }
+          }
+          else {
+            filter = {
+              department: this.dataUser.department,
+              name: search
+            }
+          }
+          let res = await this.getCoursesByDepartmentId(this.pageSize, this.pageIndex, filter);
+          return res;
+        }),
+        // delay(500)
+      )
+      .subscribe(filtered => {
+        this.courseSearching = false;
+        this.filteredCourses.next(filtered);
+      }, error => {
+          this.courseSearching = false;
+        console.log(error);
+      });
 
-    this.pageSize = 5;
-    this.pageIndex = 2;
+    /**
+     * SEARCH TEACHER
+     */
+    this.TeacherFilteringCtrl.valueChanges
+      .pipe(
+        filter(search => !!search),
+        tap(() => this.teacherSearching = true),
+        debounceTime(1000),
+        switchMap(async search => {
+          let filter;
+          if (this.dataUser.role == 99) {
+            filter = {
+              name: search
+            }
+          }
+          else {
+            filter = {
+              department: this.dataUser.department,
+              name: search
+            }
+          }
+          let res = await this.getTeacherByDepartmentId(this.pageSize, this.pageIndex, filter);
+          return res;
+        }),
+        // delay(500)
+      )
+      .subscribe(filtered => {
+        this.teacherSearching = false;
+        // this.filteredTeachers.next(filtered);
+      }, error => {
+        this.teacherSearching = false;
+        console.log(error);
+      });
 
 
     console.log(this.dataUser);
 
     if ( this.dataUser.role == 99 ) {
-
-      this.courseApi.getCourses(this.pageSize, this.pageIndex).subscribe( result => {
-        this.coursesList = result.data;
-
-      }, error => {
-        console.log(error);
-
-      })
-      this.teacherApi.getTeachers(this.pageSize, this.pageIndex).subscribe( result => {
-        this.teacherList = result.data;
-
-      }, error => {
-        console.log(error);
-
-      })
+      this.getCoursesByDepartmentId(this.pageSize, this.pageIndex);
+      this.getTeacherByDepartmentId(this.pageSize, this.pageIndex);
     }
     else {
-
-      let departmentId = {
+      let filter = {
         department: this.dataUser.department,
       }
-
-      this.getCoursesByDepartmentId(this.dataUser.department, this.pageSize, this.pageIndex);
-      this.getTeacherByDepartmentId(this.pageSize, this.pageIndex, departmentId);
+      this.getCoursesByDepartmentId(this.pageSize, this.pageIndex, filter);
+      this.getTeacherByDepartmentId(this.pageSize, this.pageIndex, filter);
 
     }
 
     this.getClassroomsData();
-    this.getRooms(this.pageSize, this.pageIndex);
+    // this.getRooms(this.pageSize, this.pageIndex);
   }
 
   /**
@@ -161,8 +234,10 @@ export class ClassroomAddComponent implements OnInit {
     this.countClass = null;
     this.timeTotal = {};
     this.parentClass = [];
-    this.unfinished = []
+    this.unfinished = [];
     this.isLastClass = false;
+    this.isLoadingShift = false;
+    this.isLoadingRoom = false;
   }
 
   setNumOfClass(value) {
@@ -289,14 +364,16 @@ export class ClassroomAddComponent implements OnInit {
 
   setCourseSelected(data) {
 
-    // this.isTypeInvalid = true
     this.setToDefault();
     this.isChildDone = true;
-    this.courseSelected = data;
-    this.getHoursOfWeek(data.length);
 
     this.ELEMENT_DATA = [];
     this.getClassroomsData();
+
+    // this.isTypeInvalid = true
+    this.courseSelected = data;
+    this.courseSelectedList.push(data);
+    this.getHoursOfWeek(data.length);
   }
 
   /**
@@ -371,6 +448,154 @@ export class ClassroomAddComponent implements OnInit {
     }
   }
 
+  // checkShiftCanChoose(shift) {
+  //   let indexCut = shift.indexOf('-');
+  //   let startShift = parseInt(shift.substring(0, indexCut));
+  //   let endShift = parseInt(shift.substring(indexCut + 1));
+  //   let time = endShift - startShift + 1;
+
+  //   if ( this.theoryWeek >= time || this.practiceWeek >= time || this.combinedWeek >= time ) {
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
+  checkShiftValid(index, shift) {
+
+    let shiftObj = this.shiftTranform(shift);
+    if ( this.parentClass.length > 0 ) {
+      for (let i = 0; i < this.parentClass.length; i++) {
+        let classData = this.parentClass[i];
+        for (let x = 0; x < classData.length; x++) {
+          if (this.ELEMENT_DATA[index].teacher._id == classData[x].teacher._id) {
+            if (this.ELEMENT_DATA[index].date.day == classData[x].date.day) {
+              if ( classData[x].date.shift ) {
+                let shiftClassObj = this.shiftTranform(classData[x].date.shift)
+
+                if ((shiftObj.startShift >= shiftClassObj.startShift &&
+                  shiftObj.startShift <= shiftClassObj.endShift) ||
+                    (shiftObj.endShift >= shiftClassObj.startShift &&
+                    shiftObj.endShift <= shiftClassObj.endShift)) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    for ( let i = 0; i < this.ELEMENT_DATA.length; i++) {
+
+      if ( index != i ) {
+        if ( this.ELEMENT_DATA[index].teacher._id == this.ELEMENT_DATA[i].teacher._id ) {
+          if ( this.ELEMENT_DATA[index].date.day == this.ELEMENT_DATA[i].date.day ) {
+            if (this.ELEMENT_DATA[i].date.shift) {
+              let shiftClassObj = this.shiftTranform(this.ELEMENT_DATA[i].date.shift)
+
+              if ((shiftObj.startShift >= shiftClassObj.startShift &&
+                  shiftObj.startShift <= shiftClassObj.endShift) ||
+                  (shiftObj.endShift >= shiftClassObj.startShift &&
+                  shiftObj.endShift <= shiftClassObj.endShift)) {
+                    return true;
+                  }
+              // if ( !this.ELEMENT_DATA[index].date.shift ) {
+              //   if ( shiftObj.startShift <= shiftClassObj.endShift ) {
+              //     return true;
+              //   }
+              // }
+              // else {
+              //   if (( shiftObj.startShift < shiftClassObj.startShift &&
+              //         shiftObj.endShift >= shiftClassObj.startShift ) ||
+              //       ( shiftObj.startShift >= shiftClassObj.startShift &&
+              //         shiftObj.startShift <= shiftClassObj.endShift)) {
+              //     return true;
+              //   }
+              // }
+            }
+          }
+        }
+      }
+    }
+
+    if (!this.ELEMENT_DATA[index].date.shift) {
+
+      if (this.theoryWeek >= shiftObj.time ||
+          this.practiceWeek >= shiftObj.time ||
+          this.combinedWeek >= shiftObj.time) {
+        return false;
+      }
+    }
+    else {
+
+      let timeClass = this.shiftTranform(this.ELEMENT_DATA[index].date.shift);
+      if (this.theoryWeek + timeClass.time >= shiftObj.time ||
+        this.practiceWeek + timeClass.time >= shiftObj.time ||
+        this.combinedWeek + timeClass.time >= shiftObj.time) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  checkRoomValid(index, roomId) {
+    if ( !this.ELEMENT_DATA[index].date.shift ) {
+      return;
+    }
+    let shiftClassObj = this.shiftTranform(this.ELEMENT_DATA[index].date.shift);
+    if (this.parentClass.length > 0) {
+      for (let x = 0; x < this.parentClass.length; x++) {
+        let classData = this.parentClass[x];
+        for (let y = 0; y < classData.length; y++) {
+          if (this.ELEMENT_DATA[index].date.day == classData[y].date.day) {
+            if (classData[y].date.shift) {
+              let shiftObj = this.shiftTranform(classData[y].date.shift)
+
+              if ((shiftClassObj.startShift >= shiftObj.startShift &&
+                  shiftClassObj.startShift <= shiftObj.endShift) ||
+                  (shiftClassObj.endShift >= shiftObj.startShift &&
+                  shiftClassObj.endShift <= shiftObj.endShift)) {
+
+                if ( roomId == classData[y].room._id ) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    for ( let i = 0; i < this.ELEMENT_DATA.length; i++) {
+      if ( i != index ) {
+
+        if (this.ELEMENT_DATA[i].date.day == this.ELEMENT_DATA[index].date.day ) {
+          if ( !this.ELEMENT_DATA[i].date.shift ) {
+            return;
+          }
+          let shiftObj = this.shiftTranform(this.ELEMENT_DATA[i].date.shift);
+          if ((shiftClassObj.startShift >= shiftObj.startShift &&
+              shiftClassObj.startShift <= shiftObj.endShift) ||
+              (shiftClassObj.endShift >= shiftObj.startShift &&
+              shiftClassObj.endShift <= shiftObj.endShift)) {
+            if ( roomId == this.ELEMENT_DATA[i].room._id ) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  checkAllValid() {
+    for ( let i = 0; i < this.ELEMENT_DATA.length; i++) {
+      if ( !this.ELEMENT_DATA[i].room._id ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   addChildClass() {
 
     this.isChildDone = false;
@@ -380,19 +605,23 @@ export class ClassroomAddComponent implements OnInit {
     let temp = {
       name: genClassroomName(this.courseSelected.name) + `.${this.countClass}`,
       students: null,
-      type: null,
+      course: {
+        _id: this.courseSelected._id,
+        name: this.courseSelected.name
+      },
+      room: {
+        _id: null,
+        name: null
+      },
       teacher: {
         _id: null,
         name: null,
       },
       date: {
+        shift: null,
         day: '',
-        shift: ''
       },
-      room: {
-        _id: null,
-        name: null
-      }
+      type: null
     };
 
     this.ELEMENT_DATA.push(temp);
@@ -448,8 +677,21 @@ export class ClassroomAddComponent implements OnInit {
   }
 
   addClass() {
-    this.parentClass.push(this.ELEMENT_DATA);
+    if ( this.parentClass[this.countClass-1] ) {
+      this.parentClass[this.countClass-1] = this.ELEMENT_DATA;
+    }
+    else {
+      this.parentClass.push(this.ELEMENT_DATA);
+    }
+
+    for ( let x = 0; x < this.parentClass.length; x++) {
+      let classData = this.parentClass[x];
+      for ( let y = 0; y < classData.length; y++) {
+        this.parentClass[x][y] = this.dataTranform(classData[y]);
+      }
+    }
     console.log(this.parentClass);
+    this.createClassroom(this.parentClass);
 
     this.route.navigate(['/classroom-management']);
 
@@ -461,13 +703,13 @@ export class ClassroomAddComponent implements OnInit {
 
       for (let i = 0; i < array.length; i++) {
         let shift = array[i].date.shift;
+        console.log(shift);
 
-        let indexCut = shift.indexOf('-');
-
-        if (indexCut == -1) {
+        if ( !shift ) {
           time = time;
         }
         else {
+          let indexCut = shift.indexOf('-');
           let startShift = parseInt(shift.substring(0, indexCut));
           let endShift = parseInt(shift.substring(indexCut + 1));
           time = time - (endShift - startShift + 1);
@@ -479,14 +721,14 @@ export class ClassroomAddComponent implements OnInit {
 
       for (let i = 0; i < array.length; i++) {
         if (array[i].type == type) {
-
           let shift = array[i].date.shift;
-          let indexCut = shift.indexOf('-');
+          console.log(shift);
 
-          if (indexCut == -1) {
+          if ( !shift) {
             time = time;
           }
           else {
+            let indexCut = shift.indexOf('-');
             let startShift = parseInt(shift.substring(0, indexCut));
             let endShift = parseInt(shift.substring(indexCut + 1));
             time = time - (endShift - startShift + 1);
@@ -499,10 +741,88 @@ export class ClassroomAddComponent implements OnInit {
     return time;
   }
 
+  takeTimeLeftWhenReselect(index) {
+
+    if (this.timeTotal.combined) {
+
+      let timeLeft = this.takeTimeLeft(this.timeTotal.combined, this.ELEMENT_DATA);
+      this.combinedWeek = timeLeft;
+    }
+    else {
+      if (this.ELEMENT_DATA[index].type == 'LT') {
+        let timeLeft = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
+        this.theoryWeek = timeLeft;
+      }
+      else {
+        let timeLeft;
+        if (this.ELEMENT_DATA[index].type == 'TH') {
+          timeLeft = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
+        }
+        else {
+          timeLeft = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'BT');
+        }
+        this.practiceWeek = timeLeft;
+      }
+    }
+  }
+
   handleWithData(data, index, elm) {
 
     switch (elm) {
+      case 'type': {
+
+        let oldType = this.ELEMENT_DATA[index].type;
+        this.ELEMENT_DATA[index].type = data;
+
+        let originName = genClassroomName(this.courseSelected.name) + `.${this.countClass}`;
+        let numberNewType = 1;
+        let numberOldType = 1
+        let count = 0;
+
+        for (let i = 0; i < this.ELEMENT_DATA.length; i++) {
+          if (i != index) {
+            if (this.ELEMENT_DATA[i].type == oldType) {
+              count++;
+            }
+          }
+        }
+
+        for (let i = 0; i < this.ELEMENT_DATA.length; i++) {
+
+          if (i != index) {
+
+            if (this.ELEMENT_DATA[i].type == data) {
+              this.ELEMENT_DATA[i].name = originName + `.${numberNewType}` + `_${data}`;
+              numberNewType++;
+            }
+
+            if (this.ELEMENT_DATA[i].type == oldType) {
+              if (count == 1) {
+                this.ELEMENT_DATA[i].name = originName + `_${oldType}`;
+              }
+              else if (count > 1) {
+                this.ELEMENT_DATA[i].name = originName + `.${numberOldType}` + `_${oldType}`;
+                numberOldType++;
+              }
+            }
+          }
+        }
+
+        if (numberNewType != 1) {
+          this.ELEMENT_DATA[index].name = originName + `.${numberNewType}` + `_${data}`;
+        }
+        else {
+          this.ELEMENT_DATA[index].name = originName + `_${data}`;
+        }
+
+        break;
+      };
       case 'teacher': {
+
+        this.ELEMENT_DATA[index].date = {};
+        this.ELEMENT_DATA[index].room = {};
+
+        this.takeTimeLeftWhenReselect(index);
 
         this.teacherList.filter( result => {
 
@@ -515,56 +835,146 @@ export class ClassroomAddComponent implements OnInit {
           }
         })
 
-        return;
+        break;
       };
-      case 'type': {
+      case 'day': {
 
-        let oldType = this.ELEMENT_DATA[index].type;
-        this.ELEMENT_DATA[index].type = data;
+        this.ELEMENT_DATA[index].date = {};
+        this.ELEMENT_DATA[index].room = {};
 
-        let originName = genClassroomName(this.courseSelected.name) + `.${this.countClass}`;
-        let numberNewType = 1;
-        let numberOldType = 1
-        let count = 0;
+        this.takeTimeLeftWhenReselect(index);
 
-        for (let i = 0; i < this.ELEMENT_DATA.length; i++) {
-          if ( i != index ) {
-            if ( this.ELEMENT_DATA[i].type == oldType ) {
-              count++;
+        this.ELEMENT_DATA[index].date.day = data;
+
+        this.isLoadingShift = true;
+        this.shifts = null;
+
+        this.getTeacherFreeShifts( this.yearSelected,
+                                  this.semesterSelected.key.group,
+                                  this.semesterSelected.key.semester,
+                                  this.ELEMENT_DATA[index].date.day,
+                                  this.ELEMENT_DATA[index].teacher._id);
+
+        break;
+      };
+      case 'shift': {
+
+        console.log(this.ELEMENT_DATA);
+
+
+        this.ELEMENT_DATA[index].room = {};
+
+        this.ELEMENT_DATA[index].date.shift = data;
+
+        if (this.timeTotal.combined) {
+
+          let timeLeft = this.takeTimeLeft(this.timeTotal.combined, this.ELEMENT_DATA);
+
+          if (timeLeft >= 0) {
+            this.combinedWeek = timeLeft;
+
+            if (this.combinedWeek == 0 && this.ELEMENT_DATA[index].room._id) {
+              console.log(123, this.ELEMENT_DATA[index].room._id);
+
+              this.isCreateClassDone = true;
             }
+
+            // this.isLoadingRoom = true;
+            // this.roomList = null;
+
+            // this.getFreeRooms( this.yearSelected,
+            //                   this.semesterSelected.key.group,
+            //                   this.semesterSelected.key.semester,
+            //                   this.ELEMENT_DATA[index].date.day,
+            //                   this.ELEMENT_DATA[index].date.shift );
+
           }
-        }
-
-        for (let i = 0; i < this.ELEMENT_DATA.length; i++) {
-
-          if ( i != index ) {
-
-            if ( this.ELEMENT_DATA[i].type == data ) {
-              this.ELEMENT_DATA[i].name = originName + `.${numberNewType}` + `_${data}`;
-              numberNewType++;
-            }
-
-            if ( this.ELEMENT_DATA[i].type == oldType ) {
-              if ( count == 1 ) {
-                this.ELEMENT_DATA[i].name = originName + `_${oldType}`;
-              }
-              else if ( count > 1 ) {
-                this.ELEMENT_DATA[i].name = originName + `.${numberOldType}` + `_${oldType}`;
-                numberOldType++;
-              }
-            }
+          else {
+            this.ELEMENT_DATA[index].date.shift = null;
+            this.combinedWeek = this.takeTimeLeft(this.timeTotal.combined, this.ELEMENT_DATA);
           }
-        }
 
-        if ( numberNewType != 1 ) {
-          this.ELEMENT_DATA[index].name = originName + `.${numberNewType}` + `_${data}`;
         }
         else {
-          this.ELEMENT_DATA[index].name = originName + `_${data}`;
+
+          switch (this.ELEMENT_DATA[index].type) {
+            case 'LT': {
+
+              let timeLeft = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
+
+              if (timeLeft >= 0) {
+                this.theoryWeek = timeLeft;
+
+                if (this.theoryWeek == 0 && this.practiceWeek == 0 && this.ELEMENT_DATA[index].room._id) {
+                  this.isCreateClassDone = true;
+                }
+              }
+              else {
+                this.ELEMENT_DATA[index].date.shift = null;
+                this.theoryWeek = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
+              }
+
+              break;
+            };
+            case 'BT': {
+
+              let timeLeft = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'BT');
+
+              if (timeLeft >= 0) {
+                this.practiceWeek = timeLeft;
+
+                if (this.theoryWeek == 0 && this.practiceWeek == 0 && this.ELEMENT_DATA[index].room._id) {
+                  this.isCreateClassDone = true;
+                }
+              }
+              else {
+                this.ELEMENT_DATA[index].date.shift = null;
+                this.practiceWeek = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'BT');
+              }
+
+              break;
+            };
+            case 'TH': {
+
+              let timeLeft = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
+
+              if (timeLeft >= 0) {
+                this.practiceWeek = timeLeft;
+
+                if (this.theoryWeek == 0 && this.practiceWeek == 0 && this.ELEMENT_DATA[index].room._id) {
+                  this.isCreateClassDone = true;
+                }
+              }
+              else {
+                this.ELEMENT_DATA[index].date.shift = null;
+                this.practiceWeek = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
+              }
+
+              break;
+            };
+            default: {
+              this.ELEMENT_DATA[index].date.shift = null;
+              break;
+            }
+          }
         }
 
-        return;
-      };
+
+        if ( this.ELEMENT_DATA[index].date.shift ) {
+
+          this.isLoadingRoom = true;
+          this.roomList = null;
+          this.getFreeRooms(this.yearSelected,
+            this.semesterSelected.key.group,
+            this.semesterSelected.key.semester,
+            this.ELEMENT_DATA[index].date.day,
+            this.ELEMENT_DATA[index].date.shift);
+        }
+        console.log(this.ELEMENT_DATA);
+
+
+        break;
+      }
       case 'room': {
 
         this.isChildDone = true;
@@ -584,98 +994,10 @@ export class ClassroomAddComponent implements OnInit {
 
           this.isCreateClassDone = true;
         }
+        console.log(this.ELEMENT_DATA);
 
-        return;
+        break;
       };
-      case 'shift': {
-
-        this.ELEMENT_DATA[index].date.shift = data;
-
-        if ( this.timeTotal.combined ) {
-
-          let timeLeft = this.takeTimeLeft(this.timeTotal.combined, this.ELEMENT_DATA);
-
-          if ( timeLeft >= 0 ) {
-            this.combinedWeek = timeLeft;
-
-            if ( this.combinedWeek == 0 && this.ELEMENT_DATA[index].room._id ) {
-              console.log(123, this.ELEMENT_DATA[index].room._id);
-
-              this.isCreateClassDone = true;
-            }
-          }
-          else {
-            this.ELEMENT_DATA[index].date.shift = '';
-            this.combinedWeek = this.takeTimeLeft(this.timeTotal.combined, this.ELEMENT_DATA);
-          }
-
-          return;
-        }
-        else {
-
-          switch (this.ELEMENT_DATA[index].type) {
-            case 'LT': {
-
-              let timeLeft = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
-
-              if (timeLeft >= 0) {
-                this.theoryWeek = timeLeft;
-
-                if ( this.theoryWeek==0 && this.practiceWeek==0 && this.ELEMENT_DATA[index].room._id ) {
-                  this.isCreateClassDone = true;
-                }
-              }
-              else {
-                this.ELEMENT_DATA[index].date.shift = '';
-                this.theoryWeek = this.takeTimeLeft(this.timeTotal.theory, this.ELEMENT_DATA, 'LT');
-              }
-
-              return;
-            };
-            case 'BT': {
-
-              let timeLeft = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'BT');
-
-              if (timeLeft >= 0) {
-                this.practiceWeek = timeLeft;
-
-                if (this.theoryWeek == 0 && this.practiceWeek == 0 && this.ELEMENT_DATA[index].room._id) {
-                  this.isCreateClassDone = true;
-                }
-              }
-              else {
-                this.ELEMENT_DATA[index].date.shift = '';
-                this.practiceWeek = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'BT');
-              }
-
-              return;
-            };
-            case 'TH': {
-
-              let timeLeft = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
-
-              if (timeLeft >= 0) {
-                this.practiceWeek = timeLeft;
-
-                if (this.theoryWeek == 0 && this.practiceWeek == 0 && this.ELEMENT_DATA[index].room._id) {
-                  this.isCreateClassDone = true;
-                }
-              }
-              else {
-                this.ELEMENT_DATA[index].date.shift = '';
-                this.practiceWeek = this.takeTimeLeft(this.timeTotal.practice, this.ELEMENT_DATA, 'TH');
-              }
-
-              return;
-            };
-            default: {
-              this.ELEMENT_DATA[index].date.shift = '';
-            }
-          }
-        }
-
-        return;
-      }
     }
   }
 
@@ -687,43 +1009,83 @@ export class ClassroomAddComponent implements OnInit {
    * CRUD
    */
 
-  getCoursesByDepartmentId(id: string, pageSize: number, pageIndex: number) {
-    this.departmentApi.getCoursesById(id, pageSize, pageIndex).subscribe(result => {
-      this.coursesList = result.data;
-    }, error => {
-      console.log(error);
+  getCoursesByDepartmentId(pageSize: number, pageIndex: number, filter?: any) {
 
-    })
-  }
+    return new Promise((resolve, reject) => {
+      this.courseApi.getCourses(pageSize, pageIndex, filter).subscribe( result => {
 
-  getTeacherByDepartmentId(pageSize: number, pageIndex: number, departmentId: any) {
-    this.teacherApi.getTeachers(pageSize, pageIndex, departmentId).subscribe(result => {
-      this.teacherList = result.data;
-    }, error => {
-      console.log(error);
+        if ( this.isCourseFisrtTime ) {
+          this.isCourseFisrtTime = false;
+          this.filteredCourses.next(result.data);
+        }
+        resolve(result.data);
+      }, error => {
+        reject(error);
+      })
+    });
 
-    })
-  }
-
-  getRooms(pageSize: number, pageIndex: number) {
-    this.roomApi.getRooms(pageSize, pageIndex).subscribe(result => {
-      this.roomList = result.data;
-    }, error => {
-      console.log(error);
-
-    })
-  }
-
-  createDepartment(row_obj) {
-    // this.courseApi.createDepartment(this.dataTranform(row_obj)).subscribe(result => {
-
-    //   this.ELEMENT_DATA.unshift(row_obj);
-    //   this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    //   this.default();
-    //   this.toastr.success(result.message)
+    // this.departmentApi.getCoursesById(id, pageSize, pageIndex).subscribe(result => {
+    //   this.coursesList = result.data;
     // }, error => {
-    //   this.toastr.error(error.message)
+    //   console.log(error);
+
     // })
+  }
+
+  getTeacherByDepartmentId(pageSize: number, pageIndex: number, filter?: any) {
+
+    return new Promise((resolve, reject) => {
+      this.teacherApi.getTeachers(pageSize, pageIndex, filter).subscribe( result => {
+
+        if ( this.isTeacherFisrtTime ) {
+          this.isTeacherFisrtTime = false;
+          // this.filteredTeachers.next(result.data);
+          this.teacherList = result.data;
+        }
+        this.teacherList = result.data;
+        resolve(result.data);
+      }, error => {
+        reject(error);
+      })
+    })
+
+    // this.teacherApi.getTeachers(pageSize, pageIndex, filter).subscribe(result => {
+    //   this.teacherList = result.data;
+    // }, error => {
+    //   console.log(error);
+
+    // })
+  }
+
+  getTeacherFreeShifts(year, group, semester, day, teacherId) {
+    this.getFreeApi.getTeacherFreeShifts(year, group, semester, day, teacherId).pipe(debounceTime(5000)).subscribe( result => {
+      this.shifts = result.data;
+      this.isLoadingShift = false;
+    }, error => {
+      console.log(error);
+
+    })
+  }
+
+  getFreeRooms(year, group, semester, day, shift) {
+    this.getFreeApi.getFreeRoom(year, group, semester, day, shift).pipe(debounceTime(5000)).subscribe( result => {
+      this.roomList = result.data;
+      console.log(2);
+
+      this.isLoadingRoom = false;
+    }, error => {
+      console.log(error);
+
+    })
+  }
+
+  createClassroom(data) {
+    this.classroomApi.createClassroom(data).subscribe(result => {
+
+      this.toastr.success(result.message)
+    }, error => {
+      this.toastr.error(error.message)
+    })
   }
 
   /**
@@ -732,22 +1094,45 @@ export class ClassroomAddComponent implements OnInit {
 
   dataTranform(data) {
     let newData = {
-      schoolId: data.schoolId,
       name: data.name,
+      students: data.students,
+      courseId: data.course._id,
+      roomId: data.room._id,
+      teacherId: data.teacher._id,
+      date: {
+        shift: data.date.shift,
+        day: data.date.day,
+        group: this.semesterSelected.key.group,
+        semesters: this.semesterSelected.key.semester,
+        year: this.yearSelected
+      }
     }
     return newData;
   }
 
   tranformToVn(data) {
     switch (data) {
-      case 'monday': return 'Thứ Hai';
-      case 'tuesday': return 'Thứ Ba';
-      case 'wednesday': return 'Thứ Tư';
-      case 'thursday': return 'Thứ Năm';
-      case 'friday': return 'Thứ Sáu';
-      case 'saturday': return 'Thứ Bảy';
-      case 'sunday': return 'Chủ Nhật';
+      case 'Monday': return 'Thứ Hai';
+      case 'Tuesday': return 'Thứ Ba';
+      case 'Wednesday': return 'Thứ Tư';
+      case 'Thursday': return 'Thứ Năm';
+      case 'Friday': return 'Thứ Sáu';
+      case 'Saturday': return 'Thứ Bảy';
+      case 'Sunday': return 'Chủ Nhật';
     }
+  }
+
+  shiftTranform(shift) {
+
+    let indexCut = shift.indexOf('-');
+    let startShift = parseInt(shift.substring(0, indexCut));
+    let endShift = parseInt(shift.substring(indexCut + 1));
+    let obj = {
+      startShift: startShift,
+      endShift: endShift,
+      time: endShift - startShift + 1
+    }
+    return obj;
   }
 
 }

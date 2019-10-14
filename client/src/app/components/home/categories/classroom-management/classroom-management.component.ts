@@ -10,8 +10,8 @@ import * as jwt_decode from 'jwt-decode';
 import { ClassroomDialogComponent } from './classroom-dialog/classroom-dialog.component';
 import { ClassroomElement } from '../../interface/dialog-data';
 import { RoomApiService } from './../../../../services/room-api.service';
-import { StorageService } from './storage/storage.service'
-import { SEMESTERS, YEARS } from './storage/data-storage';
+import { StorageService } from '../../storage/storage.service';
+import { SEMESTERS, YEARS } from '../../storage/data-storage';
 
 /**
  * @title Table with pagination
@@ -107,12 +107,6 @@ export class ClassroomManagementComponent implements OnInit {
 
   goToAdd() {
     this.route.navigate(['/classroom-management/classroom-add']);
-  }
-
-  confirmClass(index) {
-    this.ELEMENT_DATA[index].confirm = true;
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-
   }
 
   default() {
@@ -256,8 +250,8 @@ export class ClassroomManagementComponent implements OnInit {
 }
 
 const ELEMENT_DATA: ClassroomElement[] = [
-  { name: 'Hydrogen', students: 20, courseId: { _id: 'B', name: 'abc' }, roomId: { _id: 'B', name: 'abc' }, teacherId: { _id: 'B', name: 'abc' }, date: { shift: 'abc', day: 'abc', group: 'abc', semester: 'abc', year: 'abc'}, confirm: false },
-  { name: 'Hydrogen', students: 20, courseId: { _id: 'B', name: 'abc' }, roomId: { _id: 'B', name: 'abc' }, teacherId: { _id: 'B', name: 'abc' }, date: { shift: 'abc', day: 'abc', group: 'abc', semester: 'abc', year: 'abc'}, confirm: true },
+  { name: 'Hydrogen', students: 20, courseId: { _id: 'B', name: 'abc' }, roomId: { _id: 'B', name: 'abc' }, teacherId: { _id: 'B', name: 'abc' }, date: { shift: 'abc', day: 'abc', group: 'abc', semester: 'abc', year: 'abc'}, verified: false },
+  { name: 'Hydrogen', students: 20, courseId: { _id: 'B', name: 'abc' }, roomId: { _id: 'B', name: 'abc' }, teacherId: { _id: 'B', name: 'abc' }, date: { shift: 'abc', day: 'abc', group: 'abc', semester: 'abc', year: 'abc' }, verified: true },
 
 ];
 

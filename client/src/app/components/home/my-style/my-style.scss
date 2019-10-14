@@ -4,7 +4,7 @@ table {
 
 .container-header {
   width: 100%;
-  margin-bottom: 30px;
+  // margin-bottom: 30px;
 }
 
 th.mat-sort-header-sorted {
@@ -17,7 +17,7 @@ th.mat-sort-header-sorted {
 }
 
 .search {
-  margin: 40px 0px 20px;
+  margin-bottom: 50px;
   max-width: 300px;
 }
 
@@ -63,13 +63,13 @@ th.mat-sort-header-sorted {
 
 .action-button {
   float: right;
-  margin: 40px 0px 20px;
-  height: 40px;
+  margin-bottom: 50px;
   display: flex;
 }
 
 .action-button .button, .action-filter .button {
   margin: 0 10px;
+  height: 40px;
 
   &:hover {
     background-color: #5c6bc0

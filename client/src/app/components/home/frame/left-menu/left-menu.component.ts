@@ -26,7 +26,9 @@ export class LeftMenuComponent implements OnInit {
     { name: 'Quản lý phòng', link: '/room-management', icon: 'meeting_room' },
     { name: 'Quản lý giáo viên', link: '/teacher-management', icon: 'school' },
     { name: 'Quản lý bộ môn', link: '/department-management', icon: 'account_balance' },
-    { name: 'Quản lý lớp học', link: '/classroom-management', icon: 'meeting_room'}
+    { name: 'Quản lý lớp học', link: '/classroom-management', icon: 'class'},
+    { name: 'Quản lý thời khóa biểu', link: '/schedule-management', icon: 'device_hub' },
+
   ]
 
   constructor(private _sidenavService: SidenavService) { }

@@ -34,7 +34,7 @@
 }
 
 .some-actions {
-  margin: 40px 40px 20px 0px;
+  margin: 40px 0px 60px;
   justify-content: space-around;
   width: 78%;
   align-items: center;
@@ -97,49 +97,44 @@ td {
       ::ng-deep .mat-form-field-flex {
         ::ng-deep .mat-form-field-infix {
 
-          @media only screen and (min-width: 535px) {
+          @media only screen and (min-width: 765px) {
 
             width: 1rem !important;
           }
 
-          @media only screen and (min-width: 575px) {
+          @media only screen and (min-width: 810px) {
 
             width: 2rem !important;
           }
 
-          @media only screen and (min-width: 655px) {
+          @media only screen and (min-width: 905px) {
 
             width: 3rem !important;
           }
 
-          @media only screen and (min-width: 768px) {
+          @media only screen and (min-width: 1030px) {
 
             width: 4rem !important;
           }
 
-          @media only screen and (min-width: 850px) {
+          @media only screen and (min-width: 1100px) {
 
             width: 5rem !important;
           }
 
-          @media only screen and (min-width: 940px) {
+          @media only screen and (min-width: 1190px) {
 
             width: 6rem !important;
           }
 
-          @media only screen and (min-width: 1050px) {
+          @media only screen and (min-width: 1290px) {
 
             width: 7rem !important;
           }
 
-          @media only screen and (min-width: 1250px) {
-
-            width: 8rem !important;
-          }
-
           @media only screen and (min-width: 1400px) {
 
-            width: 10rem !important;
+            width: 9rem !important;
           }
 
 

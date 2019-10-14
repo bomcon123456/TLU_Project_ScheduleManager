@@ -8,7 +8,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 import { HomeRoutingModule } from './core/home-routing.module';
 import { SidenavService } from 'src/app/services/sidenav.service';
-import { StorageService } from '../home/categories/classroom-management/storage/storage.service'
+import { StorageService } from './storage/storage.service'
 
 import { HomeComponent } from './home.component';
 import { LeftMenuComponent } from './frame/left-menu/left-menu.component';
@@ -25,6 +25,7 @@ import { DepartmentDialogComponent } from './categories/department-management/de
 import { ClassroomManagementComponent } from './categories/classroom-management/classroom-management.component';
 import { ClassroomDialogComponent } from './categories/classroom-management/classroom-dialog/classroom-dialog.component';
 import { ClassroomAddComponent } from './categories/classroom-management/classroom-add/classroom-add.component';
+import { ScheduleManagementComponent } from './categories/schedule-management/schedule-management.component';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { ClassroomAddComponent } from './categories/classroom-management/classro
     DepartmentDialogComponent,
     ClassroomManagementComponent,
     ClassroomDialogComponent,
-    ClassroomAddComponent
+    ClassroomAddComponent,
+    ScheduleManagementComponent
   ],
   entryComponents: [
     RoomDialogComponent,

@@ -78,5 +78,5 @@ export interface ClassroomElement {
     semester?: string;
     year?: string;
   },
-  confirm: boolean;
+  verified: boolean;
 }

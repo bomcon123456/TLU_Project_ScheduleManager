@@ -1,3 +1,4 @@
+<p style="font-weight: bold; font-size: 20px; font-family: sans-serif;">Quản lý phòng</p>
 <div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
   <div class="container-header">
     <mat-form-field class="search">
@@ -126,7 +127,7 @@
 
     <mat-paginator  [length]="dataLength"
                     [pageSize]="pageSize"
-                    [pageSizeOptions]="[8, 25, 50, 100]"
+                    [pageSizeOptions]="[7, 25, 50, 100]"
                     (page)="getPageEvent($event)">
     </mat-paginator>
 </div>

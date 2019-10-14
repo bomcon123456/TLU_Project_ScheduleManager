@@ -108,7 +108,7 @@ export class TeacherManagementComponent implements OnInit {
   setDefault() {
     this.paginator.pageIndex = 0;
     this.pageIndex = 1;
-    this.pageSize = 8;
+    this.pageSize = 7;
     this.filter = {};
   }
 

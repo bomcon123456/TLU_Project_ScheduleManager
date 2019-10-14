@@ -1,3 +1,4 @@
+<p style="font-weight: bold; font-size: 20px; font-family: sans-serif;">Quản lý học phần</p>
 <div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
   <div class="container-header">
     <mat-form-field class="search">
@@ -30,7 +31,7 @@
             </mat-form-field>
             <mat-form-field appearance="outline" class="item-filter w-6rem">
               <mat-label>Đến: (Số tín chỉ)</mat-label>
-              <input matTooltip="Từ: (Số tín chỉ)" matInput placeholder=""
+              <input matTooltip="Đến: (Số tín chỉ)" matInput placeholder=""
                     (change)="setCredits($event.target.valueAsNumber, 'max')"
                     type="number" #maxCredits>
             </mat-form-field>
@@ -168,7 +169,7 @@
 
     <mat-paginator  [length]="dataLength"
                     [pageSize]="pageSize"
-                    [pageSizeOptions]="[8, 25, 50, 100]"
+                    [pageSizeOptions]="[7, 25, 50, 100]"
                     (page)="getPageEvent($event)">
     </mat-paginator>
   </div>
