@@ -28,9 +28,9 @@ export class GetFreeApiService {
   }
 
   // HttpClient API get() method => Fetch department list
-  getFreeRoom(year: string, group: string, semester: string, day: string, shift: string): Observable<any> {
+  getFreeRoom(year: string, group: string, semester: string, day: string, shift: string, students: number): Observable<any> {
 
-    return this.http.get(this.apiURL + 'free-rooms' + `?year=${year}&group=${group}&semester=${semester}&day=${day}&shift=${shift}` ) // this.apiURL+ '?page=23'
+    return this.http.get(this.apiURL + 'free-rooms' + `?year=${year}&group=${group}&semester=${semester}&day=${day}&shift=${shift}&students=${students}` ) // this.apiURL+ '?page=23'
       .pipe(
         retry(1),
         catchError(this.handleError)

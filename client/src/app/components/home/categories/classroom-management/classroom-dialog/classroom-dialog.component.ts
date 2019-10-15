@@ -169,7 +169,8 @@ export class ClassroomDialogComponent implements OnInit {
                       this.local_data.date.group,
                       this.local_data.date.semesters,
                       this.local_data.date.day,
-                      this.local_data.date.shift);
+                      this.local_data.date.shift,
+                      this.local_data.students);
   }
 
   doAction() {
@@ -229,8 +230,8 @@ export class ClassroomDialogComponent implements OnInit {
     })
   }
 
-  getFreeRooms(year, group, semester, day, shift) {
-    this.getFreeApi.getFreeRoom(year, group, semester, day, shift).pipe(debounceTime(5000)).subscribe(result => {
+  getFreeRooms(year, group, semester, day, shift, students) {
+    this.getFreeApi.getFreeRoom(year, group, semester, day, shift, students).pipe(debounceTime(5000)).subscribe(result => {
       this.roomList = result.data;
       this.isLoadingRoom = false;
     }, error => {
