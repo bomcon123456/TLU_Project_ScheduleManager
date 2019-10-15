@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const groups = require("../../common/constants/groups");
-const semesters = require("../../common/constants/semesters");
-const years = require("../../common/constants/years");
+const { groups } = require("../../common/constants/groups");
+const { semesters } = require("../../common/constants/semesters");
+const { years } = require("../../common/constants/years");
 
 const calendarSchema = new Schema(
   {

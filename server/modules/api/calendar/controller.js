@@ -1,11 +1,10 @@
-const calendar = require("./model");
+const Calendar = require("./model");
 
 const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
   let total = -1;
-  calendar
-    .find()
+  Calendar.find()
     .skip((page - 1) * size)
     .limit(size)
     .then(data => {
@@ -27,8 +26,7 @@ const getAll = (req, res, next) => {
 
 const get = (req, res, next) => {
   const id = req.params.id;
-  calendar
-    .findById(id)
+  Calendar.findById(id)
     .then(data => {
       if (!data) {
         const err = new Error("fetch_calendar_failed");
@@ -55,8 +53,7 @@ const post = (req, res, next) => {
     startDate: startDate,
     endDate: endDate
   });
-  calendar
-    .save()
+  Calendar.save()
     .then(data => {
       res.status(200).json({
         message: "create_calendar_successfully",
@@ -71,8 +68,7 @@ const post = (req, res, next) => {
 const put = (req, res, next) => {
   const id = req.params.id;
   const { startDate, endDate } = req.body;
-  calendar
-    .findById(id)
+  Calendar.findById(id)
     .then(thecalendar => {
       thecalendar.startDate = startDate || thecalendar.startDate;
       thecalendar.endDate = endDate || thecalendar.endDate;
@@ -91,8 +87,7 @@ const put = (req, res, next) => {
 
 const deleteOne = (req, res, next) => {
   const id = req.params.id;
-  calendar
-    .findByIdAndDelete(id)
+  Calendar.findByIdAndDelete(id)
     .then(data => {
       if (!data) {
         const error = new Error("delete_calendar_failed");
