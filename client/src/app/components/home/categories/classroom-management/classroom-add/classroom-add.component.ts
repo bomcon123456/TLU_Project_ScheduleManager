@@ -277,30 +277,47 @@ export class ClassroomAddComponent implements OnInit {
       }
     }
     else {
+
       this.parentClass[this.countClass - 1] = this.ELEMENT_DATA;
-      this.ELEMENT_DATA = this.parentClass[this.countClass];
+      if ( !this.parentClass[this.countClass] ) {
+        this.ELEMENT_DATA = [];
+        this.isCreateClassDone = false;
 
-      let array = this.unfinished.filter( data => {
-
-        if ( (this.countClass + 1) == data.indexClass ) {
-
-          this.isCreateClassDone = false;
-
-          if ( data.combinedLeft ) {
-            this.combinedWeek = data.combinedLeft;
-          }
-          else {
-
-            this.theoryWeek = data.theoryLeft;
-            this.practiceWeek = data.practiceLeft;
-          }
+        if (this.timeTotal.combined) {
+          this.combinedWeek = this.timeTotal.combined;
         }
         else {
-          return data;
-        }
-      })
 
-      this.unfinished = array;
+          this.theoryWeek = this.timeTotal.theory;
+          this.practiceWeek = this.timeTotal.practice;
+        }
+      }
+      else {
+
+        this.ELEMENT_DATA = this.parentClass[this.countClass];
+
+        let array = this.unfinished.filter( data => {
+
+          if ( (this.countClass + 1) == data.indexClass ) {
+
+            this.isCreateClassDone = false;
+
+            if ( data.combinedLeft ) {
+              this.combinedWeek = data.combinedLeft;
+            }
+            else {
+
+              this.theoryWeek = data.theoryLeft;
+              this.practiceWeek = data.practiceLeft;
+            }
+          }
+          else {
+            return data;
+          }
+        })
+
+        this.unfinished = array;
+      }
     }
 
     console.log(this.parentClass);
@@ -358,6 +375,8 @@ export class ClassroomAddComponent implements OnInit {
       this.theoryWeek = 0;
       this.practiceWeek = 0;
     }
+    console.log(this.parentClass);
+
 
     this.getClassroomsData();
   }
@@ -465,18 +484,20 @@ export class ClassroomAddComponent implements OnInit {
     let shiftObj = this.shiftTranform(shift);
     if ( this.parentClass.length > 0 ) {
       for (let i = 0; i < this.parentClass.length; i++) {
-        let classData = this.parentClass[i];
-        for (let x = 0; x < classData.length; x++) {
-          if (this.ELEMENT_DATA[index].teacher._id == classData[x].teacher._id) {
-            if (this.ELEMENT_DATA[index].date.day == classData[x].date.day) {
-              if ( classData[x].date.shift ) {
-                let shiftClassObj = this.shiftTranform(classData[x].date.shift)
+        if ( this.countClass-1 != i ) {
+          let classData = this.parentClass[i];
+          for (let x = 0; x < classData.length; x++) {
+            if (this.ELEMENT_DATA[index].teacher._id == classData[x].teacher._id) {
+              if (this.ELEMENT_DATA[index].date.day == classData[x].date.day) {
+                if ( classData[x].date.shift ) {
+                  let shiftClassObj = this.shiftTranform(classData[x].date.shift)
 
-                if ((shiftObj.startShift >= shiftClassObj.startShift &&
-                  shiftObj.startShift <= shiftClassObj.endShift) ||
-                    (shiftObj.endShift >= shiftClassObj.startShift &&
-                    shiftObj.endShift <= shiftClassObj.endShift)) {
-                  return true;
+                  if ((shiftObj.startShift >= shiftClassObj.startShift &&
+                    shiftObj.startShift <= shiftClassObj.endShift) ||
+                      (shiftObj.endShift >= shiftClassObj.startShift &&
+                      shiftObj.endShift <= shiftClassObj.endShift)) {
+                    return true;
+                  }
                 }
               }
             }
@@ -588,6 +609,7 @@ export class ClassroomAddComponent implements OnInit {
   }
 
   checkAllValid() {
+    // console.log(this.ELEMENT_DATA);
     for ( let i = 0; i < this.ELEMENT_DATA.length; i++) {
       if ( !this.ELEMENT_DATA[i].room._id ) {
         return false;
@@ -684,11 +706,13 @@ export class ClassroomAddComponent implements OnInit {
       this.parentClass.push(this.ELEMENT_DATA);
     }
 
-    let allClass = [];
+    let allClass = {
+      data: []
+    };
     for ( let x = 0; x < this.parentClass.length; x++) {
       let classData = this.parentClass[x];
       for ( let y = 0; y < classData.length; y++) {
-        allClass.push(this.dataTranform(classData[y]));
+        allClass.data.push(this.dataTranform(classData[y]));
       }
     }
     console.log(allClass);
@@ -704,7 +728,6 @@ export class ClassroomAddComponent implements OnInit {
 
       for (let i = 0; i < array.length; i++) {
         let shift = array[i].date.shift;
-        console.log(shift);
 
         if ( !shift ) {
           time = time;
@@ -723,7 +746,6 @@ export class ClassroomAddComponent implements OnInit {
       for (let i = 0; i < array.length; i++) {
         if (array[i].type == type) {
           let shift = array[i].date.shift;
-          console.log(shift);
 
           if ( !shift) {
             time = time;
@@ -860,9 +882,6 @@ export class ClassroomAddComponent implements OnInit {
       };
       case 'shift': {
 
-        console.log(this.ELEMENT_DATA);
-
-
         this.ELEMENT_DATA[index].room = {};
 
         this.ELEMENT_DATA[index].date.shift = data;
@@ -875,7 +894,6 @@ export class ClassroomAddComponent implements OnInit {
             this.combinedWeek = timeLeft;
 
             if (this.combinedWeek == 0 && this.ELEMENT_DATA[index].room._id) {
-              console.log(123, this.ELEMENT_DATA[index].room._id);
 
               this.isCreateClassDone = true;
             }
@@ -971,8 +989,6 @@ export class ClassroomAddComponent implements OnInit {
             this.ELEMENT_DATA[index].date.day,
             this.ELEMENT_DATA[index].date.shift);
         }
-        console.log(this.ELEMENT_DATA);
-
 
         break;
       }
@@ -995,7 +1011,6 @@ export class ClassroomAddComponent implements OnInit {
 
           this.isCreateClassDone = true;
         }
-        console.log(this.ELEMENT_DATA);
 
         break;
       };
@@ -1071,7 +1086,6 @@ export class ClassroomAddComponent implements OnInit {
   getFreeRooms(year, group, semester, day, shift) {
     this.getFreeApi.getFreeRoom(year, group, semester, day, shift).pipe(debounceTime(5000)).subscribe( result => {
       this.roomList = result.data;
-      console.log(2);
 
       this.isLoadingRoom = false;
     }, error => {

@@ -1,4 +1,4 @@
-<p style="font-weight: bold; font-size: 20px; font-family: sans-serif;">Quản lý phòng</p>
+<p class="title-style">Quản lý phòng</p>
 <div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
   <div class="container-header">
     <mat-form-field class="search">
@@ -55,7 +55,7 @@
     </div>
   </div>
 
-  <div class="mat-elevation-z8" style="position: relative">
+  <div class="mat-elevation-z8 pos-relative">
     <div class="background-loading" *ngIf="isLoading">
       <div class="lds-ellipsis position-loading">
         <div></div>

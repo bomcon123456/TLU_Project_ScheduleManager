@@ -68,6 +68,7 @@ export class ClassroomManagementComponent implements OnInit {
 
   ngOnInit() {
     this.isFirstTime = true;
+    this.isLoading = false;
     this.index = 0;
     this.dataLength = 0;
     this.setDefault();
@@ -78,31 +79,18 @@ export class ClassroomManagementComponent implements OnInit {
     this.getClassroomsData(this.pageSize, this.pageIndex);
   }
 
-  getPageEvent(event) {
-    this.isLoading = true;
-    this.pageSize = event.pageSize;
-    this.pageIndex = event.pageIndex + 1;
-    this.getClassroomsData(this.pageSize, this.pageIndex);
-  }
+  /**
+   * SET
+   */
 
   setYearSelected(value: string) {
 
-    console.log(value);
-
     this.storageService.yearSelected = value;
-
-    console.log(this.storageService.yearSelected);
-
   }
 
   setSemesterSelected(value: any) {
 
-    console.log(value);
-
     this.storageService.semesterSelected = value;
-
-    console.log(this.storageService.semesterSelected);
-
   }
 
   goToAdd() {
@@ -130,12 +118,22 @@ export class ClassroomManagementComponent implements OnInit {
     this.filter = {};
   }
 
+  /**
+   * GET, ACTION
+   */
+
   applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  getPageEvent(event) {
+    this.isLoading = true;
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex + 1;
+    this.getClassroomsData(this.pageSize, this.pageIndex);
+  }
+
   openDialog(action, obj): void {
-    console.log(obj);
 
     this.action = obj.action = action;
 
@@ -157,8 +155,6 @@ export class ClassroomManagementComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if ( !result || result.event == 'cancel' ) return;
 
-      console.log(result);
-
       if (this.action == 'edit') {
         this.updateClassroom(result.data);
       }
@@ -168,15 +164,16 @@ export class ClassroomManagementComponent implements OnInit {
     });
   }
 
+  /**
+   * CRUD
+   */
+
   getClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
 
     this.classroomApi.getClassrooms(pageSize, pageIndex).subscribe( result => {
-      console.log(result);
-      console.log(pageSize, pageIndex);
 
       this.ELEMENT_DATA = result.data;
       this.dataLength = result.size;
-
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.setTable();
       this.index = pageSize * (pageIndex - 1);
@@ -209,6 +206,7 @@ export class ClassroomManagementComponent implements OnInit {
 
     this.classroomApi.deleteClassroom(row_obj._id).subscribe(result => {
 
+      this.isLoading = true;
       this.setDefault();
       this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
       this.toastr.success(result.message);
@@ -216,6 +214,10 @@ export class ClassroomManagementComponent implements OnInit {
       this.toastr.error(error.message);
     })
   }
+
+  /**
+   * TRANSFORM DATA
+   */
 
   dataTranform(data) {
     let newData = {

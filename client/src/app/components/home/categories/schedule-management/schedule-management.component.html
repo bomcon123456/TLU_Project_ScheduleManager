@@ -1,4 +1,4 @@
-<p style="font-weight: bold; font-size: 20px; font-family: sans-serif;">Quản lý thời khóa biểu</p>
+<p class="title-style">Quản lý thời khóa biểu</p>
 <div [ngStyle]="{'display': !isLoading ? 'block' : 'none'}">
   <div class="container-header">
     <div class="select-action" style="max-width: 800px">
@@ -97,7 +97,7 @@
             <ng-container matColumnDef="action">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let element">
-                <button mat-raised-button color="primary">
+                <button mat-raised-button style="font-size: 12px !important;" color="primary">
                   Duyệt lớp
                 </button>
               </td>

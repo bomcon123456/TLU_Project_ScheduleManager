@@ -1,5 +1,5 @@
-<p style="font-weight: bold; font-size: 20px; font-family: sans-serif;">Quản lý lớp học</p>
-<div [ngStyle]="{'display': !isLoading ? 'block' : 'none'}">
+<p class="title-style">Quản lý lớp học</p>
+<div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
   <div class="container-header">
     <mat-form-field class="search">
       <input matInput (keyup)="applySearch($event.target.value)" placeholder="Search">
@@ -56,7 +56,15 @@
     </div>
   </div>
 
-  <div class="mat-elevation-z8">
+  <div class="mat-elevation-z8 pos-relative">
+    <div class="background-loading" *ngIf="isLoading">
+      <div class="lds-ellipsis position-loading">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
     <table mat-table matSort [dataSource]="dataSource" #myTable>
       <!-- Position Column -->
       <ng-container matColumnDef="position">
@@ -141,7 +149,7 @@
     </mat-paginator>
   </div>
 </div>
-<div [ngStyle]="{'display': isLoading? 'block' : 'none'}" class="spinner-loading">
+<div [ngStyle]="{'display': isFirstTime? 'block' : 'none'}" class="spinner-loading">
   <div class="lds-facebook">
     <div></div>
     <div></div>
