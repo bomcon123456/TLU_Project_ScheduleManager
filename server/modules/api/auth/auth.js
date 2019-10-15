@@ -64,3 +64,34 @@ exports.login = (req, res, next) => {
       next(error);
     });
 };
+
+exports.changePassword = (req, res, next) => {
+  const { currentPassword, newPassword } = req.body;
+  let id = req.user.id;
+  return User.findById(id)
+    .then(user => {
+      if (!user) {
+        const error = new Error("account_not_found");
+        error.statusCode = 401;
+        throw error;
+      }
+      return bcrypt.compare(currentPassword, user.password);
+    })
+    .then(isEqual => {
+      if (!isEqual) {
+        const error = new Error("wrong_password");
+        error.statusCode = 401;
+        throw error;
+      }
+      user.password = newPassword;
+      return user.save();
+    })
+    .then(data => {
+      res.status(200).json({
+        message: "password_changed"
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
