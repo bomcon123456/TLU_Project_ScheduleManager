@@ -99,6 +99,7 @@ exports.update = (req, res, next) => {
 exports.changePassword = (req, res, next) => {
   const { currentPassword, newPassword } = req.body;
   let id = req.user.id;
+  let loadedUser;
   return User.findById(id)
     .then(user => {
       if (!user) {
@@ -106,6 +107,7 @@ exports.changePassword = (req, res, next) => {
         error.statusCode = 401;
         throw error;
       }
+      loadedUser = user;
       return bcrypt.compare(currentPassword, user.password);
     })
     .then(isEqual => {
@@ -114,8 +116,8 @@ exports.changePassword = (req, res, next) => {
         error.statusCode = 401;
         throw error;
       }
-      user.password = newPassword;
-      return user.save();
+      loadedUser.password = newPassword;
+      return loadedUser.save();
     })
     .then(data => {
       res.status(200).json({
