@@ -1,0 +1,21 @@
+.example-container {
+  margin: 0px 24px;
+}
+
+.example-container > * {
+  width: 45%;
+  margin: 10px
+}
+
+.example-container .location {
+  width: 37.2% !important;
+}
+
+.example-container .location-label {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.checkbox {
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+}

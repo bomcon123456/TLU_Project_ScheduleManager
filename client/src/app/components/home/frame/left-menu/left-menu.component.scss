@@ -1,0 +1,31 @@
+.sidenav_container {
+  min-width: 60px;
+  height: calc(100vh - 200px);
+}
+
+.jim {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.margin-left {
+  margin-left: 15px;
+}
+
+.item-sidenav {
+  color: rgba(0, 0, 0, 0.54)
+}
+
+.item-sidenav:hover {
+  color: #ec407a;
+}
+
+.item-sidenav:active {
+  color: #ab47bc;
+}
+
+.link-active {
+  color: #2979ff;
+}

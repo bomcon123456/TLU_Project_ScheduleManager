@@ -1,2 +1,4 @@
 server/node_modules
 .DS_Store
+**/.vscode/
+client/node_modules

@@ -1,0 +1,303 @@
+<div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
+  <div class="header-top" style="margin-top: 20px; justify-content: center; text-align: center; height: unset !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <div style="font-size: 35px; font-weight: bold">
+      {{semesterSelected.value}}
+    </div>
+    <div style="font-size: 20px;">
+      {{yearSelected}}
+    </div>
+  </div>
+
+
+  <!-- Header Content -->
+  <div class="container-header container-1">
+    <div class="some-actions">
+      <mat-form-field class="mg-l-r-30 w-40">
+        <mat-label>Chọn học phần</mat-label>
+        <mat-select [formControl]="CourseCtrl" (selectionChange)="setCourseSelected($event.value)">
+          <mat-option>
+            <ngx-mat-select-search [formControl]="CourseFilteringCtrl" [searching]="courseSearching" placeholderLabel=''>
+            </ngx-mat-select-search>
+          </mat-option>
+          <mat-optgroup label="Danh sách học phần">
+            <mat-option *ngFor="let course of filteredCourses | async" [value]="course">
+              {{course.name}}
+            </mat-option>
+          </mat-optgroup>
+          <mat-optgroup label="Học phần đã chọn">
+            <mat-option *ngFor="let course of courseSelectedList" [value]="course">
+              {{course.name}}
+            </mat-option>
+          </mat-optgroup>
+        </mat-select>
+        <!-- <mat-select (selectionChange)="setCourseSelected($event.value)">
+          <mat-option *ngFor="let course of coursesList" [value]="course">
+            {{course.name}}
+          </mat-option>
+        </mat-select> -->
+      </mat-form-field>
+
+      <mat-form-field class="mg-l-r-30 w-20">
+        <input matInput placeholder="Số lớp học" (change)="setNumOfClass($event.target.valueAsNumber)" [value]="numOfClass" type="number">
+      </mat-form-field>
+
+      <mat-checkbox (change)="checkedCombineClass($event.checked)" labelPosition='before' class="mg-l-r-30 w-30">Gộp lớp</mat-checkbox>
+    </div>
+  </div>
+
+
+  <!-- Table -->
+  <div class="mat-elevation-z8">
+    <div style="display: flex">
+
+        <!-- Paginator Table -->
+      <mat-card style="width: 75% !important">
+        <mat-card-actions class="justify" style="margin: 8px !important">
+
+          <div style="width: 40%">
+            <button mat-icon-button color="primary" (click)="setPreClass()"
+              [disabled]="countClass==1 || !countClass ? true : false">
+              <mat-icon>arrow_left</mat-icon>
+            </button>
+          </div>
+
+          <div style="width: 20%; text-align: center; align-self: center">
+            <label *ngIf="countClass">{{courseSelected.name}}.{{countClass}}</label>
+          </div>
+
+          <div style="width: 40%; display: flex; justify-content: flex-end">
+            <button mat-icon-button color="primary" (click)="setNextClass()"
+              [disabled]="(( theoryWeek==0 && practiceWeek==0 ) || combinedWeek==0 ) && isCreateClassDone && checkAllValid() ? false : true"
+              *ngIf="!isLastClass; else addDone">
+              <!-- && isTypeInvalid -->
+              <mat-icon>arrow_right</mat-icon>
+            </button>
+
+            <ng-template #addDone>
+              <button mat-raised-button color="primary" (click)="addClass()"
+                [disabled]="(( theoryWeek==0 && practiceWeek==0 ) || combinedWeek==0 ) && isCreateClassDone && checkAllValid() ? false : true">
+                <!-- && isTypeInvalid -->
+                Thêm lớp học
+              </button>
+            </ng-template>
+          </div>
+
+        </mat-card-actions>
+      </mat-card>
+
+
+      <!-- Time Left -->
+      <div class="some-text" style="width: 25% !important; margin: unset !important; max-width: unset !important;">
+
+        <mat-card class="frame-text" style="width: unset !important">
+          <mat-card-content class="text-tittle">Số giờ dạy còn lại trong tuần</mat-card-content>
+          <div *ngIf="!timeTotal.combined; else combined">
+            <mat-card-content class="text-content">
+              <span>Lý thuyết: <strong>{{theoryWeek}}</strong></span>
+              <span>Thực hành: <strong>{{practiceWeek}}</strong></span>
+            </mat-card-content>
+          </div>
+          <ng-template #combined>
+            <div>
+              <mat-card-content class="text-content">
+                <span>Tổng thời gian: <strong>{{combinedWeek}}</strong></span>
+              </mat-card-content>
+            </div>
+          </ng-template>
+        </mat-card>
+      </div>
+
+    </div>
+
+    <!-- Content Table -->
+    <table mat-table [dataSource]="dataSource" #myTable>
+
+
+      <!-- Action -->
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef class="custom-col-1">
+          <button mat-icon-button matTooltip="Thêm lớp con"
+                  [disabled]="courseSelected && isChildDone && numOfClass && ( combinedWeek>0 || theoryWeek>0 || practiceWeek>0 ) && checkAllValid() ? false : true"
+                  (click)="addChildClass()" color="primary">
+                  <!-- isTypeInvalid && -->
+            <mat-icon>add_circle</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let element, let i=index" class="custom-col-1">
+          <button mat-icon-button color="warn" matTooltip="Xóa lớp con"
+                  (click)="deleteChildClass(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Name -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Tên lớp </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="students">
+        <th mat-header-cell *matHeaderCellDef> Số lượng sinh viên </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <mat-form-field>
+            <input matInput placeholder="Số lượng sinh viên" type="number"
+                  [(ngModel)]="ELEMENT_DATA[i].students">
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Type -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef> Loại lớp </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <mat-form-field>
+            <mat-label>Loại lớp</mat-label>
+            <mat-select [value]="ELEMENT_DATA[i].type"
+                        (selectionChange)="handleWithData($event.value, i, elm = 'type')"
+                        [disabled]="isCheckedCombine">
+              <mat-option value="LT" *ngIf="timeTotal.theory!=0">Lý thuyết</mat-option>
+              <mat-option value="TH" *ngIf="timeTotal.practice!=0">Thực hành</mat-option>
+              <mat-option value="BT" *ngIf="timeTotal.practice!=0">Bài tập</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Teacher -->
+      <ng-container matColumnDef="teacher">
+        <th mat-header-cell *matHeaderCellDef> Giáo viên </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <mat-form-field>
+            <mat-label>Giáo viên</mat-label>
+            <mat-select [value]="ELEMENT_DATA[i].teacher._id"
+                        (selectionChange)="handleWithData($event.value, i, elm = 'teacher')">
+              <mat-option>
+                <ngx-mat-select-search [formControl]="TeacherFilteringCtrl" [searching]="teacherSearching" placeholderLabel=''>
+                </ngx-mat-select-search>
+              </mat-option>
+              <mat-optgroup label="Giáo viên">
+                <mat-option *ngFor="let teacher of teacherList" [value]="teacher._id">
+                  {{teacher.name}}
+                </mat-option>
+              </mat-optgroup>
+              <mat-optgroup label="Giáo viên đã chọn">
+                <mat-option *ngFor="let data of ELEMENT_DATA" [value]="data.teacher._id">
+                  {{data.teacher.name}}
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+            <!-- <mat-select [value]="ELEMENT_DATA[i].teacher._id"
+                        (selectionChange)="handleWithData($event.value, i, elm = 'teacher')">
+              <mat-option *ngFor="let teacher of teacherList"
+                          [value]="teacher._id">
+                {{teacher.name}}
+              </mat-option>
+            </mat-select> -->
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Day -->
+      <ng-container matColumnDef="day">
+        <th mat-header-cell *matHeaderCellDef> Thứ </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <mat-form-field>
+            <mat-label>Thứ</mat-label>
+            <mat-select [value]="ELEMENT_DATA[i].date.day"
+                        (selectionChange)="handleWithData($event.value, i, elm = 'day')"
+                        [disabled]="!ELEMENT_DATA[i].teacher.name ? true : false ">
+              <mat-option *ngFor="let day of days" [value]="day">
+                {{tranformToVn(day)}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Shift -->
+      <ng-container matColumnDef="shift">
+        <th mat-header-cell *matHeaderCellDef> Ca </th>
+        <td mat-cell *matCellDef="let element; let i = index" class="pos-relative">
+          <div class="background-loading background" *ngIf="!ELEMENT_DATA[i].date.shift && !shifts && isLoadingShift " >
+            <div class="lds-ellipsis position-loading loading">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+          <mat-form-field>
+            <mat-label>Ca</mat-label>
+            <mat-select [value]="ELEMENT_DATA[i].date.shift"
+                        (selectionChange)="handleWithData($event.value, i, elm = 'shift')"
+                        [disabled]="ELEMENT_DATA[i].date.day && (ELEMENT_DATA[i].type || isCheckedCombine) ? false : true ">
+                        <!-- && isTypeInvalid -->
+              <mat-optgroup label="Ca trống">
+                <mat-option *ngFor="let shift of shifts"
+                            [value]="shift"
+                            [disabled]="checkShiftValid(i, shift)">
+                    {{shift}}
+                </mat-option>
+              </mat-optgroup>
+              <mat-optgroup label="Ca đã chọn">
+                <mat-option *ngFor="let data of ELEMENT_DATA" disabled="true"
+                            [value]="data.date.shift"> {{data.date.shift}}
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Room -->
+      <ng-container matColumnDef="room">
+        <th mat-header-cell *matHeaderCellDef> Phòng</th>
+        <td mat-cell *matCellDef="let element; let i = index" class="pos-relative">
+          <div class="background-loading background" *ngIf="!ELEMENT_DATA[i].room._id && !roomList && isLoadingRoom ">
+            <div class="lds-ellipsis position-loading loading">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+          <mat-form-field>
+            <mat-label>Phòng</mat-label>
+            <mat-select [value]="ELEMENT_DATA[i].room._id"
+                        (selectionChange)="handleWithData($event.value, i, elm = 'room')"
+                        [disabled]="ELEMENT_DATA[i].date.shift ? false : true ">
+                        <!-- && isTypeInvalid -->
+              <mat-optgroup label="Phòng trống">
+                <mat-option *ngFor="let room of roomList"
+                            [value]="room._id"
+                            [disabled]="checkRoomValid(i, room._id)">
+                  {{room.name}}
+                </mat-option>
+              </mat-optgroup>
+              <mat-optgroup label="Phòng đã chọn">
+                <mat-option *ngFor="let data of ELEMENT_DATA"
+                            [value]="data.room._id"
+                            disabled="true">
+                  {{data.room.name}}
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Loading -->
+<div [ngStyle]="{'display': isFirstTime? 'block' : 'none'}" class="spinner-loading">
+  <div class="lds-facebook">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</div>

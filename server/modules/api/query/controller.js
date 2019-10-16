@@ -32,7 +32,7 @@ const getTeacherFreeShifts = (req, res, next) => {
 };
 
 const getFreeRooms = (req, res, next) => {
-  const { year, group, semester, day, shift, capacity } = req.query;
+  const { year, group, semester, day, shift, students } = req.query;
   console.log(getNearbyGroupSem(group, semester));
   let numbers = shift.split("-");
   let start = parseInt(numbers[0]);
@@ -71,7 +71,7 @@ const getFreeRooms = (req, res, next) => {
       console.log("Used rooms: " + rooms);
       return Room.find({
         _id: { $nin: rooms },
-        capacity: { $gte: capacity }
+        capacity: { $gte: students }
       }).select({ name: 1 });
     })
     .then(data => {

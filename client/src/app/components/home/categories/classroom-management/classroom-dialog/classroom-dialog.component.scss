@@ -1,0 +1,30 @@
+@import '../../../my-style/my-style.scss';
+
+.example-container {
+  margin: 0px 24px;
+}
+
+.example-container > * {
+  width: 45%;
+  margin: 10px
+}
+
+.example-container .location {
+  width: 39% !important;
+}
+
+.example-container .location-label {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.custom {
+  display: inline-block;
+
+  .background .loading {
+    left: 70% !important;
+  }
+
+  ::ng-deep .mat-form-field {
+    width: 100% !important;
+  }
+}

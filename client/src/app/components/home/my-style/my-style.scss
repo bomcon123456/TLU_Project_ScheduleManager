@@ -1,0 +1,157 @@
+table {
+  width: 100%;
+}
+
+.container-header {
+  width: 100%;
+  // margin-bottom: 30px;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.search {
+  margin-bottom: 50px;
+  max-width: 300px;
+}
+
+.spinner-loading {
+  width: 100%;
+  text-align: center;
+  margin: 200px auto;
+}
+
+.actions-icon {
+  padding: 0 8px;
+  min-width: 32px;
+  height: 40px;
+  // &:hover {
+  //   color: rgb(245, 115, 173);
+  // }
+  .edit-icon {
+    color: #64b5f6;
+    &:hover {
+      color: #2979ff;
+    }
+  }
+  .delete-icon {
+    color: #e57373;
+    &:hover {
+      color: #f44336;
+    }
+  }
+}
+
+.actions-width {
+  width: 100px !important;
+}
+
+.add-button {
+  float: right;
+  margin: 40px 0px 20px;
+
+  &:hover {
+    background-color: #5c6bc0
+  }
+}
+
+.action-button {
+  float: right;
+  margin-bottom: 50px;
+  display: flex;
+}
+
+.action-button .button, .action-filter .button {
+  margin: 0 10px;
+  height: 40px;
+
+  &:hover {
+    background-color: #5c6bc0
+  }
+}
+
+.item-menu {
+  display: inline-flex;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 50%;
+}
+
+.action-filter {
+  z-index: 1004;
+  display:table-cell;
+  overflow: hidden;
+  max-width: 15%;
+  white-space: nowrap;
+  margin: 12px auto;
+}
+.content-filter {
+  // width: 90%;
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    text-align: bottom;
+    max-width: 85%;
+    margin: 0 10px;
+
+    &::-webkit-scrollbar {
+        display: none;
+        width: 0.4rem;
+        height: 0.4rem;
+    }
+    &:hover::-webkit-scrollbar {
+        display: block;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgb(216, 216, 216);
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgb(154, 154, 154);
+    }
+}
+
+.background-loading {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.4);
+
+  .position-loading {
+    top: 45%;
+    left: 50%;
+  }
+}
+
+.w-6rem {
+  width: 6rem !important;;
+}
+
+.pos-relative {
+  position: relative;
+
+  .background {
+    width: 10rem !important;
+    height: unset !important;
+    background-color: unset !important;
+
+    .loading {
+      left: 25% !important;
+      top: -7px !important;
+    }
+  }
+}
+
+.title-style {
+  font-weight: bold;
+  font-size: 20px;
+  font-family: sans-serif;
+}

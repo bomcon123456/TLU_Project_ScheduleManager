@@ -1,0 +1,183 @@
+<p class="title-style">Quản lý học phần</p>
+<div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
+  <div class="container-header">
+    <mat-form-field class="search">
+      <input matInput (keyup)="applySearch($event.target.value)" placeholder="Search">
+    </mat-form-field>
+    <div class="action-button">
+
+      <button mat-raised-button matTooltip="Lọc" [matMenuTriggerFor]="menu" color="primary" class="button">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu" yPosition="below" xPosition="before" [hasBackdrop]='false' class="menu-filter">
+        <div class="content-filter">
+          <div (click)="$event.stopPropagation()" class="item-menu">
+            <mat-form-field appearance="outline" class="item-filter">
+              <mat-label>Mã học phần</mat-label>
+              <input matInput placeholder="" [(ngModel)]="filter._id">
+            </mat-form-field>
+            <mat-divider [vertical]="true"></mat-divider>
+            <mat-form-field appearance="outline" class="item-filter">
+              <mat-label>Tên học phần</mat-label>
+              <input matInput placeholder="" [(ngModel)]="filter.name">
+            </mat-form-field>
+            <mat-divider [vertical]="true"></mat-divider>
+            <mat-form-field appearance="outline" class="item-filter w-6rem" >
+              <mat-label>Từ: (Số tín chỉ)</mat-label>
+              <input matTooltip="Từ: (Số tín chỉ)" matInput placeholder=""
+                    (change)="setCredits($event.target.valueAsNumber, 'min')"
+                    type="number" #minCredits>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="item-filter w-6rem">
+              <mat-label>Đến: (Số tín chỉ)</mat-label>
+              <input matTooltip="Đến: (Số tín chỉ)" matInput placeholder=""
+                    (change)="setCredits($event.target.valueAsNumber, 'max')"
+                    type="number" #maxCredits>
+            </mat-form-field>
+            <mat-divider [vertical]="true"></mat-divider>
+            <mat-form-field appearance="outline" class="item-filter">
+              <mat-label>Bộ môn</mat-label>
+              <mat-select [formControl]="ServerSideCtrl" (selectionChange)="setDepartmentId($event.value)">
+                <mat-option>
+                  <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl"
+                  [searching]="searching"
+                  placeholderLabel = ''>
+                </ngx-mat-select-search>
+              </mat-option>
+              <mat-option>Tất cả</mat-option>
+                <mat-option *ngFor="let department of filteredServerSide | async" [value]="department">
+                  {{department.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-divider [vertical]="true"></mat-divider>
+            <mat-form-field appearance="outline" class="item-filter w-6rem">
+              <mat-label>Từ: (Số tín chỉ bắt buộc)</mat-label>
+              <input matTooltip="Từ: (Số tín chỉ bắt buộc)" matInput placeholder=""
+                    (change)="setCreditPrerequisites($event.target.valueAsNumber, 'min')"
+                    type="number" #minCreditPrerequisites>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="item-filter w-6rem">
+              <mat-label>Đến: (Số tín chỉ bắt buộc)</mat-label>
+              <input matTooltip="Đến: (Số tín chỉ bắt buộc)" matInput placeholder=""
+                    (change)="setCreditPrerequisites($event.target.valueAsNumber, 'max')"
+                    type="number" #maxCreditPrerequisites>
+            </mat-form-field>
+          </div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div class="action-filter">
+          <button mat-raised-button color="primary" class="button" (click)="getFilter()">
+            Lọc
+          </button>
+        </div>
+      </mat-menu>
+
+      <button mat-raised-button (click)="openDialog('add',{})" color="primary" class="button">
+        Thêm
+      </button>
+    </div>
+  </div>
+
+  <div class="mat-elevation-z8 pos-relative">
+    <div class="background-loading" *ngIf="isLoading">
+      <div class="lds-ellipsis position-loading">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+    <table mat-table matSort [dataSource]="dataSource" #myTable>
+
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="stt-pad-l"> STT </th>
+        <td mat-cell *matCellDef="let element, let i=index" class="stt-pad-l"> {{i+index+1}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="_id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Mã học phần </th>
+        <td mat-cell *matCellDef="let element"> {{element._id}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tên học phần </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="credits">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Số tín chỉ </th>
+        <td mat-cell *matCellDef="let element"> {{element.credits}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="department">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Bộ môn </th>
+        <td mat-cell *matCellDef="let element"> {{element.department.name}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="theory">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Số giờ lý thuyết </th>
+        <td mat-cell *matCellDef="let element">
+          {{element.length.theory!=0?element.length.theory : ''}}
+          <span matTooltip="Thực hành + Lý thuyết" *ngIf="element.length.combined!=0" style="color: red">*</span>
+        </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="practice">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Số giờ thực hành </th>
+        <td mat-cell *matCellDef="let element">
+          {{element.length.practice!=0?element.length.practice : ''}}
+          <span matTooltip="Thực hành + Lý thuyết" *ngIf="element.length.combined!=0" style="color:red">*</span>
+        </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="coursePrereq">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Học phần bắt buộc </th>
+        <td mat-cell *matCellDef="let element"> {{element.coursePrerequisites.join(', ')}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="creditPrereq">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Số tín chỉ bắt buộc </th>
+        <td mat-cell *matCellDef="let element"> {{element.creditPrerequisites!=0?element.creditPrerequisites : ''}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element" class="actions-width">
+          <button mat-button matTooltip="Chỉnh sửa" class="actions-icon" (click)="openDialog('edit', element)">
+            <mat-icon class="edit-icon">edit</mat-icon>
+          </button>
+          <button mat-button matTooltip="Xóa" class="actions-icon" (click)="openDialog('delete', element)">
+            <mat-icon class="delete-icon">delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator  [length]="dataLength"
+                    [pageSize]="pageSize"
+                    [pageSizeOptions]="[7, 25, 50, 100]"
+                    (page)="getPageEvent($event)">
+    </mat-paginator>
+  </div>
+</div>
+<div [ngStyle]="{'display': isFirstTime? 'block' : 'none'}" class="spinner-loading">
+  <div class="lds-facebook">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</div>

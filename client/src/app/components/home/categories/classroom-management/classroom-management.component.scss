@@ -1,0 +1,12 @@
+@import '../../my-style/my-style.scss';
+
+::ng-deep .mat-chip-list {
+  ::ng-deep .mat-chip {
+    font-size: 12px !important;
+    font-weight: unset !important;
+  }
+
+  ::ng-deep .mat-standard-chip {
+    min-height: 30px !important;
+  }
+}
