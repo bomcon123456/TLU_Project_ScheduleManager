@@ -39,8 +39,8 @@
       </mat-form-field>
     </div>
   </div>
-  <mat-card style="display: flex;">
-    <mat-card style="width: 55%; margin: 10px;">
+  <mat-card style="display: flex; background: #f0f2f5 !important; box-shadow: unset !important; padding: unset !important;">
+    <mat-card style="width: 50%; margin-right: 20px; padding: 16px 0px 0px !important;">
       <mat-card-header>
         <mat-card-title style="text-align: center; width: 100%; font-size: 18px !important; padding-bottom: 10px;">
           <button mat-button color="warn" style="font-size: 18px !important;">Danh sách lớp đang chờ duyệt</button>
@@ -50,7 +50,7 @@
         </mat-card-subtitle>
       </mat-card-header>
       <!-- <mat-card-content> -->
-        <div class="mat-elevation-z8">
+        <div class="mat-elevation-z8" style="box-shadow: unset !important;">
           <table mat-table matSort [dataSource]="dataSourceNotApproved">
 
             <!-- Position Column -->
@@ -84,24 +84,24 @@
             </ng-container>
 
             <!-- Symbol Column -->
-            <ng-container matColumnDef="status">
+            <!-- <ng-container matColumnDef="status">
               <th mat-header-cell *matHeaderCellDef> Tình trạng </th>
               <td mat-cell *matCellDef="let element">
                 <mat-chip-list>
                   <mat-chip color="warn" selected>Chưa duyệt</mat-chip>
                 </mat-chip-list>
               </td>
-            </ng-container>
+            </ng-container> -->
 
             <!-- Symbol Column -->
-            <ng-container matColumnDef="action">
+            <!-- <ng-container matColumnDef="action">
               <th mat-header-cell *matHeaderCellDef></th>
-              <td mat-cell *matCellDef="let element">
+              <td mat-cell *matCellDef="let element" style="text-align: center !important;">
                 <button mat-raised-button style="font-size: 12px !important;" color="primary">
                   Duyệt lớp
                 </button>
               </td>
-            </ng-container>
+            </ng-container> -->
 
             <tr mat-header-row *matHeaderRowDef="notApprovedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: notApprovedColumns;"></tr>
@@ -113,7 +113,7 @@
     </mat-card>
 
     <!-- Danh sách lớp đã duyệt -->
-    <mat-card style="width: 45%; margin: 10px;">
+    <mat-card style="width: 50%; margin-left: 20px; padding: 16px 0px 0px !important;">
       <mat-card-header>
         <mat-card-title style="text-align: center; width: 100%; font-size: 18px !important; padding-bottom: 10px;">
           <button mat-button color="primary" style="font-size: 18px !important;">Danh sách lớp đã duyệt</button>
@@ -123,7 +123,7 @@
         </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <div class="mat-elevation-z8">
+        <div class="mat-elevation-z8" style="box-shadow: unset !important;">
           <table mat-table matSort [dataSource]="dataSourceApproved">
 
             <!-- Position Column -->
@@ -157,14 +157,14 @@
             </ng-container>
 
             <!-- Symbol Column -->
-            <ng-container matColumnDef="status">
+            <!-- <ng-container matColumnDef="status">
               <th mat-header-cell *matHeaderCellDef> Tình trạng </th>
               <td mat-cell *matCellDef="let element">
                 <mat-chip-list>
                   <mat-chip color="primary" selected>Đã duyệt</mat-chip>
                 </mat-chip-list>
               </td>
-            </ng-container>
+            </ng-container> -->
 
             <tr mat-header-row *matHeaderRowDef="approvedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: approvedColumns;"></tr>

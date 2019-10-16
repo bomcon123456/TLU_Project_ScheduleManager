@@ -53,6 +53,7 @@ export class ClassroomAddComponent implements OnInit {
   private shifts: any;
 
   private yearSelected: string;
+  private shiftEqualClass: string;
 
   private isLoading: boolean;
   private isCourseFisrtTime: boolean;
@@ -65,6 +66,7 @@ export class ClassroomAddComponent implements OnInit {
   private isLoadingShift: boolean;
   private isLoadingRoom: boolean;
   private isCheckedCombine: boolean;
+  private isNeedEqual: boolean;
 
   private index: number;
   private pageSize: number;
@@ -230,6 +232,7 @@ export class ClassroomAddComponent implements OnInit {
     this.theoryWeek = null;
     this.practiceWeek = null;
     this.combinedWeek = null;
+    this.shiftEqualClass = null;
     this.timeTotal = {};
     this.parentClass = [];
     this.ELEMENT_DATA = [];
@@ -268,6 +271,9 @@ export class ClassroomAddComponent implements OnInit {
       this.numOfClass = null;
 
     }
+
+    console.log(this.checkStudentsEqual().isEqual);
+
   }
 
   checkedCombineClass(checked) {
@@ -288,6 +294,21 @@ export class ClassroomAddComponent implements OnInit {
       this.getHoursOfWeek(this.courseSelected.length);
     }
     this.getClassroomsData();
+  }
+
+  isDisabledCheckedCombineClass() {
+    if ( this.courseSelected ) {
+      if ((this.courseSelected.length.combined == 0 &&
+          (this.courseSelected.length.theory == 0 ||
+          this.courseSelected.length.practice == 0)) ||
+          this.courseSelected.length.combined > 0 ) {
+            return true;
+      }
+    }
+    else {
+      return true;
+    }
+    return false;
   }
 
   createNewClass() {
@@ -631,6 +652,33 @@ export class ClassroomAddComponent implements OnInit {
     };
 
     this.ELEMENT_DATA.push(temp);
+
+    if (!this.checkStudentsEqual().isEqual && this.isNeedEqual) {
+      let index = this.ELEMENT_DATA.length-1;
+      if (this.checkStudentsEqual().studentsLT < this.checkStudentsEqual().studentsTH) {
+        this.ELEMENT_DATA[index].type = 'LT';
+        this.ELEMENT_DATA.filter( result => {
+          if ( result.type == 'LT' ) {
+            this.ELEMENT_DATA[index].name = result.name;
+            // this.shiftEqualClass = result.date.shift;
+          }
+        })
+      }
+      else {
+        this.ELEMENT_DATA.filter( result => {
+          if ( result.type == 'TH' ) {
+            this.ELEMENT_DATA[index].type = 'TH';
+            this.ELEMENT_DATA[index].name = result.name;
+            // this.shiftEqualClass = result.date.shift;
+          }
+          else if ( result.type == 'BT' ) {
+            this.ELEMENT_DATA[index].type = 'BT';
+            this.ELEMENT_DATA[index].name = result.name;
+            // this.shiftEqualClass = result.date.shift;
+          }
+        })
+      }
+    }
     this.getClassroomsData();
 
   }
@@ -782,6 +830,65 @@ export class ClassroomAddComponent implements OnInit {
     }
   }
 
+  haveTypeClass(index: number) {
+    for (let i = 0; i < this.ELEMENT_DATA.length; i++) {
+      if ( this.ELEMENT_DATA[i].type == 'TH' ) {
+        return 'TH';
+      }
+      else if ( this.ELEMENT_DATA[i].type == 'BT' ) {
+        return 'BT';
+      }
+    }
+    return null;
+  }
+
+  getFilteredTeacherSelected() {
+    let teacherSelectedList = this.ELEMENT_DATA.filter((element, index) => {
+      return index == this.ELEMENT_DATA.findIndex( obj => {
+        return JSON.stringify(obj.teacher) == JSON.stringify(element.teacher);
+      })
+    })
+
+    return teacherSelectedList;
+  }
+
+  checkStudentsEqual() {
+    if ( this.theoryWeek > 0 || this.practiceWeek > 0 || this.combinedWeek > 0 ) {
+      this.isNeedEqual = false;
+      return { isEqual: false };
+    }
+    else {
+      let time = this.courseSelected.length;
+      if ( time.combined == 0 && ( time.theory == 0 || time.practice == 0) ) {
+        return { isEqual: true };
+      }
+      else {
+        if ( this.isCheckedCombine ) {
+          return { isEqual: true };
+        }
+        else {
+          this.isNeedEqual = true;
+          let studentsLT = 0;
+          let studentsTH = 0; // OR studentsBT
+          this.ELEMENT_DATA.filter( result => {
+            if ( result.type == 'LT' ) {
+              studentsLT += result.students;
+            }
+            else {
+              studentsTH += result.students;
+            }
+          });
+
+          return {
+            isEqual: studentsTH == studentsLT,
+            studentsLT: studentsLT,
+            studentsTH: studentsTH
+          };
+        }
+      }
+    }
+  }
+
   handleWithData(data, index, elm) {
 
     switch (elm) {
@@ -790,6 +897,11 @@ export class ClassroomAddComponent implements OnInit {
       // ******************************************TYPE********************************************
       // ******************************************************************************************
       case 'type': {
+
+        this.ELEMENT_DATA[index].date.shift = null;
+        this.ELEMENT_DATA[index].room = {};
+        this.takeTimeLeftWhenReselect(index);
+
         let oldType = this.ELEMENT_DATA[index].type;
         this.ELEMENT_DATA[index].type = data;
 
@@ -841,7 +953,6 @@ export class ClassroomAddComponent implements OnInit {
       // ******************************************TEACHER********************************************
       // *********************************************************************************************
       case 'teacher': {
-
         this.ELEMENT_DATA[index].date = {};
         this.ELEMENT_DATA[index].room = {};
 
@@ -857,7 +968,19 @@ export class ClassroomAddComponent implements OnInit {
             }
           }
         })
-
+        if ( this.ELEMENT_DATA.length > 1 ) {
+          this.ELEMENT_DATA.filter( result => {
+            if ( result.teacher._id ) {
+              if (data == result.teacher._id) {
+                this.ELEMENT_DATA[index].teacher = {
+                  _id: result.teacher._id,
+                  name: result.teacher.name
+                }
+              }
+            }
+          })
+        }
+        console.log(data, this.ELEMENT_DATA);
         break;
       };
 
@@ -882,6 +1005,32 @@ export class ClassroomAddComponent implements OnInit {
                                   this.semesterSelected.key.semester,
                                   this.ELEMENT_DATA[index].date.day,
                                   this.ELEMENT_DATA[index].teacher._id);
+        if ( (!this.checkStudentsEqual().isEqual || this.checkStudentsEqual().isEqual) && this.isNeedEqual) {
+          this.ELEMENT_DATA.filter( (result, i) => {
+            if ( index != i ) {
+              if ( this.ELEMENT_DATA[index].name == result.name ) {
+                if ( this.ELEMENT_DATA[index].teacher._id == result.teacher._id ) {
+                  if ( this.ELEMENT_DATA[index].date.day == result.date.day ) {
+                    this.shiftEqualClass = null;
+                    console.log(this.shiftEqualClass);
+
+                  }
+                  else {
+                    this.shiftEqualClass = result.date.shift;
+                    console.log(this.shiftEqualClass, result.date.shift);
+                  }
+                }
+                else {
+                  this.shiftEqualClass = result.date.shift;
+                  console.log(this.shiftEqualClass, result.date.shift);
+
+                }
+              }
+            }
+          });
+
+          this.ELEMENT_DATA[index].date.shift
+        }
 
         break;
       };
@@ -893,6 +1042,9 @@ export class ClassroomAddComponent implements OnInit {
 
         this.ELEMENT_DATA[index].room = {};
         this.ELEMENT_DATA[index].date.shift = data;
+        if ((!this.checkStudentsEqual().isEqual || this.checkStudentsEqual().isEqual) && this.isNeedEqual) {
+          return;
+        }
 
         // Combined Time
         if (this.timeTotal.combined) {
@@ -1093,7 +1245,6 @@ export class ClassroomAddComponent implements OnInit {
   }
 
   getFreeRooms(year, group, semester, day, shift, students) {
-    console.log(year, group, semester, day, shift, students);
 
     this.getFreeApi.getFreeRoom(year, group, semester, day, shift, students).pipe(debounceTime(5000)).subscribe( result => {
       this.roomList = result.data;

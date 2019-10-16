@@ -24,11 +24,11 @@
               {{course.name}}
             </mat-option>
           </mat-optgroup>
-          <mat-optgroup label="Học phần đã chọn">
+          <!-- <mat-optgroup label="Học phần đã chọn">
             <mat-option *ngFor="let course of courseSelectedList" [value]="course">
               {{course.name}}
             </mat-option>
-          </mat-optgroup>
+          </mat-optgroup> -->
         </mat-select>
         <!-- <mat-select (selectionChange)="setCourseSelected($event.value)">
           <mat-option *ngFor="let course of coursesList" [value]="course">
@@ -38,10 +38,14 @@
       </mat-form-field>
 
       <mat-form-field class="mg-l-r-30 w-20">
-        <input matInput placeholder="Số lớp học" (change)="setNumOfClass($event.target.valueAsNumber)" [value]="numOfClass" type="number">
+        <input matInput placeholder="Số lớp học" (change)="setNumOfClass($event.target.valueAsNumber)" [value]="numOfClass" type="number" min="0">
       </mat-form-field>
 
-      <mat-checkbox (change)="checkedCombineClass($event.checked)" labelPosition='before' class="mg-l-r-30 w-30">Gộp lớp</mat-checkbox>
+      <mat-checkbox (change)="checkedCombineClass($event.checked)"
+                    labelPosition='before' class="mg-l-r-30 w-30"
+                    [disabled]="isDisabledCheckedCombineClass() ? true : false">
+          Gộp lớp
+      </mat-checkbox>
     </div>
   </div>
 
@@ -62,20 +66,24 @@
           </div>
 
           <div style="width: 20%; text-align: center; align-self: center">
-            <label *ngIf="countClass">{{courseSelected.name}}.{{countClass}}</label>
+            <label *ngIf="courseSelected && countClass">{{courseSelected.name}}.{{countClass}}</label>
           </div>
 
           <div style="width: 40%; display: flex; justify-content: flex-end">
             <button mat-icon-button color="primary" (click)="setNextClass()"
-              [disabled]="(( theoryWeek==0 && practiceWeek==0 ) || combinedWeek==0 ) && isCreateClassDone && checkAllValid() ? false : true"
-              *ngIf="!isLastClass; else addDone">
+                    [disabled]="(( theoryWeek==0 && practiceWeek==0 ) || combinedWeek==0 )
+                                && isCreateClassDone && checkAllValid() &&
+                                checkStudentsEqual().isEqual ? false : true"
+                    *ngIf="!isLastClass; else addDone">
               <!-- && isTypeInvalid -->
               <mat-icon>arrow_right</mat-icon>
             </button>
 
             <ng-template #addDone>
               <button mat-raised-button color="primary" (click)="addClass()"
-                [disabled]="(( theoryWeek==0 && practiceWeek==0 ) || combinedWeek==0 ) && isCreateClassDone && checkAllValid() ? false : true">
+                      [disabled]="(( theoryWeek==0 && practiceWeek==0 ) || combinedWeek==0 )
+                                  && isCreateClassDone && checkAllValid() &&
+                                  checkStudentsEqual().isEqual ? false : true">
                 <!-- && isTypeInvalid -->
                 Thêm lớp học
               </button>
@@ -117,7 +125,9 @@
       <ng-container matColumnDef="position">
         <th mat-header-cell *matHeaderCellDef class="custom-col-1">
           <button mat-icon-button matTooltip="Thêm lớp con"
-                  [disabled]="courseSelected && isChildDone && numOfClass && ( combinedWeek>0 || theoryWeek>0 || practiceWeek>0 ) && checkAllValid() ? false : true"
+                  [disabled]="courseSelected && isChildDone && numOfClass &&
+                              ( combinedWeek>=0 || theoryWeek>=0 || practiceWeek>=0 )
+                              && checkAllValid() && !checkStudentsEqual().isEqual ? false : true"
                   (click)="addChildClass()" color="primary">
                   <!-- isTypeInvalid && -->
             <mat-icon>add_circle</mat-icon>
@@ -142,7 +152,7 @@
         <td mat-cell *matCellDef="let element; let i = index">
           <mat-form-field>
             <input matInput placeholder="Số lượng sinh viên" type="number"
-                  [(ngModel)]="ELEMENT_DATA[i].students">
+                  [(ngModel)]="ELEMENT_DATA[i].students" min="0">
           </mat-form-field>
         </td>
       </ng-container>
@@ -156,9 +166,20 @@
             <mat-select [value]="ELEMENT_DATA[i].type"
                         (selectionChange)="handleWithData($event.value, i, elm = 'type')"
                         [disabled]="isCheckedCombine">
-              <mat-option value="LT" *ngIf="timeTotal.theory!=0">Lý thuyết</mat-option>
-              <mat-option value="TH" *ngIf="timeTotal.practice!=0">Thực hành</mat-option>
-              <mat-option value="BT" *ngIf="timeTotal.practice!=0">Bài tập</mat-option>
+              <mat-option value="LT" *ngIf="timeTotal.theory!=0"
+                          [disabled]="(theoryWeek > 0) || (combinedWeek > 0) ? false : true">
+                  Lý thuyết
+              </mat-option>
+              <mat-option value="TH" *ngIf="timeTotal.practice!=0"
+                          [disabled]="(practiceWeek > 0) ||(combinedWeek > 0) ? false : true"
+                          [ngStyle]="{'display': haveTypeClass(i) == 'BT' ? 'none' : 'block'}">
+                  Thực hành
+              </mat-option>
+              <mat-option value="BT" *ngIf="timeTotal.practice!=0"
+                          [disabled]="(practiceWeek > 0) ||(combinedWeek > 0) ? false : true"
+                          [ngStyle]="{'display': haveTypeClass(i) == 'TH' ? 'none' : 'block'}">
+                  Bài tập
+              </mat-option>
             </mat-select>
           </mat-form-field>
         </td>
@@ -182,7 +203,7 @@
                 </mat-option>
               </mat-optgroup>
               <mat-optgroup label="Giáo viên đã chọn">
-                <mat-option *ngFor="let data of ELEMENT_DATA" [value]="data.teacher._id">
+                <mat-option *ngFor="let data of getFilteredTeacherSelected()" [value]="data.teacher._id">
                   {{data.teacher.name}}
                 </mat-option>
               </mat-optgroup>
@@ -236,9 +257,15 @@
               <mat-optgroup label="Ca trống">
                 <mat-option *ngFor="let shift of shifts"
                             [value]="shift"
-                            [disabled]="checkShiftValid(i, shift)">
+                            [disabled]="checkShiftValid(i, shift)"
+                            [ngStyle]="{'display': checkShiftValid(i, shift) ? 'none' : 'block'}">
                     {{shift}}
                 </mat-option>
+              </mat-optgroup>
+              <mat-optgroup *ngIf="(!checkStudentsEqual().isEqual && isNeedEqual) ||
+                            (checkStudentsEqual().isEqual && isNeedEqual)"
+                            label="Ca bắt buộc">
+                <mat-option [value]="shiftEqualClass">{{shiftEqualClass}}</mat-option>
               </mat-optgroup>
               <mat-optgroup label="Ca đã chọn">
                 <mat-option *ngFor="let data of ELEMENT_DATA" disabled="true"
@@ -271,7 +298,8 @@
               <mat-optgroup label="Phòng trống">
                 <mat-option *ngFor="let room of roomList"
                             [value]="room._id"
-                            [disabled]="checkRoomValid(i, room._id)">
+                            [disabled]="checkRoomValid(i, room._id)"
+                            [ngStyle]="{'display': checkRoomValid(i, room._id) ? 'none' : 'block'}">
                   {{room.name}}
                 </mat-option>
               </mat-optgroup>

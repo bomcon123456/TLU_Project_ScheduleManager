@@ -17,8 +17,8 @@ import { filter, tap, debounceTime, switchMap } from 'rxjs/operators';
 })
 export class ScheduleManagementComponent implements OnInit {
 
-  public approvedColumns: string[] = ['position', 'name', 'room', 'shift', 'day', 'status'];
-  public notApprovedColumns: string[] = ['position', 'name', 'room', 'shift', 'day', 'status', 'action'];
+  public approvedColumns: string[] = ['position', 'name', 'room', 'shift', 'day'];
+  public notApprovedColumns: string[] = ['position', 'name', 'room', 'shift', 'day'];
 
   public dataSourceApproved: any;
   public dataSourceNotApproved: any;
