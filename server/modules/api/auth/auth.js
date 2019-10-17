@@ -70,6 +70,7 @@ exports.login = (req, res, next) => {
 
 exports.update = (req, res, next) => {
   let id = req.user.id;
+  let file = req.file;
   User.findById(id)
     .then(user => {
       if (!user) {
@@ -77,18 +78,53 @@ exports.update = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
-      const { email, name, description, gender, avatarURL } = req.body;
+      const { email, name, description, gender } = req.body;
       user.email = email || user.email;
       user.name = name || user.name;
       user.description = description || user.description;
       user.gender = gender || user.gender;
-      user.avatarURL = avatarURL || user.avatarURL;
+      if (file !== null) {
+        user.avatarUrl = process.env.UPLOAD_DIR + "/" + file.filename;
+      }
       return user.save();
     })
     .then(data => {
       res.status(200).json({
         message: "update_user_successfully",
         id: id
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
+
+exports.changePassword = (req, res, next) => {
+  const { currentPassword, newPassword } = req.body;
+  let id = req.user.id;
+  let loadedUser;
+  return User.findById(id)
+    .then(user => {
+      if (!user) {
+        const error = new Error("account_not_found");
+        error.statusCode = 401;
+        throw error;
+      }
+      loadedUser = user;
+      return bcrypt.compare(currentPassword, user.password);
+    })
+    .then(isEqual => {
+      if (!isEqual) {
+        const error = new Error("wrong_password");
+        error.statusCode = 401;
+        throw error;
+      }
+      loadedUser.password = newPassword;
+      return loadedUser.save();
+    })
+    .then(data => {
+      res.status(200).json({
+        message: "password_changed"
       });
     })
     .catch(error => {

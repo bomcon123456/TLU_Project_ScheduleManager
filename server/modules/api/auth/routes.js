@@ -6,6 +6,8 @@ const isAuth = require("../../common/middleware/is-auth");
 
 const router = express.Router();
 
+router.post("/change-password", isAuth, authController.changePassword);
+
 router.post("/", authController.login);
 
 router.put("/", isAuth, authController.update);

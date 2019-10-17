@@ -7,6 +7,7 @@ require("dotenv").config({ path: "./env/dev.env" });
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const multer = require("multer");
 
 const teacherRoutes = require("./modules/api/teachers/routes");
 const roomRoutes = require("./modules/api/rooms/routes");
@@ -15,13 +16,15 @@ const departmentRoutes = require("./modules/api/departments/routes");
 const authRoutes = require("./modules/api/auth/routes");
 const classroomRoutes = require("./modules/api/classrooms/routes");
 const queryRoutes = require("./modules/api/query/routes");
+const calendarRoutes = require("./modules/api/calendar/routes");
+
 // const teacherRoutes = require("./modules/api/teachers/routes");
 
-// const multer = require("multer");
-// const {
-//   fileFilter,
-//   fileStorage
-// } = require("./modules/common/util/multer-util");
+const multer = require("multer");
+const {
+  fileFilter,
+  fileStorage
+} = require("./modules/common/util/multer-util");
 
 const app = express();
 
@@ -41,6 +44,12 @@ app.use((req, res, next) => {
 });
 
 // Multer (file upload) middleware
+app.use(
+  "/api",
+  multer({
+    fileFilter: fileFilter
+  }).single("file")
+);
 
 // Routes
 app.use("/api/teachers", teacherRoutes);
@@ -50,6 +59,7 @@ app.use("/api/departments", departmentRoutes);
 app.use("/api/classrooms", classroomRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/query", queryRoutes);
+app.use("/api/calendar", calendarRoutes);
 
 // Error-handling Middleware
 app.use((error, req, res, next) => {

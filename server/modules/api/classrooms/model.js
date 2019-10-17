@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const shifts = require("../../common/constants/shifts");
-const days = require("../../common/constants/days");
-const groups = require("../../common/constants/groups");
-const semesters = require("../../common/constants/semesters");
-const years = require("../../common/constants/years");
+const { shifts } = require("../../common/constants/shifts");
+const { days } = require("../../common/constants/days");
+const { groups } = require("../../common/constants/groups");
+const { semesters } = require("../../common/constants/semesters");
+const { years } = require("../../common/constants/years");
 
 const classroomSchema = new Schema(
   {
