@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { StorageService } from '../../../storage/storage.service';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
+
+import { StorageService } from '../../../storage/storage.service';
+import { DepartmentApiService } from '../../../../../services/department-api.service';
+import { SEMESTERS, YEARS } from '../../../storage/data-storage';
 
 @Component({
   selector: 'app-classroom-not-verified',
@@ -20,14 +23,35 @@ export class ClassroomNotVerifiedComponent implements OnInit {
 
   private totalNotApproved: number;
 
+  private isFirstTime: boolean;
+
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private storageApi: StorageService) {}
+  constructor(private storageApi: StorageService,
+              private departmentApi: DepartmentApiService) {
+
+    this.isFirstTime = true;
+    this.semesterSelected = SEMESTERS[0];
+    this.yearSelected = YEARS[0];
+    this.departmentApi.getDepartments(1, 1).subscribe(result => {
+      this.isFirstTime = false;
+      if ( !this.departmentSelected ) {
+        this.departmentSelected = result.data[0];
+      }
+    }, error => {
+      console.log(error);
+    })
+    if (this.storageApi.departmentSelected &&
+      this.storageApi.semesterSelected &&
+      this.storageApi.yearSelected) {
+
+      this.departmentSelected = this.storageApi.departmentSelected;
+      this.semesterSelected = this.storageApi.semesterSelected;
+      this.yearSelected = this.storageApi.yearSelected;
+    }
+  }
 
   ngOnInit() {
-    this.departmentSelected = this.storageApi.departmentSelected;
-    this.semesterSelected = this.storageApi.semesterSelected;
-    this.yearSelected = this.storageApi.yearSelected;
     this.totalNotApproved = 0;
     this.dataSourceNotApproved = new MatTableDataSource(ELEMENT_DATA);
   }
