@@ -11,7 +11,8 @@ const calendarSchema = new Schema(
     semesters: { type: String, required: true, enum: semesters },
     year: { type: String, required: true, enum: years },
     startDate: { type: Date, default: "2/9/1990" },
-    endDate: { type: Date, default: "2/9/1990" }
+    endDate: { type: Date, default: "2/9/1990" },
+    openForOffering: { type: Boolean, default: false }
   },
   { timestamps: { createdAt: "createdAt" } }
 );

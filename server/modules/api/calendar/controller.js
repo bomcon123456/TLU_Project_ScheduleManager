@@ -67,11 +67,13 @@ const post = (req, res, next) => {
 
 const put = (req, res, next) => {
   const id = req.params.id;
-  const { startDate, endDate } = req.body;
+  const { startDate, endDate, openForOffering } = req.body;
   Calendar.findById(id)
     .then(thecalendar => {
       thecalendar.startDate = startDate || thecalendar.startDate;
       thecalendar.endDate = endDate || thecalendar.endDate;
+      thecalendar.openForOffering =
+        openForOffering || thecalendar.openForOffering;
       thecalendar.save();
     })
     .then(data => {
