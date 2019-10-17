@@ -7,6 +7,7 @@ require("dotenv").config({ path: "./env/dev.env" });
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const multer = require("multer");
 
 const teacherRoutes = require("./modules/api/teachers/routes");
 const roomRoutes = require("./modules/api/rooms/routes");
@@ -19,11 +20,11 @@ const calendarRoutes = require("./modules/api/calendar/routes");
 
 // const teacherRoutes = require("./modules/api/teachers/routes");
 
-// const multer = require("multer");
-// const {
-//   fileFilter,
-//   fileStorage
-// } = require("./modules/common/util/multer-util");
+const multer = require("multer");
+const {
+  fileFilter,
+  fileStorage
+} = require("./modules/common/util/multer-util");
 
 const app = express();
 
@@ -43,6 +44,12 @@ app.use((req, res, next) => {
 });
 
 // Multer (file upload) middleware
+app.use(
+  "/api",
+  multer({
+    fileFilter: fileFilter
+  }).single("file")
+);
 
 // Routes
 app.use("/api/teachers", teacherRoutes);

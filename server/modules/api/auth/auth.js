@@ -70,6 +70,7 @@ exports.login = (req, res, next) => {
 
 exports.update = (req, res, next) => {
   let id = req.user.id;
+  let file = req.file;
   User.findById(id)
     .then(user => {
       if (!user) {
@@ -77,12 +78,14 @@ exports.update = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
-      const { email, name, description, gender, avatarURL } = req.body;
+      const { email, name, description, gender } = req.body;
       user.email = email || user.email;
       user.name = name || user.name;
       user.description = description || user.description;
       user.gender = gender || user.gender;
-      user.avatarURL = avatarURL || user.avatarURL;
+      if (file !== null) {
+        user.avatarUrl = process.env.UPLOAD_DIR + "/" + file.filename;
+      }
       return user.save();
     })
     .then(data => {
