@@ -20,7 +20,6 @@ const calendarRoutes = require("./modules/api/calendar/routes");
 
 // const teacherRoutes = require("./modules/api/teachers/routes");
 
-const multer = require("multer");
 const {
   fileFilter,
   fileStorage
