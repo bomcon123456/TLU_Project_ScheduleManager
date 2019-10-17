@@ -7,6 +7,17 @@ const getAll = (req, res, next) => {
   let query = {};
   if (filter) {
     filter = JSON.parse(filter);
+    if (filter.date) {
+      if (filter.date.group) {
+        query["date.group"] = filter.date.group;
+      }
+      if (filter.date.semesters) {
+        query["date.semesters"] = filter.date.semesters;
+      }
+      if (filter.date.year) {
+        query["date.year"] = filter.date.year;
+      }
+    }
   }
   let classrooms = [];
   console.log(query);
