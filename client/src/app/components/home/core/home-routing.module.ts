@@ -7,6 +7,7 @@ import { RoomManagementComponent } from '../categories/room-management/room-mana
 import { ScheduleComponent } from '../categories/schedule/schedule.component';
 import { TeacherManagementComponent } from './../categories/teacher-management/teacher-management.component';
 import { DepartmentManagementComponent } from './../categories/department-management/department-management.component';
+import { CalendarManagementComponent } from '../categories/calendar-management/calendar-management.component';
 import { ClassroomManagementComponent } from './../categories/classroom-management/classroom-management.component';
 import { ClassroomAddComponent } from '../categories/classroom-management/classroom-add/classroom-add.component';
 import { ScheduleManagementComponent } from './../categories/schedule-management/schedule-management.component';
@@ -34,6 +35,10 @@ const routes: Routes = [
   {
     path: 'department-management',
     component: DepartmentManagementComponent
+  },
+  {
+    path: 'calendar-management',
+    component: CalendarManagementComponent
   },
   {
     path: 'classroom-management',

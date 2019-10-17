@@ -8,27 +8,27 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 
-import { TeacherDialogComponent } from './teacher-dialog/teacher-dialog.component';
-import { TeacherElement, DepartmentElement } from '../../interface/dialog-data';
-import { TeacherApiService } from './../../../../services/teacher-api.service';
-import { DepartmentApiService } from './../../../../services/department-api.service';
+import { CalendarDialogComponent } from './calendar-dialog/calendar-dialog.component';
+import { CalendarElement } from '../../interface/dialog-data';
+import { CalendarApiService } from '../../../../services/calendar-api.service';
+import { DepartmentApiService } from '../../../../services/department-api.service';
 
 
 /**
  * @title Table with pagination
  */
 @Component({
-  selector: 'app-teacher-management',
-  templateUrl: './teacher-management.component.html',
-  styleUrls: ['./teacher-management.component.scss']
+  selector: 'app-calendar-management',
+  templateUrl: './calendar-management.component.html',
+  styleUrls: ['./calendar-management.component.scss']
 })
-export class TeacherManagementComponent implements OnInit {
+export class CalendarManagementComponent implements OnInit {
 
-  public displayedColumns: string[] = ['position', '_id', 'name', 'department', 'actions'];
+  public displayedColumns: string[] = ['position', 'group', 'semesters', 'year', 'start', 'end', 'actions'];
   // public dataSource = new MatTableDataSource(ELEMENT_DATA);
 
   public dataSource = null;
-  private ELEMENT_DATA: TeacherElement[];
+  private ELEMENT_DATA: CalendarElement[];
   private isLoading: boolean;
   private isFirstTime: boolean;
   public searching: boolean;
@@ -51,7 +51,7 @@ export class TeacherManagementComponent implements OnInit {
   @ViewChild(MatTable, { static: false }) table: MatTable<any>;
 
   constructor(public dialog: MatDialog,
-    private teacherApi: TeacherApiService,
+    private calendarApi: CalendarApiService,
     private departmentApi: DepartmentApiService,
     private toastr: ToastrService) { }
 
@@ -63,7 +63,7 @@ export class TeacherManagementComponent implements OnInit {
     this.dataLength = 0;
     this.setDefault()
 
-    this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
+    this.getCalendarsData(this.pageSize, this.pageIndex);
 
     this.ServerSideFilteringCtrl.valueChanges
       .pipe(
@@ -98,7 +98,7 @@ export class TeacherManagementComponent implements OnInit {
     this.dataSource.paginator = null;
     this.dataSource.sortingDataAccessor = (item, property) => {
       switch (property) {
-        case 'department': return item.department.name;
+        // case 'department': return item.department.name;
         default: return item[property];
       }
     }
@@ -114,7 +114,7 @@ export class TeacherManagementComponent implements OnInit {
 
   setDepartmentId(data) {
 
-    if ( data ) {
+    if (data) {
 
       return this.filter.department = data._id;
     }
@@ -135,7 +135,7 @@ export class TeacherManagementComponent implements OnInit {
     this.isLoading = true;
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex + 1;
-    this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
+    this.getCalendarsData(this.pageSize, this.pageIndex);
   }
 
   getFilter() {
@@ -143,7 +143,7 @@ export class TeacherManagementComponent implements OnInit {
     this.pageSize = 10;
     this.pageIndex = 1;
     this.paginator.pageIndex = 0;
-    this.getTeachersData(this.pageSize, this.pageIndex, this.filter)
+    this.getCalendarsData(this.pageSize, this.pageIndex)
   }
 
   openDialog(action, obj): void {
@@ -159,7 +159,7 @@ export class TeacherManagementComponent implements OnInit {
       this.height = '230px';
     }
 
-    const dialogRef = this.dialog.open(TeacherDialogComponent, {
+    const dialogRef = this.dialog.open(CalendarDialogComponent, {
       width: this.width,
       height: this.height,
       data: obj
@@ -170,16 +170,16 @@ export class TeacherManagementComponent implements OnInit {
 
         this.isLoading = true;
         this.paginator.pageIndex = 0;
-        this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
+        this.getCalendarsData(this.pageSize, this.pageIndex);
         return;
       }
 
       if (this.action == 'add') {
-        this.createTeacher(result.data);
+        this.createCalendar(result.data);
       } else if (this.action == 'edit') {
-        this.updateTeacher(result.data);
+        this.updateCalendar(result.data);
       } else if (this.action == 'delete') {
-        this.deleteTeacher(result.data);
+        this.deleteCalendar(result.data);
       }
     });
   }
@@ -200,14 +200,14 @@ export class TeacherManagementComponent implements OnInit {
     })
   }
 
-  getTeachersData(pageSize: number, pageIndex: number, filter: any) {
-    this.teacherApi.getTeachers(pageSize, pageIndex, filter).subscribe(result => {
+  getCalendarsData(pageSize: number, pageIndex: number) {
+    this.calendarApi.getCalendars(pageSize, pageIndex).subscribe(result => {
 
       this.ELEMENT_DATA = result.data;
       this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.setTable();
-      this.index = pageSize * (pageIndex-1);
+      this.index = pageSize * (pageIndex - 1);
       this.isLoading = false;
 
       if (this.isFirstTime) {
@@ -219,28 +219,28 @@ export class TeacherManagementComponent implements OnInit {
     })
   }
 
-  createTeacher(row_obj) {
+  createCalendar(row_obj) {
 
-    this.teacherApi.createTeacher(this.dataTranform(row_obj)).subscribe(result => {
+    this.calendarApi.createCalendar(this.dataTranform(row_obj)).subscribe(result => {
 
       this.isLoading = true;
       this.setDefault();
-      this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
+      this.getCalendarsData(this.pageSize, this.pageIndex);
       this.toastr.success(result.message)
     }, error => {
       this.toastr.error(error.message)
     })
   }
 
-  updateTeacher(row_obj) {
+  updateCalendar(row_obj) {
 
     let data = { name: row_obj.name };
 
-    this.teacherApi.updateTeacher(row_obj.id, data).subscribe(result => {
+    this.calendarApi.updateCalendar(row_obj.id, data).subscribe(result => {
 
       this.isLoading = true;
       this.paginator.pageIndex = 0;
-      this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
+      this.getCalendarsData(this.pageSize, this.pageIndex);
       this.toastr.success(result.message);
     }, error => {
       this.toastr.error(error.message);
@@ -248,12 +248,12 @@ export class TeacherManagementComponent implements OnInit {
 
   }
 
-  deleteTeacher(row_obj) {
-    this.teacherApi.deleteTeacher(row_obj.id).subscribe(result => {
+  deleteCalendar(row_obj) {
+    this.calendarApi.deleteCalendar(row_obj.id).subscribe(result => {
 
       this.isLoading = true;
       this.setDefault();
-      this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
+      this.getCalendarsData(this.pageSize, this.pageIndex);
       this.toastr.success(result.message);
     }, error => {
       this.toastr.error(error.message);
@@ -266,8 +266,11 @@ export class TeacherManagementComponent implements OnInit {
 
   dataTranform(data) {
     let newData = {
-      name: data.name,
-      department: data.department.id,
+      group: data.group,
+      semesters: data.semesters,
+      year: data.year,
+      startDate: data.startDate,
+      endDate: data.endDate
     }
     return newData;
   }

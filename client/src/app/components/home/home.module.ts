@@ -28,6 +28,8 @@ import { ClassroomAddComponent } from './categories/classroom-management/classro
 import { ScheduleManagementComponent } from './categories/schedule-management/schedule-management.component';
 import { ClassroomVerifiedComponent } from './categories/schedule-management/classroom-verified/classroom-verified.component';
 import { ClassroomNotVerifiedComponent } from './categories/schedule-management/classroom-not-verified/classroom-not-verified.component';
+import { CalendarManagementComponent } from './categories/calendar-management/calendar-management.component';
+import { CalendarDialogComponent } from './categories/calendar-management/calendar-dialog/calendar-dialog.component';
 
 
 @NgModule({
@@ -59,7 +61,9 @@ import { ClassroomNotVerifiedComponent } from './categories/schedule-management/
     ClassroomAddComponent,
     ScheduleManagementComponent,
     ClassroomVerifiedComponent,
-    ClassroomNotVerifiedComponent
+    ClassroomNotVerifiedComponent,
+    CalendarManagementComponent,
+    CalendarDialogComponent
   ],
   entryComponents: [
     RoomDialogComponent,
@@ -67,12 +71,14 @@ import { ClassroomNotVerifiedComponent } from './categories/schedule-management/
     TeacherDialogComponent,
     DepartmentDialogComponent,
     ClassroomDialogComponent,
+    CalendarDialogComponent,
     RoomManagementComponent,
     CourseManagementComponent,
     ScheduleComponent,
     TeacherManagementComponent,
     ClassroomManagementComponent,
-    DepartmentManagementComponent
+    DepartmentManagementComponent,
+    CalendarManagementComponent,
   ],
   providers: [
     SidenavService,

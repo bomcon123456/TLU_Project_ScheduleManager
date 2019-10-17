@@ -4,59 +4,67 @@
   <strong *ngIf="action == 'delete'">Xoá phòng học</strong>
 </h1>
 <form [formGroup]="roomForm" autocomplete="off">
-  <div mat-dialog-content *ngIf="action != 'delete'; else elseTemplate" style="overflow: unset">
-    <div class="example-container">
-      <mat-form-field>
-        <input placeholder="Tên phòng" matInput [(ngModel)]="local_data.name" [formControl]="nameFormControl" required>
-        <mat-error *ngIf="hasError('name', 'required')">Tên phòng không được để trống.</mat-error>
-        <mat-error *ngIf="hasError('name', 'minlength')">Tên phòng không được ít hơn 4 ký tự.</mat-error>
-      </mat-form-field>
+  <mat-card>
+    <mat-card-content>
+      <div mat-dialog-content *ngIf="action != 'delete'; else elseTemplate" style="overflow: unset">
+        <div class="example-container">
+          <mat-form-field>
+            <input placeholder="Tên phòng" matInput [(ngModel)]="local_data.name" [formControl]="nameFormControl" required>
+            <mat-error *ngIf="hasError('name', 'required')">Tên phòng không được để trống.</mat-error>
+            <mat-error *ngIf="hasError('name', 'minlength')">Tên phòng không được ít hơn 4 ký tự.</mat-error>
+          </mat-form-field>
 
-      <mat-form-field>
-        <input placeholder="Số lượng sinh viên tối đa" type="number"
-              matInput [(ngModel)]="local_data.capacity"
-              [readonly]="local_data.capacity == -1? true : false"
-              [formControl]="capacityFormControl" required>
-        <mat-error *ngIf="hasError('capacity', 'required')">Số lượng sinh viên tối đa không được để trống.</mat-error>
-        <mat-error *ngIf="hasError('capacity', 'min')">Số lượng sinh viên tối đa không được ít hơn 30 sinh viên.</mat-error>
-      </mat-form-field>
+          <mat-form-field>
+            <input placeholder="Số lượng sinh viên tối đa" type="number"
+                  matInput [(ngModel)]="local_data.capacity"
+                  [readonly]="local_data.capacity == -1? true : false"
+                  [formControl]="capacityFormControl" required>
+            <mat-error *ngIf="hasError('capacity', 'required')">Số lượng sinh viên tối đa không được để trống.</mat-error>
+            <mat-error *ngIf="hasError('capacity', 'min')">Số lượng sinh viên tối đa không được ít hơn 30 sinh viên.</mat-error>
+          </mat-form-field>
 
-      <mat-label class="location-label">Địa điểm</mat-label>
-      <mat-form-field class="location">
-        <input placeholder="Tòa nhà" matInput [(ngModel)]="local_data.location.building"
-              [formControl]="buildingFormControl" required>
-        <mat-error *ngIf="hasError('building', 'required')">Tòa nhà không được để trống.</mat-error>
-      </mat-form-field>
-      <mat-form-field class="location">
-        <input placeholder="Tầng" matInput [(ngModel)]="local_data.location.floor"
-              type="number" [formControl]="floorFormControl" required>
-        <mat-error *ngIf="hasError('floor', 'required')">Tầng không được để trống.</mat-error>
-      </mat-form-field>
+          <div>
+            <mat-label class="location-label">Địa điểm</mat-label>
+          </div>
+          <mat-form-field>
+            <input placeholder="Tòa nhà" matInput [(ngModel)]="local_data.location.building"
+                  [formControl]="buildingFormControl" required>
+            <mat-error *ngIf="hasError('building', 'required')">Tòa nhà không được để trống.</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input placeholder="Tầng" matInput [(ngModel)]="local_data.location.floor"
+                  type="number" [formControl]="floorFormControl" required>
+            <mat-error *ngIf="hasError('floor', 'required')">Tầng không được để trống.</mat-error>
+          </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Chọn loại phòng</mat-label>
-        <mat-select [(value)]="local_data.roomType" [formControl]="roomTypeFormControl" required>
-          <mat-option>None</mat-option>
-          <mat-option value="LT">Lý thuyết</mat-option>
-          <mat-option value="TH">Thực hành</mat-option>
-          <mat-option value="TC">Thể chất</mat-option>
-        </mat-select>
-        <mat-error *ngIf="hasError('roomType', 'required')">Loại phòng không được để trống.</mat-error>
-      </mat-form-field>
+          <mat-form-field>
+            <mat-label>Chọn loại phòng</mat-label>
+            <mat-select [(value)]="local_data.roomType" [formControl]="roomTypeFormControl" required>
+              <mat-option>None</mat-option>
+              <mat-option value="LT">Lý thuyết</mat-option>
+              <mat-option value="TH">Thực hành</mat-option>
+              <mat-option value="TC">Thể chất</mat-option>
+            </mat-select>
+            <mat-error *ngIf="hasError('roomType', 'required')">Loại phòng không được để trống.</mat-error>
+          </mat-form-field>
 
-      <mat-checkbox [checked]='local_data.capacity == -1? 1 : 0' (change)="onChange($event)" labelPosition='before'>Dùng được cho nhiều lớp</mat-checkbox>
-    </div>
-  </div>
-  <div mat-dialog-content>
-    <ng-template #elseTemplate>
-      <label>Bạn chắc chắn muốn xóa phòng này?</label><br>
-      <b>{{local_data.name}}</b>
-    </ng-template>
-  </div>
-  <div mat-dialog-actions style="float: right; margin: 25px 15px 0px">
-    <button mat-stroked-button *ngIf="action == 'add'" color="primary" (click)="doAction()" [disabled]="roomForm.invalid">Thêm</button>
-    <button mat-stroked-button *ngIf="action == 'edit'" color="primary" (click)="doAction()" [disabled]="roomForm.invalid">Sửa</button>
-    <button mat-stroked-button *ngIf="action == 'delete'" color="warn" (click)="doAction()">Xóa</button>
-    <button mat-stroked-button (click)="closeDialog()" mat-flat-button>Hủy bỏ</button>
-  </div>
+          <mat-checkbox [checked]='local_data.capacity == -1? 1 : 0' (change)="onChange($event)" labelPosition='before'>Dùng được cho nhiều lớp</mat-checkbox>
+        </div>
+      </div>
+      <div mat-dialog-content>
+        <ng-template #elseTemplate>
+          <label>Bạn chắc chắn muốn xóa phòng này?</label><br>
+          <b>{{local_data.name}}</b>
+        </ng-template>
+      </div>
+    </mat-card-content>
+    <mat-card-actions style="height: 3rem;">
+      <div style="float: right;">
+        <button mat-stroked-button *ngIf="action == 'add'" color="primary" (click)="doAction()" [disabled]="roomForm.invalid">Thêm</button>
+        <button mat-stroked-button *ngIf="action == 'edit'" color="primary" (click)="doAction()" [disabled]="roomForm.invalid">Sửa</button>
+        <button mat-stroked-button *ngIf="action == 'delete'" color="warn" (click)="doAction()">Xóa</button>
+        <button mat-stroked-button (click)="closeDialog()" mat-flat-button>Hủy bỏ</button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
 </form>

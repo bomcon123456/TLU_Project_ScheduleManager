@@ -78,7 +78,7 @@ export class RoomManagementComponent implements OnInit {
   setDefault() {
     this.paginator.pageIndex = 0;
     this.pageIndex = 1;
-    this.pageSize = 7;
+    this.pageSize = 10;
     this.filter = {};
   }
 
@@ -171,7 +171,7 @@ export class RoomManagementComponent implements OnInit {
 
     this.isLoading = true;
     this.paginator.pageIndex = 0;
-    this.pageSize = 8;
+    this.pageSize = 10;
     this.pageIndex = 1;
     this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
   }
@@ -183,7 +183,7 @@ export class RoomManagementComponent implements OnInit {
 
     if ( this.action != 'delete' ) {
       this.width = '780px';
-      this.height = '450px';
+      this.height = '465px';
     }
     else {
       this.width = '460px';

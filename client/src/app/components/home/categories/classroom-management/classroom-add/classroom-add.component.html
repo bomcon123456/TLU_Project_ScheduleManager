@@ -14,7 +14,7 @@
     <div class="some-actions">
       <mat-form-field class="mg-l-r-30 w-40">
         <mat-label>Chọn học phần</mat-label>
-        <mat-select [formControl]="CourseCtrl" (selectionChange)="setCourseSelected($event.value)">
+        <mat-select (selectionChange)="setCourseSelected($event.value)">
           <mat-option>
             <ngx-mat-select-search [formControl]="CourseFilteringCtrl" [searching]="courseSearching" placeholderLabel=''>
             </ngx-mat-select-search>
@@ -24,11 +24,11 @@
               {{course.name}}
             </mat-option>
           </mat-optgroup>
-          <!-- <mat-optgroup label="Học phần đã chọn">
-            <mat-option *ngFor="let course of courseSelectedList" [value]="course">
-              {{course.name}}
+          <mat-optgroup label="Học phần đang chọn" *ngIf="courseSelected">
+            <mat-option [value]="courseSelected">
+              {{courseSelected.name}}
             </mat-option>
-          </mat-optgroup> -->
+          </mat-optgroup>
         </mat-select>
         <!-- <mat-select (selectionChange)="setCourseSelected($event.value)">
           <mat-option *ngFor="let course of coursesList" [value]="course">
@@ -152,7 +152,11 @@
         <td mat-cell *matCellDef="let element; let i = index">
           <mat-form-field>
             <input matInput placeholder="Số lượng sinh viên" type="number"
-                  [(ngModel)]="ELEMENT_DATA[i].students" min="0">
+                  [(ngModel)]="ELEMENT_DATA[i].students" min="0" required
+                  (change)="handleWithData($event.target.valueAsNumber, i, elm = 'students')">
+            <!-- <mat-error *ngIf="hasError('students', 'required')">
+              Số lượng sinh viên không được để trống.
+            </mat-error> -->
           </mat-form-field>
         </td>
       </ng-container>
@@ -257,16 +261,14 @@
               <mat-optgroup label="Ca trống">
                 <mat-option *ngFor="let shift of shifts"
                             [value]="shift"
-                            [disabled]="checkShiftValid(i, shift)"
                             [ngStyle]="{'display': checkShiftValid(i, shift) ? 'none' : 'block'}">
                     {{shift}}
                 </mat-option>
               </mat-optgroup>
-              <mat-optgroup *ngIf="(!checkStudentsEqual().isEqual && isNeedEqual) ||
-                            (checkStudentsEqual().isEqual && isNeedEqual)"
+              <!-- <mat-optgroup *ngIf="isNeedEqual"
                             label="Ca bắt buộc">
                 <mat-option [value]="shiftEqualClass">{{shiftEqualClass}}</mat-option>
-              </mat-optgroup>
+              </mat-optgroup> -->
               <mat-optgroup label="Ca đã chọn">
                 <mat-option *ngFor="let data of ELEMENT_DATA" disabled="true"
                             [value]="data.date.shift"> {{data.date.shift}}

@@ -1,4 +1,4 @@
-<p class="title-style">Quản lý giáo viên</p>
+<p class="title-style">Quản lý kỳ học</p>
 <div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
   <div class="container-header">
     <mat-form-field class="search">
@@ -27,9 +27,8 @@
               <mat-label>Bộ môn</mat-label>
               <mat-select [formControl]="ServerSideCtrl" (selectionChange)="setDepartmentId($event.value)">
                 <mat-option>
-                  <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl"
-                                        [searching]="searching"
-                                        placeholderLabel = ''>
+                  <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl" [searching]="searching"
+                    placeholderLabel=''>
                   </ngx-mat-select-search>
                 </mat-option>
                 <mat-option>Tất cả</mat-option>
@@ -71,21 +70,33 @@
       </ng-container>
 
 
-      <ng-container matColumnDef="_id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Mã giáo viên </th>
-        <td mat-cell *matCellDef="let element"> {{element._id}} </td>
+      <ng-container matColumnDef="group">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nhóm học </th>
+        <td mat-cell *matCellDef="let element"> {{element.group}} </td>
       </ng-container>
 
 
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tên giáo viên </th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      <ng-container matColumnDef="semesters">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Kỳ học </th>
+        <td mat-cell *matCellDef="let element"> {{element.semesters}} </td>
       </ng-container>
 
 
-      <ng-container matColumnDef="department">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Bộ môn </th>
-        <td mat-cell *matCellDef="let element"> {{element.department.name}} </td>
+      <ng-container matColumnDef="year">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Năm học </th>
+        <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="start">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Ngày bắt đầu </th>
+        <td mat-cell *matCellDef="let element"> {{element.startDate}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="end">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Ngày kết thúc </th>
+        <td mat-cell *matCellDef="let element"> {{element.endDate}} </td>
       </ng-container>
 
 
@@ -105,10 +116,8 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <mat-paginator  [length]="dataLength"
-                    [pageSize]="pageSize"
-                    [pageSizeOptions]="[10, 25, 50, 100]"
-                    (page)="getPageEvent($event)">
+    <mat-paginator [length]="dataLength" [pageSize]="pageSize" [pageSizeOptions]="[10, 25, 50, 100]"
+      (page)="getPageEvent($event)">
     </mat-paginator>
   </div>
 </div>

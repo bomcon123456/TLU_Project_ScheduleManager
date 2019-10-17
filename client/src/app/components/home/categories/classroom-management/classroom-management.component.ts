@@ -119,7 +119,7 @@ export class ClassroomManagementComponent implements OnInit {
   setDefault() {
     this.paginator.pageIndex = 0;
     this.pageIndex = 1;
-    this.pageSize = 7;
+    this.pageSize = 10;
     this.filter = {};
   }
 
