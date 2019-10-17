@@ -4,5 +4,6 @@ import { Injectable } from '@angular/core';
 export class StorageService {
   yearSelected: string;
   semesterSelected: any;
+  departmentSelected: any;
 
 }

@@ -10,6 +10,8 @@ import { DepartmentManagementComponent } from './../categories/department-manage
 import { ClassroomManagementComponent } from './../categories/classroom-management/classroom-management.component';
 import { ClassroomAddComponent } from '../categories/classroom-management/classroom-add/classroom-add.component';
 import { ScheduleManagementComponent } from './../categories/schedule-management/schedule-management.component';
+import { ClassroomVerifiedComponent } from './../categories/schedule-management/classroom-verified/classroom-verified.component';
+import { ClassroomNotVerifiedComponent } from './../categories/schedule-management/classroom-not-verified/classroom-not-verified.component';
 
 
 const routes: Routes = [
@@ -44,6 +46,14 @@ const routes: Routes = [
   {
     path: 'schedule-management',
     component: ScheduleManagementComponent
+  },
+  {
+    path: 'schedule-management/verified',
+    component: ClassroomVerifiedComponent
+  },
+  {
+    path: 'schedule-management/not-verified',
+    component: ClassroomNotVerifiedComponent
   }
 ];
 

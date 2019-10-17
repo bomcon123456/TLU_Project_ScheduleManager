@@ -26,6 +26,8 @@ import { ClassroomManagementComponent } from './categories/classroom-management/
 import { ClassroomDialogComponent } from './categories/classroom-management/classroom-dialog/classroom-dialog.component';
 import { ClassroomAddComponent } from './categories/classroom-management/classroom-add/classroom-add.component';
 import { ScheduleManagementComponent } from './categories/schedule-management/schedule-management.component';
+import { ClassroomVerifiedComponent } from './categories/schedule-management/classroom-verified/classroom-verified.component';
+import { ClassroomNotVerifiedComponent } from './categories/schedule-management/classroom-not-verified/classroom-not-verified.component';
 
 
 @NgModule({
@@ -55,7 +57,9 @@ import { ScheduleManagementComponent } from './categories/schedule-management/sc
     ClassroomManagementComponent,
     ClassroomDialogComponent,
     ClassroomAddComponent,
-    ScheduleManagementComponent
+    ScheduleManagementComponent,
+    ClassroomVerifiedComponent,
+    ClassroomNotVerifiedComponent
   ],
   entryComponents: [
     RoomDialogComponent,

@@ -43,7 +43,9 @@
     <mat-card style="width: 50%; margin-right: 20px; padding: 16px 0px 0px !important;">
       <mat-card-header>
         <mat-card-title style="text-align: center; width: 100%; font-size: 18px !important; padding-bottom: 10px;">
-          <button mat-button color="warn" style="font-size: 18px !important;">Danh sách lớp đang chờ duyệt</button>
+          <button mat-button color="warn"
+                  style="font-size: 18px !important;"
+                  (click)="goToNotVerifiedPage()">Danh sách lớp đang chờ duyệt</button>
         </mat-card-title>
         <mat-card-subtitle style="margin-left: 16px !important">
           Tổng: <span>{{totalNotApproved}}</span>
@@ -116,7 +118,9 @@
     <mat-card style="width: 50%; margin-left: 20px; padding: 16px 0px 0px !important;">
       <mat-card-header>
         <mat-card-title style="text-align: center; width: 100%; font-size: 18px !important; padding-bottom: 10px;">
-          <button mat-button color="primary" style="font-size: 18px !important;">Danh sách lớp đã duyệt</button>
+          <button mat-button color="primary"
+          style="font-size: 18px !important;"
+          (click)="goToVerifiedPage()">Danh sách lớp đã duyệt</button>
         </mat-card-title>
         <mat-card-subtitle style="margin-left: 16px !important">
           Tổng: <span>{{totalApproved}}</span>

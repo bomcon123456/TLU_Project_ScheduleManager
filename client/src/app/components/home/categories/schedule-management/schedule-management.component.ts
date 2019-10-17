@@ -1,14 +1,16 @@
+import { Router } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
+import { filter, tap, debounceTime, switchMap } from 'rxjs/operators';
 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { SEMESTERS, YEARS } from '../../storage/data-storage';
 import { DepartmentElement } from '../../interface/dialog-data';
-import { DepartmentApiService } from '../../../../services/department-api.service'
-import { filter, tap, debounceTime, switchMap } from 'rxjs/operators';
+import { DepartmentApiService } from '../../../../services/department-api.service';
+import { StorageService } from '../../storage/storage.service';
 
 @Component({
   selector: 'app-schedule-management',
@@ -43,7 +45,9 @@ export class ScheduleManagementComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private departmentApi: DepartmentApiService) { }
+  constructor(private departmentApi: DepartmentApiService,
+              private storageApi: StorageService,
+              private route: Router) { }
 
   ngOnInit() {
 
@@ -84,6 +88,9 @@ export class ScheduleManagementComponent implements OnInit {
   }
 
   getData() {
+    this.storageApi.departmentSelected = this.departmentSelected;
+    this.storageApi.yearSelected = this.yearSelected;
+    this.storageApi.semesterSelected = this.semesterSelected;
     if ( this.departmentSelected && this.yearSelected && this.semesterSelected ) {
       this.dataSourceApproved = new MatTableDataSource(ELEMENT_DATA);
       this.dataSourceNotApproved = new MatTableDataSource(ELEMENT_DATA);
@@ -91,6 +98,24 @@ export class ScheduleManagementComponent implements OnInit {
       this.totalNotApproved = 20;
       this.setTable();
       return this.isShowData = true;
+    }
+  }
+
+  goToVerifiedPage() {
+    if (this.departmentSelected && this.yearSelected && this.semesterSelected ) {
+      this.route.navigate(['/schedule-management/verified']);
+    }
+    else {
+      return;
+    }
+  }
+
+  goToNotVerifiedPage() {
+    if (this.departmentSelected && this.yearSelected && this.semesterSelected) {
+      this.route.navigate(['/schedule-management/not-verified']);
+    }
+    else {
+      return;
     }
   }
 

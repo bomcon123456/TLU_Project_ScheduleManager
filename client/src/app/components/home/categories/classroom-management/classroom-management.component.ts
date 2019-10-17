@@ -98,6 +98,7 @@ export class ClassroomManagementComponent implements OnInit {
   }
 
   goToAdd() {
+
     this.route.navigate(['/classroom-management/classroom-add']);
   }
 
@@ -133,12 +134,14 @@ export class ClassroomManagementComponent implements OnInit {
   getData() {
     if ( this.yearSelected && this.semesterSelected ) {
       this.isLoading = true;
-      let filter ={
+      this.filter = {
+        date: {
         year: this.yearSelected,
         group: this.semesterSelected.key.group,
         semesters: this.semesterSelected.key.semester
+        }
       }
-      this.getClassroomsData(this.pageSize, this.pageIndex, filter);
+      this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
     }
   }
 
@@ -185,6 +188,8 @@ export class ClassroomManagementComponent implements OnInit {
    */
 
   getClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
+    console.log(filter);
+
 
     this.classroomApi.getClassrooms(pageSize, pageIndex, filter).subscribe( result => {
 
