@@ -6,7 +6,11 @@ const getAll = (req, res, next) => {
   let { filter } = req.query;
   let query = {};
   if (filter) {
+    console.log("Classroom Client filter:" + filter);
     filter = JSON.parse(filter);
+    if (filter.department) {
+      query["department"] = department;
+    }
     if (filter.date) {
       if (filter.date.group) {
         query["date.group"] = filter.date.group;

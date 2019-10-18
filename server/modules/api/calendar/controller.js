@@ -4,12 +4,14 @@ const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
   let total = -1;
+  let query = {};
   Calendar.find()
+    .sort({ year: 1, semesters: 1, group: 1 })
     .skip((page - 1) * size)
     .limit(size)
     .then(data => {
       calendars = data;
-      return calendar.count(query);
+      return Calendar.count(query);
     })
     .then(data => {
       console.log("calendars: " + data);
