@@ -23,6 +23,10 @@ const classroomSchema = new Schema(
       type: String,
       ref: "Teacher"
     },
+    department: {
+      type: Schema.Types.ObjectId,
+      ref: "Department"
+    },
     date: {
       type: {
         shift: { type: String, required: true, enum: shifts },
