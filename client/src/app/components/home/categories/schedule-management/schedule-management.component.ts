@@ -74,7 +74,8 @@ export class ScheduleManagementComponent implements OnInit {
   public ServerSideFilteringCtrl: FormControl = new FormControl();
   public filteredServerSide: ReplaySubject<any> = new ReplaySubject<any>(1);
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild("notVerified", { static: true }) paginatorVerified: MatPaginator;
+  @ViewChild("verified", { static: true }) paginatorNotVerified: MatPaginator;
 
   constructor(private departmentApi: DepartmentApiService,
               private classroomApi: ClassroomApiService,
@@ -87,6 +88,14 @@ export class ScheduleManagementComponent implements OnInit {
     this.searching = false;
     this.totalApproved = 0;
     this.totalNotApproved = 0;
+    this.isVerifiedLoading = false;
+    this.indexVerified = 0;
+    this.dataLengthVerified = 0;
+    this.isNotVerifiedLoading = false;
+    this.indexNotVerified = 0;
+    this.dataLengthNotVerified = 0;
+    this.setNotVerifiedDefault();
+    this.setVerifiedDefault();
 
     this.ServerSideFilteringCtrl.valueChanges
       .pipe(
@@ -121,6 +130,20 @@ export class ScheduleManagementComponent implements OnInit {
 
   setNotVerifiedTable() {
     this.dataSourceNotApproved.paginator = null;
+  }
+
+  setVerifiedDefault() {
+    this.paginatorVerified.pageIndex = 0;
+    this.pageIndexVerified = 1;
+    this.pageSizeVerified = 10;
+    this.filter = {};
+  }
+
+  setNotVerifiedDefault() {
+    this.paginatorNotVerified.pageIndex = 0;
+    this.pageIndexNotVerified = 1;
+    this.pageSizeNotVerified = 10;
+    this.filter = {};
   }
 
   getData() {
@@ -182,7 +205,7 @@ export class ScheduleManagementComponent implements OnInit {
    */
 
   getClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
-    console.log(filter);
+    console.log(pageSize, pageIndex, filter);
 
 
     this.classroomApi.getClassrooms(pageSize, pageIndex, filter).subscribe(result => {
@@ -202,6 +225,8 @@ export class ScheduleManagementComponent implements OnInit {
         this.dataSourceNotApproved = new MatTableDataSource(this.ELEMENT_DATA_NOT_VERIFIED)
         this.setNotVerifiedTable();
         this.indexNotVerified = pageSize * (pageIndex - 1);
+        console.log(this.indexNotVerified);
+
         this.isNotVerifiedLoading = false;
       }
 

@@ -58,7 +58,7 @@
             <!-- Position Column -->
             <ng-container matColumnDef="position">
               <th mat-header-cell *matHeaderCellDef class="stt-pad-l"> STT </th>
-              <td mat-cell *matCellDef="let element" class="stt-pad-l"> {{i+indexNotVerified+1}} </td>
+              <td mat-cell *matCellDef="let element; let i = index" class="stt-pad-l"> {{i+indexNotVerified+1}} </td>
             </ng-container>
 
             <!-- Name Column -->
@@ -109,7 +109,7 @@
             <tr mat-row *matRowDef="let row; columns: notApprovedColumns;"></tr>
           </table>
 
-          <mat-paginator [length]="dataLengthNotVerified" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100]"
+          <mat-paginator #notVerified [length]="dataLengthNotVerified" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100]"
                           showFirstLastButtons (page)="getNotVerifiedPageEvent($event)"></mat-paginator>
         </div>
       <!-- </mat-card-content> -->
@@ -134,7 +134,7 @@
             <!-- Position Column -->
             <ng-container matColumnDef="position">
               <th mat-header-cell *matHeaderCellDef class="stt-pad-l"> STT </th>
-              <td mat-cell *matCellDef="let element" class="stt-pad-l"> {{i+indexVerified+1}} </td>
+              <td mat-cell *matCellDef="let element; let y = index" class="stt-pad-l"> {{y+indexVerified+1}} </td>
             </ng-container>
 
             <!-- Name Column -->
@@ -175,7 +175,7 @@
             <tr mat-row *matRowDef="let row; columns: approvedColumns;"></tr>
           </table>
 
-          <mat-paginator [length]="dataLengthVerified" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100]"
+          <mat-paginator #verified [length]="dataLengthVerified" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100]"
                           showFirstLastButtons (page)="getVerifiedPageEvent($event)"></mat-paginator>
         </div>
       </mat-card-content>
