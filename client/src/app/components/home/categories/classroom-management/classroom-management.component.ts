@@ -67,7 +67,7 @@ export class ClassroomManagementComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.isFirstTime = true;
+    // this.isFirstTime = true;
     this.isLoading = false;
     this.index = 0;
     this.dataLength = 0;
@@ -76,7 +76,7 @@ export class ClassroomManagementComponent implements OnInit {
     this.yearSelected = null;
     this.semesterSelected = null;
 
-    this.getClassroomsData(this.pageSize, this.pageIndex);
+    // this.getClassroomsData(this.pageSize, this.pageIndex);
   }
 
   /**
@@ -84,16 +84,21 @@ export class ClassroomManagementComponent implements OnInit {
    */
 
   setYearSelected(value: string) {
-
+    console.log(value);
+    this.yearSelected = value;
     this.storageService.yearSelected = value;
+    this.getData();
   }
 
   setSemesterSelected(value: any) {
-
+    console.log(value);
+    this.semesterSelected = value;
     this.storageService.semesterSelected = value;
+    this.getData();
   }
 
   goToAdd() {
+
     this.route.navigate(['/classroom-management/classroom-add']);
   }
 
@@ -114,7 +119,7 @@ export class ClassroomManagementComponent implements OnInit {
   setDefault() {
     this.paginator.pageIndex = 0;
     this.pageIndex = 1;
-    this.pageSize = 7;
+    this.pageSize = 10;
     this.filter = {};
   }
 
@@ -124,6 +129,20 @@ export class ClassroomManagementComponent implements OnInit {
 
   applySearch(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  getData() {
+    if ( this.yearSelected && this.semesterSelected ) {
+      this.isLoading = true;
+      this.filter = {
+        date: {
+        year: this.yearSelected,
+        group: this.semesterSelected.key.group,
+        semesters: this.semesterSelected.key.semester
+        }
+      }
+      this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
+    }
   }
 
   getPageEvent(event) {
@@ -169,8 +188,10 @@ export class ClassroomManagementComponent implements OnInit {
    */
 
   getClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
+    console.log(filter);
 
-    this.classroomApi.getClassrooms(pageSize, pageIndex).subscribe( result => {
+
+    this.classroomApi.getClassrooms(pageSize, pageIndex, filter).subscribe( result => {
 
       this.ELEMENT_DATA = result.data;
       this.dataLength = result.size;

@@ -27,7 +27,7 @@ import { genClassroomName } from './helpers/gen-classroom-name';
 @Component({
   selector: 'app-classroom-add',
   templateUrl: './classroom-add.component.html',
-  styleUrls: ['./classroom-add.component.scss']
+  styleUrls: ['./classroom-add.component.scss'],
 })
 export class ClassroomAddComponent implements OnInit {
 
@@ -41,18 +41,18 @@ export class ClassroomAddComponent implements OnInit {
   private teacherList: TeacherElement[];
   private roomList: RoomElement[];
 
-  public dataSource: any;
   public parentClass: any[];
-  private courseSelectedList: any[];
+  private unfinished: any[];
+  public dataSource: any;
   private ELEMENT_DATA: any;
   private courseSelected: any;
   private timeTotal: any;
   private semesterSelected: any;
-  private unfinished: any[];
   private dataUser: any;
   private shifts: any;
 
   private yearSelected: string;
+  private shiftEqualClass: string;
 
   private isLoading: boolean;
   private isCourseFisrtTime: boolean;
@@ -65,6 +65,7 @@ export class ClassroomAddComponent implements OnInit {
   private isLoadingShift: boolean;
   private isLoadingRoom: boolean;
   private isCheckedCombine: boolean;
+  private isNeedEqual: boolean;
 
   private index: number;
   private pageSize: number;
@@ -73,9 +74,9 @@ export class ClassroomAddComponent implements OnInit {
   private practiceWeek: number;
   private combinedWeek: number;
   private numOfClass: number;
-  private countClass: number
+  private countClass: number;
+  private maxStudents: number;
 
-  public CourseCtrl: FormControl = new FormControl();
   public CourseFilteringCtrl: FormControl = new FormControl();
   public filteredCourses: ReplaySubject<any> = new ReplaySubject<any>(1);
 
@@ -109,7 +110,6 @@ export class ClassroomAddComponent implements OnInit {
         },
         value: "Học kì I Nhóm 1"
       }
-      this.courseSelectedList = [];
 
       if ( this.storageService.yearSelected ) {
 
@@ -230,6 +230,8 @@ export class ClassroomAddComponent implements OnInit {
     this.theoryWeek = null;
     this.practiceWeek = null;
     this.combinedWeek = null;
+    this.shiftEqualClass = null;
+    this.maxStudents = null;
     this.timeTotal = {};
     this.parentClass = [];
     this.ELEMENT_DATA = [];
@@ -246,7 +248,6 @@ export class ClassroomAddComponent implements OnInit {
     this.countClass = null;
     this.isChildDone = true;
     this.courseSelected = data;
-    this.courseSelectedList.push(data);
     // this.getHoursOfWeek(data.length);
     this.checkedCombineClass(this.isCheckedCombine);
     this.getClassroomsData();
@@ -268,6 +269,9 @@ export class ClassroomAddComponent implements OnInit {
       this.numOfClass = null;
 
     }
+
+    console.log(this.checkStudentsEqual().isEqual);
+
   }
 
   checkedCombineClass(checked) {
@@ -288,6 +292,21 @@ export class ClassroomAddComponent implements OnInit {
       this.getHoursOfWeek(this.courseSelected.length);
     }
     this.getClassroomsData();
+  }
+
+  isDisabledCheckedCombineClass() {
+    if ( this.courseSelected ) {
+      if ((this.courseSelected.length.combined == 0 &&
+          (this.courseSelected.length.theory == 0 ||
+          this.courseSelected.length.practice == 0)) ||
+          this.courseSelected.length.combined > 0 ) {
+            return true;
+      }
+    }
+    else {
+      return true;
+    }
+    return false;
   }
 
   createNewClass() {
@@ -336,7 +355,7 @@ export class ClassroomAddComponent implements OnInit {
             return data;
           }
         })
-
+        this.maxStudents = null;
         this.unfinished = array;
       }
     }
@@ -508,12 +527,21 @@ export class ClassroomAddComponent implements OnInit {
                     shiftObj.startShift <= shiftClassObj.endShift ) ||
                   ( shiftObj.endShift >= shiftClassObj.startShift &&
                     shiftObj.endShift <= shiftClassObj.endShift )) {
+
                     return true;
               }
             }
           }
         }
       }
+    }
+
+    if ( this.maxStudents && this.shiftEqualClass ) {
+      if ( this.shiftTranform(this.shiftEqualClass).time != shiftObj.time ) {
+
+        return true;
+      }
+      return false;
     }
 
     // Check Current Shift
@@ -593,7 +621,7 @@ export class ClassroomAddComponent implements OnInit {
   checkAllValid() {
     // console.log(this.ELEMENT_DATA);
     for ( let i = 0; i < this.ELEMENT_DATA.length; i++) {
-      if ( !this.ELEMENT_DATA[i].room._id ) {
+      if ( !this.ELEMENT_DATA[i].room._id || !this.ELEMENT_DATA[i].students ) {
         return false;
       }
     }
@@ -631,6 +659,33 @@ export class ClassroomAddComponent implements OnInit {
     };
 
     this.ELEMENT_DATA.push(temp);
+
+    if (!this.checkStudentsEqual().isEqual && this.isNeedEqual) {
+      let index = this.ELEMENT_DATA.length-1;
+      if (this.checkStudentsEqual().studentsLT < this.checkStudentsEqual().studentsTH) {
+        this.ELEMENT_DATA[index].type = 'LT';
+        this.ELEMENT_DATA.filter( result => {
+          if ( result.type == 'LT' ) {
+            this.ELEMENT_DATA[index].name = result.name;
+            // this.shiftEqualClass = result.date.shift;
+          }
+        })
+      }
+      else {
+        this.ELEMENT_DATA.filter( result => {
+          if ( result.type == 'TH' ) {
+            this.ELEMENT_DATA[index].type = 'TH';
+            this.ELEMENT_DATA[index].name = result.name;
+            // this.shiftEqualClass = result.date.shift;
+          }
+          else if ( result.type == 'BT' ) {
+            this.ELEMENT_DATA[index].type = 'BT';
+            this.ELEMENT_DATA[index].name = result.name;
+            // this.shiftEqualClass = result.date.shift;
+          }
+        })
+      }
+    }
     this.getClassroomsData();
 
   }
@@ -782,14 +837,129 @@ export class ClassroomAddComponent implements OnInit {
     }
   }
 
+  haveTypeClass(index: number) {
+    for (let i = 0; i < this.ELEMENT_DATA.length; i++) {
+      if ( this.ELEMENT_DATA[i].type == 'TH' ) {
+        return 'TH';
+      }
+      else if ( this.ELEMENT_DATA[i].type == 'BT' ) {
+        return 'BT';
+      }
+    }
+    return null;
+  }
+
+  getFilteredTeacherSelected() {
+    let teacherSelectedList = this.ELEMENT_DATA.filter((element, index) => {
+      return index == this.ELEMENT_DATA.findIndex( obj => {
+        return JSON.stringify(obj.teacher) == JSON.stringify(element.teacher);
+      })
+    })
+
+    return teacherSelectedList;
+  }
+
+  checkStudentsEqual() {
+    if ( this.theoryWeek > 0 || this.practiceWeek > 0 || this.combinedWeek > 0 ) {
+      this.isNeedEqual = false;
+      return { isEqual: false };
+    }
+    else {
+      let time = this.courseSelected.length;
+      if ( time.combined == 0 && ( time.theory == 0 || time.practice == 0) ) {
+        return { isEqual: true };
+      }
+      else {
+        if ( this.isCheckedCombine ) {
+          return { isEqual: true };
+        }
+        else {
+          this.isNeedEqual = true;
+          let studentsLT = 0;
+          let studentsTH = 0; // OR studentsBT
+          this.ELEMENT_DATA.filter( result => {
+            if ( result.type == 'LT' ) {
+              studentsLT += result.students;
+            }
+            else {
+              studentsTH += result.students;
+            }
+          });
+          if ( !this.maxStudents ) {
+            if ( studentsLT > studentsTH ) {
+              this.maxStudents = studentsLT;
+            }
+            else {
+              this.maxStudents = studentsTH;
+            }
+          }
+
+          return {
+            isEqual: studentsTH == studentsLT,
+            studentsLT: studentsLT,
+            studentsTH: studentsTH
+          };
+        }
+      }
+    }
+  }
+
   handleWithData(data, index, elm) {
 
     switch (elm) {
 
       // ******************************************************************************************
+      // ******************************************STUDENTS****************************************
+      // ******************************************************************************************
+      case 'students': {
+
+        if ( this.maxStudents ) {
+
+          let total = this.maxStudents;
+          this.ELEMENT_DATA.filter( result => {
+            if ( this.ELEMENT_DATA[index].type == result.type ) {
+              total -= result.students;
+            }
+          })
+          if ( total < 0 ) {
+            this.ELEMENT_DATA[index].students = data + total;
+          }
+          else {
+            this.ELEMENT_DATA[index].students = data;
+          }
+        }
+        else {
+          this.ELEMENT_DATA[index].students = data;
+        }
+
+        if ( !data ) {
+          this.ELEMENT_DATA[index].room = {};
+        }
+        else {
+          if ( this.ELEMENT_DATA[index].date.shift ) {
+
+            this.isLoadingRoom = true;
+            this.roomList = null;
+            this.getFreeRooms(this.yearSelected,
+                              this.semesterSelected.key.group,
+                              this.semesterSelected.key.semester,
+                              this.ELEMENT_DATA[index].date.day,
+                              this.ELEMENT_DATA[index].date.shift,
+                              this.ELEMENT_DATA[index].students);
+          }
+        }
+        break;
+      }
+
+      // ******************************************************************************************
       // ******************************************TYPE********************************************
       // ******************************************************************************************
       case 'type': {
+
+        this.ELEMENT_DATA[index].date.shift = null;
+        this.ELEMENT_DATA[index].room = {};
+        this.takeTimeLeftWhenReselect(index);
+
         let oldType = this.ELEMENT_DATA[index].type;
         this.ELEMENT_DATA[index].type = data;
 
@@ -841,7 +1011,6 @@ export class ClassroomAddComponent implements OnInit {
       // ******************************************TEACHER********************************************
       // *********************************************************************************************
       case 'teacher': {
-
         this.ELEMENT_DATA[index].date = {};
         this.ELEMENT_DATA[index].room = {};
 
@@ -857,7 +1026,19 @@ export class ClassroomAddComponent implements OnInit {
             }
           }
         })
-
+        if ( this.ELEMENT_DATA.length > 1 ) {
+          this.ELEMENT_DATA.filter( result => {
+            if ( result.teacher._id ) {
+              if (data == result.teacher._id) {
+                this.ELEMENT_DATA[index].teacher = {
+                  _id: result.teacher._id,
+                  name: result.teacher.name
+                }
+              }
+            }
+          })
+        }
+        console.log(data, this.ELEMENT_DATA);
         break;
       };
 
@@ -883,6 +1064,29 @@ export class ClassroomAddComponent implements OnInit {
                                   this.ELEMENT_DATA[index].date.day,
                                   this.ELEMENT_DATA[index].teacher._id);
 
+        // (!this.checkStudentsEqual().isEqual || this.checkStudentsEqual().isEqual) &&
+        if ( this.isNeedEqual ) {
+
+          this.ELEMENT_DATA.filter( (result, i) => {
+            if ( index != i ) {
+              if ( this.ELEMENT_DATA[index].name == result.name ) {
+                this.shiftEqualClass = result.date.shift;
+                // if ( this.ELEMENT_DATA[index].teacher._id == result.teacher._id ) {
+                //   if ( this.ELEMENT_DATA[index].date.day == result.date.day ) {
+                //     this.shiftEqualClass = null;
+                //   }
+                //   else {
+                //     this.shiftEqualClass = result.date.shift;
+                //   }
+                // }
+                // else {
+                //   this.shiftEqualClass = result.date.shift;
+                // }
+              }
+            }
+          });
+        }
+
         break;
       };
 
@@ -893,6 +1097,11 @@ export class ClassroomAddComponent implements OnInit {
 
         this.ELEMENT_DATA[index].room = {};
         this.ELEMENT_DATA[index].date.shift = data;
+
+        // (!this.checkStudentsEqual().isEqual || this.checkStudentsEqual().isEqual) &&
+        if (this.isNeedEqual) {
+          return;
+        }
 
         // Combined Time
         if (this.timeTotal.combined) {
@@ -987,17 +1196,22 @@ export class ClassroomAddComponent implements OnInit {
         }
 
         // GET Room Data
-        if ( this.ELEMENT_DATA[index].date.shift ) {
-
+        if (this.ELEMENT_DATA[index].date.shift) {
           this.isLoadingRoom = true;
           this.roomList = null;
-          this.getFreeRooms(this.yearSelected,
-            this.semesterSelected.key.group,
-            this.semesterSelected.key.semester,
-            this.ELEMENT_DATA[index].date.day,
-            this.ELEMENT_DATA[index].date.shift,
-            this.ELEMENT_DATA[index].students);
-        }
+          if (!this.ELEMENT_DATA[index].students) {
+            this.isLoadingRoom = false;
+            this.toastr.error('Số lượng sinh viên không được để trống');
+          }
+          else {
+            this.getFreeRooms(this.yearSelected,
+              this.semesterSelected.key.group,
+              this.semesterSelected.key.semester,
+              this.ELEMENT_DATA[index].date.day,
+              this.ELEMENT_DATA[index].date.shift,
+              this.ELEMENT_DATA[index].students);
+          }
+        };
 
         break;
       };
@@ -1093,7 +1307,6 @@ export class ClassroomAddComponent implements OnInit {
   }
 
   getFreeRooms(year, group, semester, day, shift, students) {
-    console.log(year, group, semester, day, shift, students);
 
     this.getFreeApi.getFreeRoom(year, group, semester, day, shift, students).pipe(debounceTime(5000)).subscribe( result => {
       this.roomList = result.data;

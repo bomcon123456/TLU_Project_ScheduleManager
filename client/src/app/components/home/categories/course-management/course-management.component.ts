@@ -119,7 +119,7 @@ export class CourseManagementComponent implements OnInit {
   setDefault() {
     this.paginator.pageIndex = 0;
     this.pageIndex = 1;
-    this.pageSize = 7;
+    this.pageSize = 10;
     this.filter = {};
   }
 
@@ -187,7 +187,7 @@ export class CourseManagementComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.pageSize = 8;
+    this.pageSize = 10;
     this.pageIndex = 1;
     this.paginator.pageIndex = 0;
     console.log(this.filter);
@@ -201,7 +201,7 @@ export class CourseManagementComponent implements OnInit {
 
     if (this.action != 'delete') {
       this.width = '780px';
-      this.height = '600px';
+      this.height = '595px';
     }
     else {
       this.width = '460px';

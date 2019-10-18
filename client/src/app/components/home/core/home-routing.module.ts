@@ -7,9 +7,12 @@ import { RoomManagementComponent } from '../categories/room-management/room-mana
 import { ScheduleComponent } from '../categories/schedule/schedule.component';
 import { TeacherManagementComponent } from './../categories/teacher-management/teacher-management.component';
 import { DepartmentManagementComponent } from './../categories/department-management/department-management.component';
+import { CalendarManagementComponent } from '../categories/calendar-management/calendar-management.component';
 import { ClassroomManagementComponent } from './../categories/classroom-management/classroom-management.component';
 import { ClassroomAddComponent } from '../categories/classroom-management/classroom-add/classroom-add.component';
 import { ScheduleManagementComponent } from './../categories/schedule-management/schedule-management.component';
+import { ClassroomVerifiedComponent } from './../categories/schedule-management/classroom-verified/classroom-verified.component';
+import { ClassroomNotVerifiedComponent } from './../categories/schedule-management/classroom-not-verified/classroom-not-verified.component';
 
 
 const routes: Routes = [
@@ -34,6 +37,10 @@ const routes: Routes = [
     component: DepartmentManagementComponent
   },
   {
+    path: 'calendar-management',
+    component: CalendarManagementComponent
+  },
+  {
     path: 'classroom-management',
     component: ClassroomManagementComponent
   },
@@ -44,6 +51,14 @@ const routes: Routes = [
   {
     path: 'schedule-management',
     component: ScheduleManagementComponent
+  },
+  {
+    path: 'schedule-management/verified',
+    component: ClassroomVerifiedComponent
+  },
+  {
+    path: 'schedule-management/not-verified',
+    component: ClassroomNotVerifiedComponent
   }
 ];
 

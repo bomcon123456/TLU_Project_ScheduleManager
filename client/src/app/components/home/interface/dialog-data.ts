@@ -80,3 +80,11 @@ export interface ClassroomElement {
   },
   verified?: boolean;
 }
+
+export interface CalendarElement {
+  group?: string;
+  semesters?: string;
+  year?: string;
+  startDate?: string;
+  endDate?: string;
+}

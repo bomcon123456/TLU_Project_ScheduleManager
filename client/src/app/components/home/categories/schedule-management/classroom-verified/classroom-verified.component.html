@@ -1,0 +1,121 @@
+<div *ngIf="departmentSelected" [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
+  <div class="header-top">
+    <div style="font-size: 35px; font-weight: bold">
+      {{departmentSelected.name | uppercase}}
+    </div>
+    <div style="justify-content: flex-end;; display: flex;">
+      <div style="font-size: 24px;
+                  margin: 20px;
+                  font-weight: 500;">
+        {{semesterSelected.value}}
+      </div>
+      <div style="font-size: 24px;
+                  margin: 20px;
+                  font-weight: 500;">
+        Năm {{yearSelected}}
+      </div>
+    </div>
+  </div>
+
+  <div class="container-header">
+    <mat-card style="padding: 16px 0px 0px !important;">
+      <mat-card-header style="margin: 30px !important">
+        <mat-card-title
+          style="text-align: center; width: 100%; font-size: 24px !important; padding-bottom: 10px; color: #00c853;">
+          Danh sách lớp đã duyệt
+        </mat-card-title>
+        <mat-card-subtitle style="margin-left: 16px !important">
+          Tổng: <span>{{totalApproved}}</span>
+        </mat-card-subtitle>
+      </mat-card-header>
+      <!-- <mat-card-content> -->
+      <div class="mat-elevation-z8" style="box-shadow: unset !important;">
+        <table mat-table matSort [dataSource]="dataSourceApproved">
+
+          <!-- Position Column -->
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef class="stt-pad-l"> STT </th>
+            <td mat-cell *matCellDef="let element" class="stt-pad-l"> {{element.position}} </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Tên lớp </th>
+            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="course">
+            <th mat-header-cell *matHeaderCellDef> Tên học phần </th>
+            <td mat-cell *matCellDef="let element"> {{element.course}} </td>
+          </ng-container>
+
+          <!-- Weight Column -->
+          <ng-container matColumnDef="room">
+            <th mat-header-cell *matHeaderCellDef> Phòng học </th>
+            <td mat-cell *matCellDef="let element"> {{element.room}} </td>
+          </ng-container>
+
+          <!-- Weight Column -->
+          <ng-container matColumnDef="students">
+            <th mat-header-cell *matHeaderCellDef> SL sinh viên tối đa </th>
+            <td mat-cell *matCellDef="let element"> {{element.students}} </td>
+          </ng-container>
+
+          <!-- Weight Column -->
+          <ng-container matColumnDef="teacher">
+            <th mat-header-cell *matHeaderCellDef> Giáo viên </th>
+            <td mat-cell *matCellDef="let element"> {{element.students}} </td>
+          </ng-container>
+
+          <!-- Symbol Column -->
+          <ng-container matColumnDef="shift">
+            <th mat-header-cell *matHeaderCellDef> Ca </th>
+            <td mat-cell *matCellDef="let element"> {{element.shift}} </td>
+          </ng-container>
+
+          <!-- Symbol Column -->
+          <ng-container matColumnDef="day">
+            <th mat-header-cell *matHeaderCellDef> Thứ </th>
+            <td mat-cell *matCellDef="let element"> {{element.day}} </td>
+          </ng-container>
+
+          <!-- Symbol Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef> Tình trạng </th>
+            <td mat-cell *matCellDef="let element">
+              <mat-chip-list>
+                <mat-chip color="warn" style="background-color: #00c853 !important;" selected>Đã duyệt</mat-chip>
+              </mat-chip-list>
+            </td>
+          </ng-container>
+
+          <!-- Symbol Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element" style="width: 5% !important;">
+              <div style="margin: 5px;">
+                <button mat-button matTooltip="Xóa" class="actions-icon" (click)="openDialog('delete', element)">
+                  <mat-icon class="delete-icon">delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="ApprovedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: ApprovedColumns;"></tr>
+        </table>
+
+        <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+      <!-- </mat-card-content> -->
+    </mat-card>
+  </div>
+</div>
+<div [ngStyle]="{'display': isFirstTime? 'block' : 'none'}" class="spinner-loading">
+  <div class="lds-facebook">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</div>
