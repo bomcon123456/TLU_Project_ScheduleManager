@@ -11,6 +11,9 @@ const getAll = (req, res, next) => {
     if (filter.department) {
       query["department"] = filter.department;
     }
+    if (filter.verified) {
+      query["verified"] = filter.verified;
+    }
     if (filter.date) {
       if (filter.date.group) {
         query["date.group"] = filter.date.group;
