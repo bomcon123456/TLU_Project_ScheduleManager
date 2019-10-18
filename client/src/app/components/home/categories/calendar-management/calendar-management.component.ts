@@ -275,4 +275,20 @@ export class CalendarManagementComponent implements OnInit {
     return newData;
   }
 
+  transformGroup(data) {
+    switch (data) {
+      case 'Group 1': return 'Nhóm 1';
+      case 'Group 2': return 'Nhóm 2';
+      case 'Group 3': return 'Nhóm 3';
+    }
+  }
+
+  transformSemester(data) {
+    switch (data) {
+      case 'Semester 1': return 'Kỳ 1';
+      case 'Semester 2': return 'Kỳ 2';
+      case 'Semester 3': return 'Kỳ 3';
+    }
+  }
+
 }

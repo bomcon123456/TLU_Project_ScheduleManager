@@ -123,6 +123,7 @@ export class ClassroomAddComponent implements OnInit {
 
     this.isCheckedCombine = false;
     this.isCreateClassDone = false;
+    this.isLastClass = false;
     this.isTeacherFisrtTime = true;
     this.isCourseFisrtTime = true;
     this.isLoading = false;
@@ -236,7 +237,6 @@ export class ClassroomAddComponent implements OnInit {
     this.parentClass = [];
     this.ELEMENT_DATA = [];
     this.unfinished = [];
-    this.isLastClass = false;
     this.isLoadingShift = false;
     this.isLoadingRoom = false;
   }
@@ -247,6 +247,7 @@ export class ClassroomAddComponent implements OnInit {
     this.numOfClass = null;
     this.countClass = null;
     this.isChildDone = true;
+    this.isLastClass = false;
     this.courseSelected = data;
     // this.getHoursOfWeek(data.length);
     this.checkedCombineClass(this.isCheckedCombine);
@@ -260,6 +261,8 @@ export class ClassroomAddComponent implements OnInit {
       this.countClass = 1;
       this.numOfClass = value;
       this.isLastClass = false;
+      console.log(this.countClass, this.numOfClass);
+
 
       if ( this.countClass == this.numOfClass ) {
         this.isLastClass = true;
@@ -275,6 +278,8 @@ export class ClassroomAddComponent implements OnInit {
   }
 
   checkedCombineClass(checked) {
+    console.log(this.countClass, this.numOfClass, this.isLastClass);
+
     this.setToDefault();
     this.isChildDone = true;
     this.isCheckedCombine = checked;
@@ -763,7 +768,7 @@ export class ClassroomAddComponent implements OnInit {
     for ( let x = 0; x < this.parentClass.length; x++) {
       let classData = this.parentClass[x];
       for ( let y = 0; y < classData.length; y++) {
-        allClass.data.push(this.dataTranform(classData[y]));
+        allClass.data.push({...this.dataTranform(classData[y]), department: this.dataUser.department});
       }
     }
     console.log(allClass);
@@ -866,7 +871,7 @@ export class ClassroomAddComponent implements OnInit {
     }
     else {
       let time = this.courseSelected.length;
-      if ( time.combined == 0 && ( time.theory == 0 || time.practice == 0) ) {
+      if ( (time.combined == 0 && ( time.theory == 0 || time.practice == 0)) || time.combined != 0 ) {
         return { isEqual: true };
       }
       else {

@@ -58,7 +58,7 @@
             <!-- Position Column -->
             <ng-container matColumnDef="position">
               <th mat-header-cell *matHeaderCellDef class="stt-pad-l"> STT </th>
-              <td mat-cell *matCellDef="let element" class="stt-pad-l"> {{element.position}} </td>
+              <td mat-cell *matCellDef="let element" class="stt-pad-l"> {{i+indexNotVerified+1}} </td>
             </ng-container>
 
             <!-- Name Column -->
@@ -70,19 +70,19 @@
             <!-- Weight Column -->
             <ng-container matColumnDef="room">
               <th mat-header-cell *matHeaderCellDef> Phòng </th>
-              <td mat-cell *matCellDef="let element"> {{element.room}} </td>
+              <td mat-cell *matCellDef="let element"> {{element.roomId.name}} </td>
             </ng-container>
 
             <!-- Symbol Column -->
             <ng-container matColumnDef="shift">
               <th mat-header-cell *matHeaderCellDef> Ca </th>
-              <td mat-cell *matCellDef="let element"> {{element.shift}} </td>
+              <td mat-cell *matCellDef="let element"> {{element.date.shift}} </td>
             </ng-container>
 
             <!-- Symbol Column -->
             <ng-container matColumnDef="day">
               <th mat-header-cell *matHeaderCellDef> Thứ </th>
-              <td mat-cell *matCellDef="let element"> {{element.day}} </td>
+              <td mat-cell *matCellDef="let element"> {{element.date.day}} </td>
             </ng-container>
 
             <!-- Symbol Column -->
@@ -109,7 +109,8 @@
             <tr mat-row *matRowDef="let row; columns: notApprovedColumns;"></tr>
           </table>
 
-          <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          <mat-paginator [length]="dataLengthNotVerified" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100]"
+                          showFirstLastButtons (page)="getNotVerifiedPageEvent($event)"></mat-paginator>
         </div>
       <!-- </mat-card-content> -->
     </mat-card>
@@ -133,7 +134,7 @@
             <!-- Position Column -->
             <ng-container matColumnDef="position">
               <th mat-header-cell *matHeaderCellDef class="stt-pad-l"> STT </th>
-              <td mat-cell *matCellDef="let element" class="stt-pad-l"> {{element.position}} </td>
+              <td mat-cell *matCellDef="let element" class="stt-pad-l"> {{i+indexVerified+1}} </td>
             </ng-container>
 
             <!-- Name Column -->
@@ -145,19 +146,19 @@
             <!-- Weight Column -->
             <ng-container matColumnDef="room">
               <th mat-header-cell *matHeaderCellDef> Phòng </th>
-              <td mat-cell *matCellDef="let element"> {{element.room}} </td>
+              <td mat-cell *matCellDef="let element"> {{element.roomId.name}} </td>
             </ng-container>
 
             <!-- Symbol Column -->
             <ng-container matColumnDef="shift">
               <th mat-header-cell *matHeaderCellDef> Ca </th>
-              <td mat-cell *matCellDef="let element"> {{element.shift}} </td>
+              <td mat-cell *matCellDef="let element"> {{element.date.shift}} </td>
             </ng-container>
 
             <!-- Symbol Column -->
             <ng-container matColumnDef="day">
               <th mat-header-cell *matHeaderCellDef> Thứ </th>
-              <td mat-cell *matCellDef="let element"> {{element.day}} </td>
+              <td mat-cell *matCellDef="let element"> {{element.date.day}} </td>
             </ng-container>
 
             <!-- Symbol Column -->
@@ -174,7 +175,8 @@
             <tr mat-row *matRowDef="let row; columns: approvedColumns;"></tr>
           </table>
 
-          <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          <mat-paginator [length]="dataLengthVerified" [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 100]"
+                          showFirstLastButtons (page)="getVerifiedPageEvent($event)"></mat-paginator>
         </div>
       </mat-card-content>
     </mat-card>

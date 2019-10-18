@@ -73,8 +73,24 @@ export class ClassroomManagementComponent implements OnInit {
     this.dataLength = 0;
     this.setDefault();
 
-    this.yearSelected = null;
-    this.semesterSelected = null;
+    if ( this.storageService.yearSelected && this.storageService.semesterSelected ) {
+      this.isLoading = true;
+      this.yearSelected = this.storageService.yearSelected;
+      this.semesterSelected = this.storageService.semesterSelected;
+      this.filter = {
+        date: {
+          year: this.yearSelected,
+          group: this.semesterSelected.key.group,
+          semesters: this.semesterSelected.key.semester
+        },
+        department: this.dataUser.department
+      }
+      this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
+    }
+    else {
+      this.yearSelected = null;
+      this.semesterSelected = null;
+    }
 
     // this.getClassroomsData(this.pageSize, this.pageIndex);
   }
@@ -136,11 +152,15 @@ export class ClassroomManagementComponent implements OnInit {
       this.isLoading = true;
       this.filter = {
         date: {
-        year: this.yearSelected,
-        group: this.semesterSelected.key.group,
-        semesters: this.semesterSelected.key.semester
+          year: this.yearSelected,
+          group: this.semesterSelected.key.group,
+          semesters: this.semesterSelected.key.semester
         }
       }
+      if ( this.dataUser.department ) {
+        this.filter.department = this.dataUser.department;
+      }
+
       this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
     }
   }
@@ -149,7 +169,7 @@ export class ClassroomManagementComponent implements OnInit {
     this.isLoading = true;
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex + 1;
-    this.getClassroomsData(this.pageSize, this.pageIndex);
+    this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
   }
 
   openDialog(action, obj): void {

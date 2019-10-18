@@ -1,3 +1,4 @@
+import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
@@ -8,8 +9,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { SEMESTERS, YEARS } from '../../storage/data-storage';
-import { DepartmentElement } from '../../interface/dialog-data';
+import { DepartmentElement, ClassroomElement } from '../../interface/dialog-data';
 import { DepartmentApiService } from '../../../../services/department-api.service';
+import { ClassroomApiService } from '../../../../services/classroom-api.service';
 import { StorageService } from '../../storage/storage.service';
 
 @Component({
@@ -19,12 +21,43 @@ import { StorageService } from '../../storage/storage.service';
 })
 export class ScheduleManagementComponent implements OnInit {
 
+  /**
+   * VERIFIED
+   */
   public approvedColumns: string[] = ['position', 'name', 'room', 'shift', 'day'];
-  public notApprovedColumns: string[] = ['position', 'name', 'room', 'shift', 'day'];
-
   public dataSourceApproved: any;
+
+  private ELEMENT_DATA_VERIFIED: ClassroomElement[];
+
+  private totalApproved: number;
+  private indexVerified: number;
+  private dataLengthVerified: number;
+  private pageSizeVerified: number;
+  private pageIndexVerified: number;
+
+  private isVerifiedLoading: boolean;
+
+  /**
+   * NOT VERIFIED
+   */
+  public notApprovedColumns: string[] = ['position', 'name', 'room', 'shift', 'day'];
   public dataSourceNotApproved: any;
+
+  private ELEMENT_DATA_NOT_VERIFIED: ClassroomElement[];
+
+  private totalNotApproved: number;
+  private indexNotVerified: number;
+  private dataLengthNotVerified: number;
+  private pageSizeNotVerified: number;
+  private pageIndexNotVerified: number;
+
+  private isNotVerifiedLoading: boolean;
+
+  /**
+   * ANOTHER
+   */
   private semesterSelected: any;
+  private filter: any;
 
   private departmentSelected: DepartmentElement;
 
@@ -33,11 +66,9 @@ export class ScheduleManagementComponent implements OnInit {
 
   private yearSelected: string;
 
-  private totalApproved: number;
-  private totalNotApproved: number;
 
-  private isShowData: boolean;
   public searching: boolean;
+  private isFirstTime: boolean;
 
   public ServerSideCtrl: FormControl = new FormControl();
   public ServerSideFilteringCtrl: FormControl = new FormControl();
@@ -46,7 +77,9 @@ export class ScheduleManagementComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private departmentApi: DepartmentApiService,
+              private classroomApi: ClassroomApiService,
               private storageApi: StorageService,
+              private toastr: ToastrService,
               private route: Router) { }
 
   ngOnInit() {
@@ -82,9 +115,12 @@ export class ScheduleManagementComponent implements OnInit {
     this.getDepartments(5,1,{});
   }
 
-  setTable() {
-    this.dataSourceApproved.paginator = this.paginator;
-    this.dataSourceNotApproved.paginator = this.paginator;
+  setVerifiedTable() {
+    this.dataSourceApproved.paginator = null;
+  }
+
+  setNotVerifiedTable() {
+    this.dataSourceNotApproved.paginator = null;
   }
 
   getData() {
@@ -92,13 +128,35 @@ export class ScheduleManagementComponent implements OnInit {
     this.storageApi.yearSelected = this.yearSelected;
     this.storageApi.semesterSelected = this.semesterSelected;
     if ( this.departmentSelected && this.yearSelected && this.semesterSelected ) {
-      this.dataSourceApproved = new MatTableDataSource(ELEMENT_DATA);
-      this.dataSourceNotApproved = new MatTableDataSource(ELEMENT_DATA);
-      this.totalApproved = 20;
-      this.totalNotApproved = 20;
-      this.setTable();
-      return this.isShowData = true;
+      this.isVerifiedLoading = true;
+      this.isNotVerifiedLoading = true;
+      this.filter = {
+        date: {
+          group: this.semesterSelected.key.group,
+          sememesters: this.semesterSelected.key.semester,
+          year: this.yearSelected
+        },
+        department: this.departmentSelected._id,
+      }
+      this.getClassroomsData(this.pageSizeVerified, this.pageIndexVerified, {...this.filter, verified: true});
+      this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, {...this.filter, verified: false});
+      // this.setVerifiedTable();
+      // this.setNotVerifiedTable();
     }
+  }
+
+  getVerifiedPageEvent(event) {
+    this.isVerifiedLoading = true;
+    this.pageSizeVerified = event.pageSize;
+    this.pageIndexVerified = event.pageIndex + 1;
+    this.getClassroomsData(this.pageSizeVerified, this.pageIndexVerified, this.filter);
+  }
+
+  getNotVerifiedPageEvent(event) {
+    this.isNotVerifiedLoading = true;
+    this.pageSizeNotVerified = event.pageSize;
+    this.pageIndexNotVerified = event.pageIndex + 1;
+    this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
   }
 
   goToVerifiedPage() {
@@ -117,6 +175,43 @@ export class ScheduleManagementComponent implements OnInit {
     else {
       return;
     }
+  }
+
+  /**
+   * CRUD
+   */
+
+  getClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
+    console.log(filter);
+
+
+    this.classroomApi.getClassrooms(pageSize, pageIndex, filter).subscribe(result => {
+
+      if ( filter.verified == true ) {
+
+        this.ELEMENT_DATA_VERIFIED = result.data;
+        this.dataLengthVerified = this.totalApproved = result.size;
+        this.dataSourceApproved = new MatTableDataSource(this.ELEMENT_DATA_VERIFIED)
+        this.setVerifiedTable();
+        this.indexVerified = pageSize * (pageIndex - 1);
+        this.isVerifiedLoading = false;
+      }
+      else {
+        this.ELEMENT_DATA_NOT_VERIFIED = result.data;
+        this.dataLengthNotVerified = this.totalNotApproved = result.size;
+        this.dataSourceNotApproved = new MatTableDataSource(this.ELEMENT_DATA_NOT_VERIFIED)
+        this.setNotVerifiedTable();
+        this.indexNotVerified = pageSize * (pageIndex - 1);
+        this.isNotVerifiedLoading = false;
+      }
+
+      if (this.isFirstTime) {
+        this.isFirstTime = false;
+        this.toastr.success(result.message);
+      }
+    }, error => {
+      this.toastr.error(error.message)
+    })
   }
 
   getDepartments(pageSize: number, pageIndex: number, filter: any) {
