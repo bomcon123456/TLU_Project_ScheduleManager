@@ -46,7 +46,8 @@ app.use((req, res, next) => {
 app.use(
   "/api",
   multer({
-    fileFilter: fileFilter
+    fileFilter: fileFilter,
+    fileStorage: fileStorage
   }).single("file")
 );
 
