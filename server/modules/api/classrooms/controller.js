@@ -1,4 +1,5 @@
 const Classroom = require("./model");
+const Schedule = require("../schedules/model");
 
 const getAll = (req, res, next) => {
   const page = req.query.page || 1;
@@ -91,19 +92,46 @@ const post = (req, res, next) => {
 
 const put = (req, res, next) => {
   const { id } = req.params;
-  const { students, teacherId, roomId, date } = req.body;
+  const { students, teacherId, roomId, date, verified } = req.body;
+  let group, semesters, year;
   Classroom.findById(id)
     .then(data => {
       data.students = students || data.students;
       data.roomId = roomId || data.roomId;
       data.teacherId = teacherId || data.teacherId;
       data.date = date || data.date;
-      data.save().then(data => {
-        res.status(200).json({
-          message: "update_classroom_successfully",
-          id: id
-        });
+      if (verified) {
+        data.verified = verified;
+      }
+      group = data.date.group;
+      semesters = data.date.semeseters;
+      year = data.date.year;
+
+      return data.save();
+    })
+    .then(data => {
+      res.status(200).json({
+        message: "update_classroom_successfully",
+        id: id
       });
+      return Schedule.findOne({
+        group: group,
+        semeseters: semesters,
+        year: year
+      });
+    })
+    .then(schedule => {
+      if (!schedule) {
+        schedule = new Schedule({
+          group: group,
+          semesters: semesters,
+          year: year,
+          timetable: [id]
+        });
+      } else {
+        schedule.timetable.push(id);
+      }
+      return schedule.save();
     })
     .catch(err => {
       next(err);

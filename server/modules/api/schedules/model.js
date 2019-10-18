@@ -1,16 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const groups = require("../../common/constants/groups");
-const semesters = require("../../common/constants/semesters");
-const years = require("../../common/constants/years");
+const { groups } = require("../../common/constants/groups");
+const { semesters } = require("../../common/constants/semesters");
+const { years } = require("../../common/constants/years");
 
 const scheduleSchema = new Schema(
   {
     group: { type: String, required: true, enum: groups },
     semesters: { type: String, required: true, enum: semesters },
     year: { type: String, required: true, enum: years },
-    startDate: { type: String },
-    endDate: { type: String },
     timetable: {
       type: [
         {
