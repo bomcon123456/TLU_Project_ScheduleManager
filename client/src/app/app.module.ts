@@ -14,6 +14,8 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeModule } from './components/home/home.module';
 import { JwtInterceptor } from './components/_helpers/jwt.interceptor';
 import { ErrorInterceptor } from './components/_helpers/error.interceptor';
+import { AuthGuard } from './components/_helpers/auth.guard';
+import { RoleGuard } from './components/_helpers/role.guard';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { ErrorInterceptor } from './components/_helpers/error.interceptor';
     ToastrModule.forRoot()
   ],
   providers: [
+    AuthGuard,
+    RoleGuard,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],

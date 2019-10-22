@@ -13,6 +13,7 @@ import { ClassroomAddComponent } from '../categories/classroom-management/classr
 import { ScheduleManagementComponent } from './../categories/schedule-management/schedule-management.component';
 import { ClassroomVerifiedComponent } from './../categories/schedule-management/classroom-verified/classroom-verified.component';
 import { ClassroomNotVerifiedComponent } from './../categories/schedule-management/classroom-not-verified/classroom-not-verified.component';
+import { RoleGuard } from '../../_helpers/role.guard'
 
 
 const routes: Routes = [
@@ -22,43 +23,83 @@ const routes: Routes = [
   },
   {
     path: 'course-management',
-    component: CourseManagementComponent
+    component: CourseManagementComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [2, 99]
+    }
   },
   {
     path: 'room-management',
-    component: RoomManagementComponent
+    component: RoomManagementComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [2, 99]
+    }
   },
   {
     path: 'teacher-management',
-    component: TeacherManagementComponent
+    component: TeacherManagementComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [2, 99]
+    }
   },
   {
     path: 'department-management',
-    component: DepartmentManagementComponent
+    component: DepartmentManagementComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [2, 99]
+    }
   },
   {
     path: 'calendar-management',
-    component: CalendarManagementComponent
+    component: CalendarManagementComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [2, 99]
+    }
   },
   {
     path: 'classroom-management',
-    component: ClassroomManagementComponent
+    component: ClassroomManagementComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [1, 99]
+    }
   },
   {
     path: 'classroom-management/classroom-add',
-    component: ClassroomAddComponent
+    component: ClassroomAddComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [1, 99]
+    }
   },
   {
     path: 'schedule-management',
-    component: ScheduleManagementComponent
+    component: ScheduleManagementComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [2, 99]
+    }
   },
   {
     path: 'schedule-management/verified',
-    component: ClassroomVerifiedComponent
+    component: ClassroomVerifiedComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [2, 99]
+    }
   },
   {
     path: 'schedule-management/not-verified',
-    component: ClassroomNotVerifiedComponent
+    component: ClassroomNotVerifiedComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [2, 99]
+    }
   }
 ];
 

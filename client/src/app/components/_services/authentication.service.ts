@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import * as jwt_decode from 'jwt-decode'
+import * as jwt_decode from 'jwt-decode';
 
 import { environment } from '../../../environments/environment';
 import { UserData } from './../home/interface/dialog-data';
