@@ -121,15 +121,17 @@ const put = (req, res, next) => {
       });
     })
     .then(schedule => {
-      if (!schedule) {
+      if (!schedule && verified == true) {
         schedule = new Schedule({
           group: group,
           semesters: semesters,
           year: year,
           timetable: [id]
         });
-      } else {
+      } else if (schedule && verified == true) {
         schedule.timetable.push(id);
+      } else if (schedule && verified == false) {
+        schedule.timtable.filter(x => x != id);
       }
       return schedule.save();
     })
