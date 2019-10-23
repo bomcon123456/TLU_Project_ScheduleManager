@@ -79,7 +79,6 @@ mongoose
     const port = process.env.PORT;
     console.warn("Listening at port:", port);
     app.listen(process.env.PORT);
-    const Classroom = require("./modules/api/classrooms/model");
     /* HTTPs
     // https
     //   .createServer(
