@@ -100,7 +100,7 @@ const put = (req, res, next) => {
       data.roomId = roomId || data.roomId;
       data.teacherId = teacherId || data.teacherId;
       data.date = date || data.date;
-      if (verified) {
+      if (verified != null) {
         data.verified = verified;
       }
       group = data.date.group;
