@@ -1,9 +1,9 @@
-import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { filter, tap, debounceTime, switchMap } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -24,12 +24,12 @@ export class ScheduleManagementComponent implements OnInit {
   /**
    * VERIFIED
    */
-  public approvedColumns: string[] = ['position', 'name', 'room', 'shift', 'day'];
-  public dataSourceApproved: any;
+  public VerifiedColumns: string[] = ['position', 'name', 'room', 'shift', 'day'];
+  public dataSourceVerified: any;
 
   private ELEMENT_DATA_VERIFIED: ClassroomElement[];
 
-  private totalApproved: number;
+  private totalVerified: number;
   private indexVerified: number;
   private dataLengthVerified: number;
   private pageSizeVerified: number;
@@ -40,12 +40,12 @@ export class ScheduleManagementComponent implements OnInit {
   /**
    * NOT VERIFIED
    */
-  public notApprovedColumns: string[] = ['position', 'name', 'room', 'shift', 'day'];
-  public dataSourceNotApproved: any;
+  public notVerifiedColumns: string[] = ['position', 'name', 'room', 'shift', 'day'];
+  public dataSourceNotVerified: any;
 
   private ELEMENT_DATA_NOT_VERIFIED: ClassroomElement[];
 
-  private totalNotApproved: number;
+  private totalNotVerified: number;
   private indexNotVerified: number;
   private dataLengthNotVerified: number;
   private pageSizeNotVerified: number;
@@ -74,8 +74,8 @@ export class ScheduleManagementComponent implements OnInit {
   public ServerSideFilteringCtrl: FormControl = new FormControl();
   public filteredServerSide: ReplaySubject<any> = new ReplaySubject<any>(1);
 
-  @ViewChild("notVerified", { static: true }) paginatorVerified: MatPaginator;
-  @ViewChild("verified", { static: true }) paginatorNotVerified: MatPaginator;
+  @ViewChild("verified", { static: true }) paginatorVerified: MatPaginator;
+  @ViewChild("notVerified", { static: true }) paginatorNotVerified: MatPaginator;
 
   constructor(private departmentApi: DepartmentApiService,
               private classroomApi: ClassroomApiService,
@@ -86,16 +86,18 @@ export class ScheduleManagementComponent implements OnInit {
   ngOnInit() {
 
     this.searching = false;
-    this.totalApproved = 0;
-    this.totalNotApproved = 0;
+
+    this.totalVerified = 0;
     this.isVerifiedLoading = false;
     this.indexVerified = 0;
     this.dataLengthVerified = 0;
+    this.setVerifiedDefault();
+
+    this.totalNotVerified = 0;
     this.isNotVerifiedLoading = false;
     this.indexNotVerified = 0;
     this.dataLengthNotVerified = 0;
     this.setNotVerifiedDefault();
-    this.setVerifiedDefault();
 
     this.ServerSideFilteringCtrl.valueChanges
       .pipe(
@@ -125,11 +127,11 @@ export class ScheduleManagementComponent implements OnInit {
   }
 
   setVerifiedTable() {
-    this.dataSourceApproved.paginator = null;
+    this.dataSourceVerified.paginator = null;
   }
 
   setNotVerifiedTable() {
-    this.dataSourceNotApproved.paginator = null;
+    this.dataSourceNotVerified.paginator = null;
   }
 
   setVerifiedDefault() {
@@ -140,9 +142,11 @@ export class ScheduleManagementComponent implements OnInit {
   }
 
   setNotVerifiedDefault() {
+    console.log(this.paginatorNotVerified);
+
     this.paginatorNotVerified.pageIndex = 0;
     this.pageIndexNotVerified = 1;
-    this.pageSizeNotVerified = 10;
+    this.pageSizeNotVerified = 5;
     this.filter = {};
   }
 
@@ -184,6 +188,7 @@ export class ScheduleManagementComponent implements OnInit {
 
   goToVerifiedPage() {
     if (this.departmentSelected && this.yearSelected && this.semesterSelected ) {
+      this.storageApi.filterVerified = { ...this.filter, verified: true };
       this.route.navigate(['/schedule-management/verified']);
     }
     else {
@@ -193,6 +198,7 @@ export class ScheduleManagementComponent implements OnInit {
 
   goToNotVerifiedPage() {
     if (this.departmentSelected && this.yearSelected && this.semesterSelected) {
+      this.storageApi.filterNotVerified = { ...this.filter, verified: false };
       this.route.navigate(['/schedule-management/not-verified']);
     }
     else {
@@ -213,16 +219,18 @@ export class ScheduleManagementComponent implements OnInit {
       if ( filter.verified == true ) {
 
         this.ELEMENT_DATA_VERIFIED = result.data;
-        this.dataLengthVerified = this.totalApproved = result.size;
-        this.dataSourceApproved = new MatTableDataSource(this.ELEMENT_DATA_VERIFIED)
+
+        this.dataLengthVerified = this.totalVerified = result.size;
+        this.dataSourceVerified = new MatTableDataSource(this.ELEMENT_DATA_VERIFIED)
         this.setVerifiedTable();
         this.indexVerified = pageSize * (pageIndex - 1);
         this.isVerifiedLoading = false;
       }
       else {
         this.ELEMENT_DATA_NOT_VERIFIED = result.data;
-        this.dataLengthNotVerified = this.totalNotApproved = result.size;
-        this.dataSourceNotApproved = new MatTableDataSource(this.ELEMENT_DATA_NOT_VERIFIED)
+        console.log(result.data);
+        this.dataLengthNotVerified = this.totalNotVerified = result.size;
+        this.dataSourceNotVerified = new MatTableDataSource(this.ELEMENT_DATA_NOT_VERIFIED)
         this.setNotVerifiedTable();
         this.indexNotVerified = pageSize * (pageIndex - 1);
         console.log(this.indexNotVerified);
@@ -250,6 +258,22 @@ export class ScheduleManagementComponent implements OnInit {
 
       })
     })
+  }
+
+  /**
+   * TRANSFORM DATA
+   */
+
+  transformToVn(data) {
+    switch (data) {
+      case 'Monday': return 'Thứ Hai';
+      case 'Tuesday': return 'Thứ Ba';
+      case 'Wednesday': return 'Thứ Tư';
+      case 'Thursday': return 'Thứ Năm';
+      case 'Friday': return 'Thứ Sáu';
+      case 'Saturday': return 'Thứ Bảy';
+      case 'Sunday': return 'Chủ Nhật';
+    }
   }
 
 }

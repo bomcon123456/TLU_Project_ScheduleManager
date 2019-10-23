@@ -622,7 +622,7 @@ export class ClassroomAddComponent implements OnInit {
     }
 
     // Check Shift Of Equal Students
-    if ( this.maxStudents && this.shiftEqualClass ) {
+    if ( this.maxStudents && this.shiftEqualClass && this.ELEMENT_DATA[index].students != this.maxStudents ) {
       if ( this.shiftTranform(this.shiftEqualClass).time != shiftObj.time ) {
 
         return true;
