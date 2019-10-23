@@ -7,5 +7,6 @@ router.get("/free-rooms", Controller.getFreeRooms);
 router.get("/teacher-free-shifts", Controller.getTeacherFreeShifts);
 router.get("/free-shifts", Controller.getFreeShifts);
 router.get("/free-days", Controller.getFreeDays);
+router.get("/check-is-offer", Controller.isOpenForOffer);
 
 module.exports = router;
