@@ -34,7 +34,14 @@ const getTeacherFreeShifts = (req, res, next) => {
 
 const getFreeRooms = (req, res, next) => {
   const { year, group, semester, day, shift, students } = req.query;
-  console.log(getNearbyGroupSem(group, semester));
+  dates = getNearbyGroupSem(group, semester);
+  orQueries = dates.map(each => {
+    return {
+      "date.group": each.group,
+      "date.semesters": each.semester
+    };
+  });
+
   let numbers = shift.split("-");
   let start = parseInt(numbers[0]);
   let end = parseInt(numbers[1]);
@@ -56,11 +63,10 @@ const getFreeRooms = (req, res, next) => {
   let used = [];
   Classroom.find({
     "date.year": year,
-    "date.group": group,
-    "date.semesters": semester,
     "date.day": day,
     "date.shift": shiftQuery
   })
+    .or(orQueries)
     .select({ roomId: 1, _id: 0 })
     .populate("roomId", "name") // remove this for more performance
     .then(data => {
@@ -176,10 +182,48 @@ const isOpenForOffer = (req, res, next) => {
     .catch(err => next(err));
 };
 
+const getTeacherSchedule = (req, res, next) => {
+  const { year, semester, group, teacherId } = req.query;
+
+  dates = getNearbyGroupSem(group, semester);
+  console.log(dates);
+
+  orQueries = dates.map(each => {
+    return {
+      "date.group": each.group,
+      "date.semesters": each.semester
+    };
+  });
+  Classroom.aggregate([
+    {
+      $match: {
+        "date.year": year,
+        teacherId: teacherId,
+        verified: true,
+        $or: orQueries
+      }
+    },
+    {
+      $project: {
+        name: 1,
+        shift: "$date.shift",
+        day: "$date.day"
+      }
+    }
+  ])
+    .then(data => {
+      res.status(200).json({
+        message: "fetch_teacher_schedule",
+        data: data
+      });
+    })
+    .catch(err => next(err));
+};
 module.exports = {
   getFreeRooms,
   getFreeShifts,
   getFreeDays,
   getTeacherFreeShifts,
-  isOpenForOffer
+  isOpenForOffer,
+  getTeacherSchedule
 };
