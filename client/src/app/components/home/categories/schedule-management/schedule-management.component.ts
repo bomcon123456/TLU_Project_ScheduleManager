@@ -160,13 +160,13 @@ export class ScheduleManagementComponent implements OnInit {
       this.filter = {
         date: {
           group: this.semesterSelected.key.group,
-          sememesters: this.semesterSelected.key.semester,
+          semesters: this.semesterSelected.key.semester,
           year: this.yearSelected
         },
         department: this.departmentSelected._id,
       }
-      this.getClassroomsData(this.pageSizeVerified, this.pageIndexVerified, {...this.filter, verified: true});
-      this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, {...this.filter, verified: false});
+      this.getVerifiedClassroomsData(this.pageSizeVerified, this.pageIndexVerified, {...this.filter, verified: true});
+      this.getNotVerifiedClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, {...this.filter, verified: false});
       // this.setVerifiedTable();
       // this.setNotVerifiedTable();
     }
@@ -176,14 +176,14 @@ export class ScheduleManagementComponent implements OnInit {
     this.isVerifiedLoading = true;
     this.pageSizeVerified = event.pageSize;
     this.pageIndexVerified = event.pageIndex + 1;
-    this.getClassroomsData(this.pageSizeVerified, this.pageIndexVerified, this.filter);
+    this.getVerifiedClassroomsData(this.pageSizeVerified, this.pageIndexVerified, {...this.filter, verified: true});
   }
 
   getNotVerifiedPageEvent(event) {
     this.isNotVerifiedLoading = true;
     this.pageSizeNotVerified = event.pageSize;
     this.pageIndexNotVerified = event.pageIndex + 1;
-    this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
+    this.getNotVerifiedClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, {...this.filter, verified: false});
   }
 
   goToVerifiedPage() {
@@ -210,13 +210,8 @@ export class ScheduleManagementComponent implements OnInit {
    * CRUD
    */
 
-  getClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
-    console.log(pageSize, pageIndex, filter);
-
-
+  getVerifiedClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
     this.classroomApi.getClassrooms(pageSize, pageIndex, filter).subscribe(result => {
-
-      if ( filter.verified == true ) {
 
         this.ELEMENT_DATA_VERIFIED = result.data;
 
@@ -225,19 +220,28 @@ export class ScheduleManagementComponent implements OnInit {
         this.setVerifiedTable();
         this.indexVerified = pageSize * (pageIndex - 1);
         this.isVerifiedLoading = false;
-      }
-      else {
 
-        this.ELEMENT_DATA_NOT_VERIFIED = result.data;
-        console.log(result.data);
-        this.dataLengthNotVerified = this.totalNotVerified = result.size;
-        this.dataSourceNotVerified = new MatTableDataSource(this.ELEMENT_DATA_NOT_VERIFIED)
-        this.setNotVerifiedTable();
-        this.indexNotVerified = pageSize * (pageIndex - 1);
-        console.log(this.indexNotVerified);
+        if (this.isFirstTime) {
+          this.isFirstTime = false;
+          this.toastr.success(result.message);
+        }
+    }, error => {
+      this.toastr.error(error.message)
+    })
+  }
 
-        this.isNotVerifiedLoading = false;
-      }
+  getNotVerifiedClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
+    this.classroomApi.getClassrooms(pageSize, pageIndex, filter).subscribe(result => {
+
+      this.ELEMENT_DATA_NOT_VERIFIED = result.data;
+      console.log(result.data);
+      this.dataLengthNotVerified = this.totalNotVerified = result.size;
+      this.dataSourceNotVerified = new MatTableDataSource(this.ELEMENT_DATA_NOT_VERIFIED)
+      this.setNotVerifiedTable();
+      this.indexNotVerified = pageSize * (pageIndex - 1);
+      console.log(this.indexNotVerified);
+
+      this.isNotVerifiedLoading = false;
 
       if (this.isFirstTime) {
         this.isFirstTime = false;

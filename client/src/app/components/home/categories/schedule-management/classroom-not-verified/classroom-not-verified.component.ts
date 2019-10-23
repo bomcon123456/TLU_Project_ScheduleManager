@@ -121,6 +121,7 @@ export class ClassroomNotVerifiedComponent implements OnInit {
       this.dataSourceNotVerified = new MatTableDataSource(this.ELEMENT_DATA_NOT_VERIFIED);
     }
     else {
+      this.verifiedClassroom(this.ELEMENT_DATA_NOT_VERIFIED[index]._id);
       this.isNotVerifiedLoading = true;
       this.pageSizeNotVerified = 10;
       this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);

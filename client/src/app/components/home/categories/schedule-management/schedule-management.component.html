@@ -161,7 +161,7 @@
             <!-- Symbol Column -->
             <ng-container matColumnDef="day">
               <th mat-header-cell *matHeaderCellDef> Thứ </th>
-              <td mat-cell *matCellDef="let element"> {{element.date.day}} </td>
+              <td mat-cell *matCellDef="let element"> {{transformToVn(element.date.day)}} </td>
             </ng-container>
 
             <!-- Symbol Column -->
