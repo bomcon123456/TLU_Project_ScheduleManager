@@ -176,10 +176,48 @@ const isOpenForOffer = (req, res, next) => {
     .catch(err => next(err));
 };
 
+const getTeacherSchedule = (req, res, next) => {
+  const { year, semester, group, teacherId } = req.query;
+
+  dates = getNearbyGroupSem(group, semester);
+  console.log(dates);
+
+  orQueries = dates.map(each => {
+    return {
+      "date.group": each.group,
+      "date.semesters": each.semester
+    };
+  });
+  Classroom.aggregate([
+    {
+      $match: {
+        "date.year": year,
+        teacherId: teacherId,
+        verified: true,
+        $or: orQueries
+      }
+    },
+    {
+      $project: {
+        name: 1,
+        shift: "$date.shift",
+        day: "$date.day"
+      }
+    }
+  ])
+    .then(data => {
+      res.status(200).json({
+        message: "fetch_teacher_schedule",
+        data: data
+      });
+    })
+    .catch(err => next(err));
+};
 module.exports = {
   getFreeRooms,
   getFreeShifts,
   getFreeDays,
   getTeacherFreeShifts,
-  isOpenForOffer
+  isOpenForOffer,
+  getTeacherSchedule
 };
