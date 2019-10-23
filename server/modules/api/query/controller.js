@@ -34,7 +34,14 @@ const getTeacherFreeShifts = (req, res, next) => {
 
 const getFreeRooms = (req, res, next) => {
   const { year, group, semester, day, shift, students } = req.query;
-  console.log(getNearbyGroupSem(group, semester));
+  dates = getNearbyGroupSem(group, semester);
+  orQueries = dates.map(each => {
+    return {
+      "date.group": each.group,
+      "date.semesters": each.semester
+    };
+  });
+
   let numbers = shift.split("-");
   let start = parseInt(numbers[0]);
   let end = parseInt(numbers[1]);
@@ -56,11 +63,10 @@ const getFreeRooms = (req, res, next) => {
   let used = [];
   Classroom.find({
     "date.year": year,
-    "date.group": group,
-    "date.semesters": semester,
     "date.day": day,
     "date.shift": shiftQuery
   })
+    .or(orQueries)
     .select({ roomId: 1, _id: 0 })
     .populate("roomId", "name") // remove this for more performance
     .then(data => {
