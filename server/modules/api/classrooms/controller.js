@@ -12,7 +12,7 @@ const getAll = (req, res, next) => {
     if (filter.department) {
       query["department"] = filter.department;
     }
-    if (filter.verified) {
+    if (filter.verified != null) {
       query["verified"] = filter.verified;
     }
     if (filter.date) {

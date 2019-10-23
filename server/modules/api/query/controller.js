@@ -1,6 +1,7 @@
 const Classroom = require("../classrooms/model");
 const Teacher = require("../teachers/model");
 const Room = require("../rooms/model");
+const Calendar = require("../calendar/model");
 
 const shifts = require("../../common/constants/shifts");
 const days = require("../../common/constants/days");
@@ -158,9 +159,27 @@ const getFreeDays = (req, res, next) => {
     .catch(err => next(err));
 };
 
+const isOpenForOffer = (req, res, next) => {
+  const { year, group, semesters } = req.query;
+  Calendar.find({ year: year, group: group, semesters: semesters })
+    .then(data => {
+      if (!data) {
+        error = new Error("This custom date is not created yet");
+        error.status_code = 404;
+        throw error;
+      }
+      res.status(200).json({
+        message: "query_date_completed",
+        verified: data.verified
+      });
+    })
+    .catch(err => next(err));
+};
+
 module.exports = {
   getFreeRooms,
   getFreeShifts,
   getFreeDays,
-  getTeacherFreeShifts
+  getTeacherFreeShifts,
+  isOpenForOffer
 };
