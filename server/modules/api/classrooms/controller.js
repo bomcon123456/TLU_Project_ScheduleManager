@@ -104,7 +104,7 @@ const put = (req, res, next) => {
         data.verified = verified;
       }
       group = data.date.group;
-      semesters = data.date.semeseters;
+      semesters = data.date.semesters;
       year = data.date.year;
 
       return data.save();
