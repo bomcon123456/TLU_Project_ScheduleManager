@@ -10,13 +10,15 @@
           <mat-form-field>
             <input placeholder="Tên lớp học" matInput
                   [ngModel]="local_data.name"
-                  [formControl]="nameFormControl" readonly>
+                  [formControl]="nameFormControl" readonly
+                  disabled="true">
           </mat-form-field>
 
           <mat-form-field>
             <input placeholder="Môn học" matInput
                   [ngModel]="local_data.courseId.name"
-                  [formControl]="courseFormControl"readonly>
+                  [formControl]="courseFormControl" readonly
+                  disabled="true">
           </mat-form-field>
 
           <mat-form-field>
@@ -29,7 +31,8 @@
 
           <mat-form-field>
             <mat-label>Giáo viên</mat-label>
-            <mat-select [(value)]="local_data.teacherId._id"
+            <mat-select [value]="local_data.teacherId._id"
+                        (selectionChange)="changeTeacher($event.value)"
                         [formControl]="teacherFormControl" required>
               <mat-option>
                 <ngx-mat-select-search [formControl]="TeacherFilteringCtrl" [searching]="teacherSearching" placeholderLabel=''>
@@ -47,7 +50,7 @@
 
           <mat-form-field>
             <mat-label>Năm học</mat-label>
-            <mat-select [(value)]="local_data.date.year" [formControl]="yearFormControl" required>
+            <mat-select [(value)]="local_data.date.year" [formControl]="yearFormControl" required disabled="true">
               <mat-option *ngFor="let year of yearList" [value]="year">{{year}}</mat-option>
             </mat-select>
             <mat-error *ngIf="hasError('year', 'required')">Năm học không được để trống.</mat-error>
@@ -55,7 +58,7 @@
 
           <mat-form-field>
             <mat-label>Nhóm học</mat-label>
-            <mat-select [(value)]="local_data.date.group" [formControl]="groupFormControl" required>
+            <mat-select [(value)]="local_data.date.group" [formControl]="groupFormControl" required disabled="true">
               <mat-option value="Group 1">Nhóm 1</mat-option>
               <mat-option value="Group 2">Nhóm 2</mat-option>
               <mat-option value="Group 3">Nhóm 3</mat-option>
@@ -65,7 +68,7 @@
 
           <mat-form-field>
             <mat-label>Kỳ học</mat-label>
-            <mat-select [(value)]="local_data.date.semesters" [formControl]="semesterFormControl" required>
+            <mat-select [(value)]="local_data.date.semesters" [formControl]="semesterFormControl" required disabled="true">
               <mat-option value="Semester 1">Kỳ 1</mat-option>
               <mat-option value="Semester 2">Kỳ 2</mat-option>
               <mat-option value="Semester 3">Kỳ 3</mat-option>
@@ -75,8 +78,8 @@
 
           <mat-form-field>
             <mat-label>Thứ</mat-label>
-            <mat-select [(value)]="local_data.date.day"
-                        (selectionChange)="getShiftFree()"
+            <mat-select [value]="local_data.date.day"
+                        (selectionChange)="changeDay($event.value)"
                         [formControl]="dayFormControl" required>
               <mat-option *ngFor="let day of dayList" [value]="day">{{tranformToVn(day)}}</mat-option>
             </mat-select>
@@ -94,12 +97,13 @@
             </div>
             <mat-form-field>
               <mat-label>Ca học</mat-label>
-              <mat-select [(value)]="local_data.date.shift"
-                          (selectionChange)="getRoomFree()"
-                          [formControl]="shiftFormControl" required>
-                <mat-option *ngFor="let shift of shiftList" [value]="shift">{{shift}}</mat-option>
+              <mat-select [value]="local_data.date.shift"
+                          (selectionChange)="changeShift($event.value)"
+                          [formControl]="shiftFormControl" required [disabled]="local_data.date.day ? false : true">
+                <mat-option *ngFor="let shift of shiftList" [value]="shift"
+                            [ngStyle]="{'display': checkShift(shift) ? 'none' : 'block'}">{{shift}}</mat-option>
                 <mat-optgroup label="Ca học đã chọn">
-                  <mat-option [value]="shiftSelected">{{shiftSelected}}</mat-option>
+                  <mat-option [value]="local_data.date.shift">{{local_data.date.shift}}</mat-option>
                 </mat-optgroup>
               </mat-select>
               <mat-error *ngIf="hasError('shift', 'required')">Ca học không được để trống.</mat-error>
@@ -117,7 +121,7 @@
             </div>
             <mat-form-field>
               <mat-label>Phòng học</mat-label>
-              <mat-select [(value)]="local_data.roomId._id" [formControl]="roomFormControl" required>
+              <mat-select [(value)]="local_data.roomId._id" [formControl]="roomFormControl" required [disabled]="local_data.date.shift ? false : true">
                 <mat-option *ngFor="let room of roomList" [value]="room._id">{{room.name}}</mat-option>
                 <mat-optgroup label="Phòng học đã chọn">
                   <mat-option [value]="roomSelected._id">{{roomSelected.name}}</mat-option>

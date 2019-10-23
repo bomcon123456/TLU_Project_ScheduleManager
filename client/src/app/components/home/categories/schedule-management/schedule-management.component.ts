@@ -227,6 +227,7 @@ export class ScheduleManagementComponent implements OnInit {
         this.isVerifiedLoading = false;
       }
       else {
+
         this.ELEMENT_DATA_NOT_VERIFIED = result.data;
         console.log(result.data);
         this.dataLengthNotVerified = this.totalNotVerified = result.size;

@@ -111,6 +111,23 @@ export class ClassroomNotVerifiedComponent implements OnInit {
     this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
   }
 
+  verifiedClass(index) {
+
+    if ( this.pageSizeNotVerified > 5 ) {
+      this.verifiedClassroom(this.ELEMENT_DATA_NOT_VERIFIED[index]._id);
+      this.ELEMENT_DATA_NOT_VERIFIED.splice(index, 1);
+      this.dataLengthNotVerified = this.totalNotVerified -= 1;
+      this.pageSizeNotVerified -= 1;
+      this.dataSourceNotVerified = new MatTableDataSource(this.ELEMENT_DATA_NOT_VERIFIED);
+    }
+    else {
+      this.isNotVerifiedLoading = true;
+      this.pageSizeNotVerified = 10;
+      this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
+    }
+    // this.indexNotVerified -= 1;
+  }
+
   /**
    * CRUD
    */
@@ -135,6 +152,45 @@ export class ClassroomNotVerifiedComponent implements OnInit {
     }, error => {
       this.toastr.error(error.message)
     })
+  }
+
+  updateClassroom(row_obj) {
+
+    this.classroomApi.updateClassroom(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
+
+      this.isNotVerifiedLoading = true;
+      this.paginatorNotVerified.pageIndex = 0;
+      this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
+      this.toastr.success(result.message);
+    }, error => {
+      this.toastr.error(error.message);
+    })
+  }
+
+  verifiedClassroom(id) {
+    this.classroomApi.updateClassroom(id, { verified: true }).subscribe( result => {
+      this.toastr.success(result.message)
+    })
+  }
+
+  /**
+   * TRANSFORM DATA
+   */
+
+  dataTranform(data) {
+    let newData = {
+      students: data.students,
+      roomId: data.roomId._id,
+      teacherId: data.teacherId._id,
+      date: {
+        shift: data.date.shift,
+        day: data.date.day,
+        group: data.date.group,
+        semesters: data.date.semesters,
+        year: data.date.year
+      }
+    }
+    return newData;
   }
 
 }

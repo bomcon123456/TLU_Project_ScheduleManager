@@ -154,23 +154,68 @@ export class ClassroomDialogComponent implements OnInit {
     return this.classroomForm.controls[controlName].hasError(errorName);
   }
 
-  getShiftFree() {
-    this.isLoadingShift = true;
-    this.getTeacherFreeShifts(this.local_data.date.year,
-                              this.local_data.date.group,
-                              this.local_data.date.semesters,
-                              this.local_data.date.day,
-                              this.local_data.teacherId._id);
+  // getShiftFree() {
+  //   this.isLoadingShift = true;
+  //   this.getTeacherFreeShifts(this.local_data.date.year,
+  //                             this.local_data.date.group,
+  //                             this.local_data.date.semesters,
+  //                             this.local_data.date.day,
+  //                             this.local_data.teacherId._id);
+  // }
+
+  // getRoomFree() {
+  //   this.isLoadingRoom = true;
+  //   this.getFreeRooms(this.local_data.date.year,
+  //                     this.local_data.date.group,
+  //                     this.local_data.date.semesters,
+  //                     this.local_data.date.day,
+  //                     this.local_data.date.shift,
+  //                     this.local_data.students);
+  // }
+
+  changeTeacher(data) {
+    this.local_data.teacherId._id = data;
+    this.local_data.date.day = null;
+    this.local_data.date.shift = null;
+    this.local_data.roomId._id = null;
+    this.shiftFormControl.setValue(this.local_data.date.shift);
+    this.roomFormControl.setValue(this.local_data.roomId._id);
   }
 
-  getRoomFree() {
+  changeDay(data) {
+    this.local_data.date.day = data;
+    this.local_data.date.shift = null;
+    this.local_data.roomId._id = null;
+    this.shiftFormControl.setValue(this.local_data.date.shift);
+    this.roomFormControl.setValue(this.local_data.roomId._id);
+    this.isLoadingShift = true;
+
+    this.getTeacherFreeShifts(this.local_data.date.year,
+      this.local_data.date.group,
+      this.local_data.date.semesters,
+      this.local_data.date.day,
+      this.local_data.teacherId._id);
+  }
+
+  changeShift(data) {
+    this.local_data.date.shift = data;
+    this.local_data.roomId._id = null;
+    this.roomFormControl.setValue(this.local_data.roomId._id);
     this.isLoadingRoom = true;
+
     this.getFreeRooms(this.local_data.date.year,
-                      this.local_data.date.group,
-                      this.local_data.date.semesters,
-                      this.local_data.date.day,
-                      this.local_data.date.shift,
-                      this.local_data.students);
+      this.local_data.date.group,
+      this.local_data.date.semesters,
+      this.local_data.date.day,
+      this.local_data.date.shift,
+      this.local_data.students);
+  }
+
+  checkShift(shift) {
+    if (this.shiftTranform(shift).time != this.shiftTranform(this.shiftSelected).time ) {
+      return true;
+    }
+    return false;
   }
 
   doAction() {
@@ -250,6 +295,19 @@ export class ClassroomDialogComponent implements OnInit {
       case 'Saturday': return 'Thứ Bảy';
       case 'Sunday': return 'Chủ Nhật';
     }
+  }
+
+  shiftTranform(shift) {
+
+    let indexCut = shift.indexOf('-');
+    let startShift = parseInt(shift.substring(0, indexCut));
+    let endShift = parseInt(shift.substring(indexCut + 1));
+    let obj = {
+      startShift: startShift,
+      endShift: endShift,
+      time: endShift - startShift + 1
+    }
+    return obj;
   }
 
 }
