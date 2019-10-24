@@ -1,36 +1,48 @@
-<mat-form-field>
-  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
-</mat-form-field>
-<div class="mat-elevation-z8">
-  <table mat-table matSort [dataSource]="dataSource">
-
-    <!-- Position Column -->
-    <ng-container matColumnDef="position">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> No. </th>
-      <td mat-cell *matCellDef="let element"> {{element.position}} </td>
-    </ng-container>
-
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-    </ng-container>
-
-    <!-- Weight Column -->
-    <ng-container matColumnDef="weight">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Weight </th>
-      <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
-    </ng-container>
-
-    <!-- Symbol Column -->
-    <ng-container matColumnDef="symbol">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Symbol </th>
-      <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-
-  <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-</div>
+<table style="border-collapse: collapse; width: 80%; margin: 50px auto;">
+  <thead>
+    <th style="width: 4%; height: 50px"></th>
+    <th class="custom-col-7">Thứ 2</th>
+    <th class="custom-col-7">Thứ 3</th>
+    <th class="custom-col-7">Thứ 4</th>
+    <th class="custom-col-7">Thứ 5</th>
+    <th class="custom-col-7">Thứ 6</th>
+    <th class="custom-col-7">Thứ 7</th>
+    <th class="custom-col-7">Chủ nhật</th>
+  </thead>
+  <tbody *ngIf="schedule; else default">
+    <tr *ngFor="let shift of schedule; let indexRow = index" class="row-height">
+      <td style="font-weight: bold; text-align: center;" >{{printShift(shift.shift)}}</td>
+      <ng-container *ngFor="let td of emptyArray(7); let indexCol = index">
+        <td *ngIf="notHaveAnotherData(indexRow, indexCol, shift.shift)"
+            [attr.rowspan]="haveData(indexRow, indexCol) ? getShiftTotal(indexRow, indexCol) : 1">
+          <div *ngIf="haveData(indexRow, indexCol); else printEmpty">
+            <div>
+              {{classData.name}}
+            </div>
+          </div>
+          <ng-template #printEmpty>
+            <div></div>
+          </ng-template>
+        </td>
+        <!-- <div *ngIf="haveData(indexRow, indexCol+countDay); else goHere">
+          <div *ngFor="let day of shift.data">
+            <div *ngIf="indexCol+countDay == day.day">
+              {{day.class.name}}
+            </div>
+          </div>
+        </div>
+        <ng-template #goHere>
+          <div *ngIf="!notHaveAnotherData(indexRow, indexCol, shift.shift)"></div>
+        </ng-template> -->
+      </ng-container>
+    </tr>
+  </tbody>
+  <ng-template #default>
+    <tbody>
+      <tr *ngFor="let row of emptyArray(13); let i = index" class="row-height">
+        <td style="font-weight: bold; text-align: center;">{{i+1}}</td>
+        <td *ngFor="let col of emptyArray(7)"></td>
+      </tr>
+    </tbody>
+  </ng-template>
+</table>

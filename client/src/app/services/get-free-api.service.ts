@@ -46,6 +46,14 @@ export class GetFreeApiService {
       )
   }
 
+  getTeacherSchedule(year: string, group: string, semester: string, teacherId: string): Observable<any> {
+    return this.http.get(this.apiURL + 'teacher-schedule' + `?year=${year}&group=${group}&semester=${semester}&teacherId=${teacherId}`)
+      .pipe(
+        retry(1),
+        catchError(this.handleError)
+      )
+  }
+
   // Error handling
   handleError(error) {
     let errorMessage = '';
