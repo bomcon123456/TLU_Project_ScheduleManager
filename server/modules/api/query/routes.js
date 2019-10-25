@@ -11,5 +11,6 @@ router.get("/check-is-offer", Controller.isOpenForOffer);
 router.get("/teacher-schedule", Controller.getTeacherSchedule);
 router.get("/department-schedule", Controller.getDepartmentSchedule);
 router.get("/get-schedule", Controller.getSchedule);
+router.get("/number-of-class", Controller.getNumberOfClass);
 
 module.exports = router;

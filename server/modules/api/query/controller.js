@@ -301,6 +301,37 @@ const getSchedule = (req, res, next) => {
     })
     .catch(err => next(err));
 };
+
+const getNumberOfClass = (req, res, next) => {
+  const { name, group, semester, year } = req.query;
+  const nameRegex = new RegExp(name, "i");
+  Classroom.find({
+    name: { $regex: nameRegex },
+    "date.group": group,
+    "date.semesters": semester,
+    "date.year": year
+  })
+    .select("name")
+    .then(data => {
+      max = -1;
+      data.map(each => {
+        numberedClassName = each.name.split("_")[0];
+        numberOnly = numberedClassName.replace(nameRegex, "");
+        subclassNumberIndex = second.lastIndexOf(".");
+        if (subclassIndex != 0) {
+          result = second.substring(1, subclassIndex);
+        } else {
+          result = second.split(".")[1];
+        }
+        number = parseInt(result);
+        if (number > max) {
+          max = number;
+        }
+      });
+      res.status(200).json(max);
+    })
+    .catch(err => next(err));
+};
 module.exports = {
   getFreeRooms,
   getFreeShifts,
@@ -309,5 +340,6 @@ module.exports = {
   isOpenForOffer,
   getTeacherSchedule,
   getSchedule,
-  getDepartmentSchedule
+  getDepartmentSchedule,
+  getNumberOfClass
 };
