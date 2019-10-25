@@ -83,7 +83,7 @@ exports.update = (req, res, next) => {
       user.name = name || user.name;
       user.description = description || user.description;
       user.gender = gender || user.gender;
-      if (file !== null) {
+      if (file) {
         user.avatarUrl = process.env.UPLOAD_DIR + "/" + file.filename;
       }
       return user.save();

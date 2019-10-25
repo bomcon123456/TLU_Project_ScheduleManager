@@ -208,9 +208,27 @@ const getTeacherSchedule = (req, res, next) => {
       $project: {
         name: 1,
         shift: "$date.shift",
-        day: "$date.day"
+        day: "$date.day",
+        roomId: 1
       }
-    }
+    },
+    {
+      $lookup: {
+        from: "rooms",
+        localField: "roomId",
+        foreignField: "_id",
+        as: "room"
+      }
+    },
+    {
+      $project: {
+        name: 1,
+        shift: 1,
+        day: 1,
+        room: "$room.name"
+      }
+    },
+    { $unwind: "$room" }
   ])
     .then(data => {
       res.status(200).json({
@@ -247,9 +265,47 @@ const getDepartmentSchedule = (req, res, next) => {
       $project: {
         name: 1,
         shift: "$date.shift",
-        day: "$date.day"
+        day: "$date.day",
+        teacherId: 1,
+        roomId: 1
       }
-    }
+    },
+    {
+      $lookup: {
+        from: "teachers",
+        localField: "teacherId",
+        foreignField: "_id",
+        as: "teacher"
+      }
+    },
+    {
+      $project: {
+        name: 1,
+        shift: 1,
+        day: 1,
+        teacher: "$teacher.name",
+        roomId: 1
+      }
+    },
+    { $unwind: "$teacher" },
+    {
+      $lookup: {
+        from: "rooms",
+        localField: "roomId",
+        foreignField: "_id",
+        as: "room"
+      }
+    },
+    {
+      $project: {
+        name: 1,
+        shift: 1,
+        day: 1,
+        teacher: 1,
+        room: "$room.name"
+      }
+    },
+    { $unwind: "$room" }
   ])
     .then(data => {
       res.status(200).json({
@@ -269,6 +325,9 @@ const getSchedule = (req, res, next) => {
     "date.year": year,
     verified: true
   })
+    .populate("courseId", "name")
+    .populate("roomId", "name")
+    .populate("teacherId", "name")
     .then(data => {
       if (!data) {
         let error = new Error("Cant find schedule");
@@ -282,6 +341,37 @@ const getSchedule = (req, res, next) => {
     })
     .catch(err => next(err));
 };
+
+const getNumberOfClass = (req, res, next) => {
+  const { name, group, semester, year } = req.query;
+  const nameRegex = new RegExp(name, "i");
+  Classroom.find({
+    name: { $regex: nameRegex },
+    "date.group": group,
+    "date.semesters": semester,
+    "date.year": year
+  })
+    .select("name")
+    .then(data => {
+      max = -1;
+      data.map(each => {
+        numberedClassName = each.name.split("_")[0];
+        numberOnly = numberedClassName.replace(nameRegex, "");
+        subclassNumberIndex = second.lastIndexOf(".");
+        if (subclassIndex != 0) {
+          result = second.substring(1, subclassIndex);
+        } else {
+          result = second.split(".")[1];
+        }
+        number = parseInt(result);
+        if (number > max) {
+          max = number;
+        }
+      });
+      res.status(200).json(max);
+    })
+    .catch(err => next(err));
+};
 module.exports = {
   getFreeRooms,
   getFreeShifts,
@@ -290,5 +380,6 @@ module.exports = {
   isOpenForOffer,
   getTeacherSchedule,
   getSchedule,
-  getDepartmentSchedule
+  getDepartmentSchedule,
+  getNumberOfClass
 };
