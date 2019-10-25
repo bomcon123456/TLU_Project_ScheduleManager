@@ -4,6 +4,23 @@ const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
   let total = -1;
+  let { filter } = req.query;
+  let query = {};
+  if (filter) {
+    console.log("Schedule Client filter:" + filter);
+    filter = JSON.parse(filter);
+    if (filter.date) {
+      if (filter.date.group) {
+        query["group"] = filter.date.group;
+      }
+      if (filter.date.semesters) {
+        query["semesters"] = filter.date.semesters;
+      }
+      if (filter.date.year) {
+        query["year"] = filter.date.year;
+      }
+    }
+  }
   let schedules = [];
   Schedule.find()
     .skip((page - 1) * size)

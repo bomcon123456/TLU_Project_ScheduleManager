@@ -2,6 +2,7 @@ const Classroom = require("../classrooms/model");
 const Teacher = require("../teachers/model");
 const Room = require("../rooms/model");
 const Calendar = require("../calendar/model");
+const mongoose = require("mongoose");
 
 const shifts = require("../../common/constants/shifts");
 const days = require("../../common/constants/days");
@@ -219,11 +220,75 @@ const getTeacherSchedule = (req, res, next) => {
     })
     .catch(err => next(err));
 };
+
+const getDepartmentSchedule = (req, res, next) => {
+  const { year, semester, group, department } = req.query;
+  console.log(year, semester, group, department);
+
+  dates = getNearbyGroupSem(group, semester);
+  console.log(dates);
+
+  orQueries = dates.map(each => {
+    return {
+      "date.group": each.group,
+      "date.semesters": each.semester
+    };
+  });
+  Classroom.aggregate([
+    {
+      $match: {
+        "date.year": year,
+        department: mongoose.Types.ObjectId(department),
+        verified: true,
+        $or: orQueries
+      }
+    },
+    {
+      $project: {
+        name: 1,
+        shift: "$date.shift",
+        day: "$date.day"
+      }
+    }
+  ])
+    .then(data => {
+      res.status(200).json({
+        message: "fetch_department_schedule",
+        data: data
+      });
+    })
+    .catch(err => next(err));
+};
+
+const getSchedule = (req, res, next) => {
+  const { group, semester, year } = req.query;
+
+  Classroom.find({
+    "date.group": group,
+    "date.semesters": semester,
+    "date.year": year,
+    verified: true
+  })
+    .then(data => {
+      if (!data) {
+        let error = new Error("Cant find schedule");
+        error.statusCode = 404;
+        throw error;
+      }
+      res.status(200).json({
+        message: "fetch_schedule_successfully",
+        data: data
+      });
+    })
+    .catch(err => next(err));
+};
 module.exports = {
   getFreeRooms,
   getFreeShifts,
   getFreeDays,
   getTeacherFreeShifts,
   isOpenForOffer,
-  getTeacherSchedule
+  getTeacherSchedule,
+  getSchedule,
+  getDepartmentSchedule
 };
