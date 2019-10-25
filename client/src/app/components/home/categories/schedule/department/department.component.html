@@ -29,7 +29,7 @@
     </mat-form-field>
   </div>
 </div>
-<div class="mat-elevation-z8 pos-relative w-80 mg-rl-auto">
+<div class="mat-elevation-z8 pos-relative w-100 mg-rl-auto">
   <div class="background-loading" *ngIf="isLoading">
     <div class="lds-ellipsis position-loading">
       <div></div>
@@ -52,8 +52,10 @@
       <tr>
         <td *ngFor="let day of schedule" style="padding: 15px !important; vertical-align: top;">
           <div *ngFor="let class of day.data" style="width: 100%; margin: 15px 0px; height: 100px;">
-            <button mat-flat-button [color]="randomColor()" style="width: 100% !important; height: 100%;">
+            <button mat-flat-button [color]="randomColor(class.name)" style="width: 100% !important; height: 100%;">
               {{class.name}}
+              <br>
+              {{class.teacher}}
               <br>
               Ca: {{class.shift}}
             </button>

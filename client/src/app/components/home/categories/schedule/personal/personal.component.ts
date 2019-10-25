@@ -1,5 +1,6 @@
 import { Component, OnInit, enableProdMode } from '@angular/core';
 import { GetFreeApiService } from '../../../../../services/get-free-api.service';
+import * as jwt_decode from 'jwt-decode';
 
 enableProdMode();
 
@@ -15,12 +16,18 @@ export class PersonalComponent implements OnInit {
   private classData: any;
   private isLoading: boolean;
   private height: string;
+  private dataUser: any;
 
-  constructor(private getFreeApi: GetFreeApiService) { }
+  constructor(private getFreeApi: GetFreeApiService) {
+
+    let token = JSON.parse(localStorage.getItem('currentUser'));
+    this.dataUser = jwt_decode(token.token);
+  }
 
   ngOnInit() {
     this.isLoading = true;
-    this.getTeacherSchedule('2019-2020', 'Group 1', 'Semester 1', 'CTI011');
+
+    this.getTeacherSchedule('2019-2020', 'Group 1', 'Semester 1', this.dataUser.username);
     this.classData = null;
   }
 
@@ -81,11 +88,14 @@ export class PersonalComponent implements OnInit {
    */
 
   getTeacherSchedule(year, group, semester, id) {
+
     this.getFreeApi.getTeacherSchedule(year, group, semester, id).subscribe(result => {
       this.isLoading = false;
-      // this.schedule = this.transformTeacherScheduleData(result.data);
+      console.log(result.data);
+
+      this.schedule = this.transformTeacherScheduleData(result.data);
       // Fake Data
-      this.schedule = ELEMENT_DATA;
+      // this.schedule = ELEMENT_DATA;
     }, error => {
       console.log(error);
     })
@@ -171,13 +181,28 @@ export class PersonalComponent implements OnInit {
     return '#' + ('000000' + color).slice(-6);
   }
 
-  randomColor() {
-    let color = Math.floor(Math.random() * 3) + 1;
-    switch (color) {
-      case 1: return 'primary';
-      case 2: return 'accent';
-      case 3: return 'warn';
+  randomColor(name) {
+    console.log(name);
+
+    if ( name.indexOf('_LT') != -1 ) {
+      return 'primary';
     }
+    else if (name.indexOf('_TH') != -1 ) {
+      return 'warn';
+    }
+    else if (name.indexOf('_BT') != -1 ) {
+      return 'accent';
+    }
+    else {
+      return 'primary';
+    }
+
+    // let color = Math.floor(Math.random() * 3) + 1;
+    // switch (color) {
+    //   case 1: return 'primary';
+    //   case 2: return 'accent';
+    //   case 3: return 'warn';
+    // }
   }
 
 }

@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8 pos-relative w-80 mg-rl-auto">
+<div class="mat-elevation-z8 pos-relative w-100 mg-rl-auto">
   <div class="background-loading" *ngIf="isLoading">
     <div class="lds-ellipsis position-loading">
       <div></div>
@@ -26,8 +26,10 @@
             [attr.rowspan]="haveData(indexRow, indexCol) ? getShiftTotal(indexRow, indexCol) : 1"
             style="padding: 10px !important; height: inherit;">
             <div *ngIf="haveData(indexRow, indexCol)" style="height: 100%">
-                <button mat-flat-button [color]="randomColor()" style="width: 100% !important; height: 100%;">
+                <button mat-flat-button [color]="randomColor(classData.name)" style="width: 100% !important; height: 100%;">
                   {{classData.name}}
+                  <br>
+                  {{classData.room}}
                 </button>
             </div>
           </td>

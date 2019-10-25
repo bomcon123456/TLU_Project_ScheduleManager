@@ -160,13 +160,28 @@ export class SchoolComponent implements OnInit {
     }
   }
 
-  randomColor() {
-    let color = Math.floor(Math.random() * 3) + 1;
-    switch (color) {
-      case 1: return 'primary';
-      case 2: return 'accent';
-      case 3: return 'warn';
+  randomColor(name) {
+    console.log(name);
+
+    if (name.indexOf('_LT') != -1) {
+      return 'primary';
     }
+    else if (name.indexOf('_TH') != -1) {
+      return 'warn';
+    }
+    else if (name.indexOf('_BT') != -1) {
+      return 'accent';
+    }
+    else {
+      return 'primary';
+    }
+
+    // let color = Math.floor(Math.random() * 3) + 1;
+    // switch (color) {
+    //   case 1: return 'primary';
+    //   case 2: return 'accent';
+    //   case 3: return 'warn';
+    // }
   }
 
 }
