@@ -9,5 +9,7 @@ router.get("/free-shifts", Controller.getFreeShifts);
 router.get("/free-days", Controller.getFreeDays);
 router.get("/check-is-offer", Controller.isOpenForOffer);
 router.get("/teacher-schedule", Controller.getTeacherSchedule);
+router.get("/department-schedule", Controller.getDepartmentSchedule);
+router.get("/get-schedule", Controller.getSchedule);
 
 module.exports = router;
