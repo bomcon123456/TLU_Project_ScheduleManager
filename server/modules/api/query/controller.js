@@ -287,6 +287,8 @@ const getSchedule = (req, res, next) => {
     "date.year": year,
     verified: true
   })
+    .populate("courseId", "name")
+    .populate("roomId", "name")
     .populate("teacherId", "name")
     .then(data => {
       if (!data) {
@@ -296,7 +298,7 @@ const getSchedule = (req, res, next) => {
       }
       res.status(200).json({
         message: "fetch_schedule_successfully",
-        data: newData
+        data: data
       });
     })
     .catch(err => next(err));
