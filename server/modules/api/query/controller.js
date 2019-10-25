@@ -247,9 +247,27 @@ const getDepartmentSchedule = (req, res, next) => {
       $project: {
         name: 1,
         shift: "$date.shift",
-        day: "$date.day"
+        day: "$date.day",
+        teacherId: 1
       }
-    }
+    },
+    {
+      $lookup: {
+        from: "teachers",
+        localField: "teacherId",
+        foreignField: "_id",
+        as: "teacher"
+      }
+    },
+    {
+      $project: {
+        name: 1,
+        shift: 1,
+        day: 1,
+        teacher: "$teacher.name"
+      }
+    },
+    { $unwind: "$teacher" }
   ])
     .then(data => {
       res.status(200).json({
@@ -269,6 +287,7 @@ const getSchedule = (req, res, next) => {
     "date.year": year,
     verified: true
   })
+    .populate("teacherId", "name")
     .then(data => {
       if (!data) {
         let error = new Error("Cant find schedule");
@@ -277,7 +296,7 @@ const getSchedule = (req, res, next) => {
       }
       res.status(200).json({
         message: "fetch_schedule_successfully",
-        data: data
+        data: newData
       });
     })
     .catch(err => next(err));
