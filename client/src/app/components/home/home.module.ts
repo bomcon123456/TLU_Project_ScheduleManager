@@ -30,6 +30,9 @@ import { ClassroomVerifiedComponent } from './categories/schedule-management/cla
 import { ClassroomNotVerifiedComponent } from './categories/schedule-management/classroom-not-verified/classroom-not-verified.component';
 import { CalendarManagementComponent } from './categories/calendar-management/calendar-management.component';
 import { CalendarDialogComponent } from './categories/calendar-management/calendar-dialog/calendar-dialog.component';
+import { PersonalComponent } from './categories/schedule/personal/personal.component';
+import { DepartmentComponent } from './categories/schedule/department/department.component';
+import { SchoolComponent } from './categories/schedule/school/school.component';
 
 
 @NgModule({
@@ -63,7 +66,10 @@ import { CalendarDialogComponent } from './categories/calendar-management/calend
     ClassroomVerifiedComponent,
     ClassroomNotVerifiedComponent,
     CalendarManagementComponent,
-    CalendarDialogComponent
+    CalendarDialogComponent,
+    PersonalComponent,
+    DepartmentComponent,
+    SchoolComponent
   ],
   entryComponents: [
     RoomDialogComponent,

@@ -305,6 +305,9 @@ export class ClassroomAddComponent implements OnInit {
     else {
       this.getHoursOfWeek(this.courseSelected.length);
     }
+    if ( this.numOfClass == 1) {
+      this.isLastClass = true;
+    }
     this.getClassroomsData();
   }
 
@@ -940,6 +943,8 @@ export class ClassroomAddComponent implements OnInit {
           let shift = array[i].date.shift;
           if ( !shift) {
             time = time;
+            console.log(time);
+
           }
           else {
             let indexCut = shift.indexOf('-');
@@ -1202,12 +1207,13 @@ export class ClassroomAddComponent implements OnInit {
       // ******************************************TEACHER********************************************
       // *********************************************************************************************
       case 'teacher': {
-        this.ELEMENT_DATA[index].date = {};
-        this.ELEMENT_DATA[index].room = {};
 
         if ( this.ELEMENT_DATA[index].teacher._id ) {
+          this.ELEMENT_DATA[index].date = {};
+          this.ELEMENT_DATA[index].room = {};
           this.takeTimeLeftWhenReselect(index);
         }
+
 
         this.teacherList.filter( result => {
 
@@ -1239,10 +1245,9 @@ export class ClassroomAddComponent implements OnInit {
       // *****************************************************************************************
       case 'day': {
 
-        this.ELEMENT_DATA[index].date = {};
-        this.ELEMENT_DATA[index].room = {};
-
         if ( this.ELEMENT_DATA[index].date.day ) {
+          this.ELEMENT_DATA[index].date = {};
+          this.ELEMENT_DATA[index].room = {};
           this.takeTimeLeftWhenReselect(index);
         }
 

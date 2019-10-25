@@ -1,0 +1,48 @@
+@import '../../../my-style/my-style.scss';
+
+table, td, th {
+  border: 1px solid rgba(0,0,0,.12);
+}
+
+td {
+  padding: unset !important;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.custom-col-7 {
+  width: calc(96% / 7);
+  height: 50px;
+  color: rgba(0,0,0,.54);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  background-color: #fce4ec;
+}
+
+.custom-td {
+  color: rgba(0,0,0,.87);
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  text-align: center;
+  background-color: #fce4ec;
+}
+
+.row-height {
+  height: 25px !important;
+}
+
+.w-80 {
+  width: 80%;
+}
+
+.mg-rl-auto {
+  margin: 70px auto;
+}

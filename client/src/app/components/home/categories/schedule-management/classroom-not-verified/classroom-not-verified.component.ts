@@ -194,4 +194,16 @@ export class ClassroomNotVerifiedComponent implements OnInit {
     return newData;
   }
 
+  transformToVn(data) {
+    switch (data) {
+      case 'Monday': return 'Thứ Hai';
+      case 'Tuesday': return 'Thứ Ba';
+      case 'Wednesday': return 'Thứ Tư';
+      case 'Thursday': return 'Thứ Năm';
+      case 'Friday': return 'Thứ Sáu';
+      case 'Saturday': return 'Thứ Bảy';
+      case 'Sunday': return 'Chủ Nhật';
+    }
+  }
+
 }

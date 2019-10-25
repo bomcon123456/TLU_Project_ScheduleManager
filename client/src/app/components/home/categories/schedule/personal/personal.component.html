@@ -1,0 +1,46 @@
+<div class="mat-elevation-z8 pos-relative w-80 mg-rl-auto">
+  <div class="background-loading" *ngIf="isLoading">
+    <div class="lds-ellipsis position-loading">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <table style="border-collapse: collapse; ">
+    <thead>
+      <th style="width: 4%; height: 50px"></th>
+      <th class="custom-col-7">Thứ 2</th>
+      <th class="custom-col-7">Thứ 3</th>
+      <th class="custom-col-7">Thứ 4</th>
+      <th class="custom-col-7">Thứ 5</th>
+      <th class="custom-col-7">Thứ 6</th>
+      <th class="custom-col-7">Thứ 7</th>
+      <th class="custom-col-7">Chủ nhật</th>
+    </thead>
+    <tbody *ngIf="schedule; else default">
+      <tr *ngFor="let shift of schedule; let indexRow = index" class="row-height">
+        <td class="custom-td">{{printShift(shift.shift)}}</td>
+        <ng-container *ngFor="let td of emptyArray(7); let indexCol = index">
+          <td *ngIf="notHaveAnotherData(indexRow, indexCol, shift.shift)"
+            [attr.rowspan]="haveData(indexRow, indexCol) ? getShiftTotal(indexRow, indexCol) : 1"
+            style="padding: 10px !important; height: inherit;">
+            <div *ngIf="haveData(indexRow, indexCol)" style="height: 100%">
+                <button mat-flat-button [color]="randomColor()" style="width: 100% !important; height: 100%;">
+                  {{classData.name}}
+                </button>
+            </div>
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+    <ng-template #default>
+      <tbody>
+        <tr *ngFor="let row of emptyArray(13); let i = index" class="row-height">
+          <td style="font-weight: bold; text-align: center;">{{i+1}}</td>
+          <td *ngFor="let col of emptyArray(7)"></td>
+        </tr>
+      </tbody>
+    </ng-template>
+  </table>
+</div>

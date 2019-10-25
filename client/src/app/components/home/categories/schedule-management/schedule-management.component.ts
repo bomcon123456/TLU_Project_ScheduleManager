@@ -165,6 +165,9 @@ export class ScheduleManagementComponent implements OnInit {
         },
         department: this.departmentSelected._id,
       }
+      // this.isFirstTime = true;
+      this.isVerifiedLoading = true;
+      this.isNotVerifiedLoading = true;
       this.getVerifiedClassroomsData(this.pageSizeVerified, this.pageIndexVerified, {...this.filter, verified: true});
       this.getNotVerifiedClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, {...this.filter, verified: false});
       // this.setVerifiedTable();
@@ -234,13 +237,10 @@ export class ScheduleManagementComponent implements OnInit {
     this.classroomApi.getClassrooms(pageSize, pageIndex, filter).subscribe(result => {
 
       this.ELEMENT_DATA_NOT_VERIFIED = result.data;
-      console.log(result.data);
       this.dataLengthNotVerified = this.totalNotVerified = result.size;
       this.dataSourceNotVerified = new MatTableDataSource(this.ELEMENT_DATA_NOT_VERIFIED)
       this.setNotVerifiedTable();
       this.indexNotVerified = pageSize * (pageIndex - 1);
-      console.log(this.indexNotVerified);
-
       this.isNotVerifiedLoading = false;
 
       if (this.isFirstTime) {

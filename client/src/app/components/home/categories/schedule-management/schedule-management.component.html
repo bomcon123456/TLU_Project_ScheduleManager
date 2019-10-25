@@ -1,5 +1,5 @@
 <p class="title-style">Quản lý thời khóa biểu</p>
-<div [ngStyle]="{'display': !isLoading ? 'block' : 'none'}">
+<div [ngStyle]="{'display': !isFirstTime ? 'block' : 'none'}">
   <div class="container-header">
     <div class="select-action" style="max-width: 800px">
 
@@ -15,14 +15,6 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-
-      <!-- <mat-form-field style="margin: 0 20px">
-        <mat-label>Bộ môn</mat-label>
-        <mat-select [(value)]="departmentSelected" (selectionChange)="getData()">
-          <mat-option>None</mat-option>
-          <mat-option *ngFor="let item of semesters" [value]="item">{{item.value}}</mat-option>
-        </mat-select>
-      </mat-form-field> -->
 
       <mat-form-field class="mg-rl-20px">
         <mat-label>Học kỳ</mat-label>
@@ -52,7 +44,15 @@
         </mat-card-subtitle>
       </mat-card-header>
       <!-- <mat-card-content> -->
-        <div class="mat-elevation-z8" style="box-shadow: unset !important;">
+        <div class="mat-elevation-z8 pos-relative" style="box-shadow: unset !important;">
+          <div class="background-loading" *ngIf="isNotVerifiedLoading">
+            <div class="lds-ellipsis position-loading">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
           <table mat-table matSort [dataSource]="dataSourceNotVerified">
 
             <!-- Position Column -->
@@ -131,7 +131,15 @@
         </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <div class="mat-elevation-z8" style="box-shadow: unset !important;">
+        <div class="mat-elevation-z8 pos-relative" style="box-shadow: unset !important;">
+          <div class="background-loading" *ngIf="isVerifiedLoading">
+            <div class="lds-ellipsis position-loading">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
           <table mat-table matSort [dataSource]="dataSourceVerified">
 
             <!-- Position Column -->
@@ -188,7 +196,7 @@
     </mat-card>
   </mat-card>
 </div>
-<div [ngStyle]="{'display': isLoading? 'block' : 'none'}" class="spinner-loading">
+<div [ngStyle]="{'display': isFirstTime? 'block' : 'none'}" class="spinner-loading">
   <div class="lds-facebook">
     <div></div>
     <div></div>

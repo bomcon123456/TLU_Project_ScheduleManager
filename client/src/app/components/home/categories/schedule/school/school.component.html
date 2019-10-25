@@ -1,0 +1,72 @@
+<div class="container-header" style="margin-top: 50px;">
+  <div class="select-action" style="max-width: 800px">
+
+    <!-- <mat-form-field style="margin: 0 20px">
+      <mat-label>Bộ môn</mat-label>
+      <mat-select [(value)]="departmentSelected">
+        <mat-option>
+          <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl" [searching]="searching" placeholderLabel=''>
+          </ngx-mat-select-search>
+        </mat-option>
+        <mat-option *ngFor="let department of filteredServerSide | async" [value]="department">
+          {{department.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> -->
+
+    <mat-form-field class="mg-rl-20px">
+      <mat-label>Học kỳ</mat-label>
+      <mat-select [(value)]="semesterSelected" (selectionChange)="getData()">
+        <mat-option *ngFor="let item of semesters" [value]="item">{{item.value}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="mg-rl-20px">
+      <mat-label>Năm học</mat-label>
+      <mat-select [(value)]="yearSelected" (selectionChange)="getData()">
+        <mat-option *ngFor="let item of years" [value]="item">{{item}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+<div class="mat-elevation-z8 pos-relative w-80 mg-rl-auto">
+  <div class="background-loading" *ngIf="isLoading">
+    <div class="lds-ellipsis position-loading">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <table style="border-collapse: collapse; ">
+    <thead>
+      <th class="custom-col-7">Thứ 2</th>
+      <th class="custom-col-7">Thứ 3</th>
+      <th class="custom-col-7">Thứ 4</th>
+      <th class="custom-col-7">Thứ 5</th>
+      <th class="custom-col-7">Thứ 6</th>
+      <th class="custom-col-7">Thứ 7</th>
+      <th class="custom-col-7">Chủ nhật</th>
+    </thead>
+    <tbody *ngIf="schedule; else default">
+      <tr>
+        <td *ngFor="let day of schedule" style="padding: 15px !important; vertical-align: top;">
+          <div *ngFor="let class of day.data" style="width: 100%; margin: 15px 0px; height: 100px;">
+            <button mat-flat-button [color]="randomColor()" style="width: 100% !important; height: 100%;">
+              {{class.name}}
+              <br>
+              Ca: {{class.date.shift}}
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+    <ng-template #default>
+      <tbody>
+        <tr class="row-height">
+          <td *ngFor="let col of emptyArray(7)"></td>
+        </tr>
+      </tbody>
+    </ng-template>
+  </table>
+</div>
