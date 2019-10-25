@@ -208,9 +208,27 @@ const getTeacherSchedule = (req, res, next) => {
       $project: {
         name: 1,
         shift: "$date.shift",
-        day: "$date.day"
+        day: "$date.day",
+        roomId: 1
       }
-    }
+    },
+    {
+      $lookup: {
+        from: "rooms",
+        localField: "roomId",
+        foreignField: "_id",
+        as: "room"
+      }
+    },
+    {
+      $project: {
+        name: 1,
+        shift: 1,
+        day: 1,
+        room: "$room.name"
+      }
+    },
+    { $unwind: "$room" }
   ])
     .then(data => {
       res.status(200).json({
@@ -248,7 +266,8 @@ const getDepartmentSchedule = (req, res, next) => {
         name: 1,
         shift: "$date.shift",
         day: "$date.day",
-        teacherId: 1
+        teacherId: 1,
+        roomId: 1
       }
     },
     {
@@ -264,10 +283,29 @@ const getDepartmentSchedule = (req, res, next) => {
         name: 1,
         shift: 1,
         day: 1,
-        teacher: "$teacher.name"
+        teacher: "$teacher.name",
+        roomId: 1
       }
     },
-    { $unwind: "$teacher" }
+    { $unwind: "$teacher" },
+    {
+      $lookup: {
+        from: "rooms",
+        localField: "roomId",
+        foreignField: "_id",
+        as: "room"
+      }
+    },
+    {
+      $project: {
+        name: 1,
+        shift: 1,
+        day: 1,
+        teacher: 1,
+        room: "$room.name"
+      }
+    },
+    { $unwind: "$room" }
   ])
     .then(data => {
       res.status(200).json({
