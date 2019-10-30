@@ -356,10 +356,10 @@ const getNumberOfClass = (req, res, next) => {
       max = -1;
       data.map(each => {
         numberedClassName = each.name.split("_")[0];
-        numberOnly = numberedClassName.replace(nameRegex, "");
+        second = numberedClassName.replace(nameRegex, "");
         subclassNumberIndex = second.lastIndexOf(".");
-        if (subclassIndex != 0) {
-          result = second.substring(1, subclassIndex);
+        if (subclassNumberIndex != 0) {
+          result = second.substring(1, subclassNumberIndex);
         } else {
           result = second.split(".")[1];
         }

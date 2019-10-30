@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Location } from '@angular/common';
 import { ReplaySubject } from 'rxjs';
 import { debounceTime, delay, tap, filter, switchMap } from 'rxjs/operators'
 import { Router } from '@angular/router';
@@ -88,6 +89,7 @@ export class ClassroomAddComponent implements OnInit {
 
   constructor(public dialog: MatDialog,
               private route: Router,
+              private location: Location,
               private departmentApi: DepartmentApiService,
               private teacherApi: TeacherApiService,
               private roomApi: RoomApiService,
@@ -274,11 +276,8 @@ export class ClassroomAddComponent implements OnInit {
     this.setToDefaultNewClass();
     this.getHoursOfWeek(this.courseSelected.length);
     if ( value ) {
-      this.countClass = 1;
       this.numOfClass = value;
-      if ( this.countClass == this.numOfClass ) {
-        this.isLastClass = true;
-      }
+      this.getNumberOfClass(genClassroomName(this.courseSelected.name), this.semesterSelected.key.group, this.semesterSelected.key.semester, this.yearSelected);
     }
     else {
       this.numOfClass = null;
@@ -475,33 +474,16 @@ export class ClassroomAddComponent implements OnInit {
     this.roomChildClass = this.roomStorage[this.countClass - 1];
     this.shiftChildClass = this.shiftStorage[this.countClass - 1];
     this.checkUnfinishedClass();
-
-    // if ( this.combinedWeek > 0 ) {
-    //   let obj = {
-    //     indexClass: this.countClass + 1,
-    //     combinedLeft: this.combinedWeek
-    //   }
-
-    //   this.unfinished.push(obj);
-    //   this.combinedWeek = 0;
-    // }
-    // else if (this.theoryWeek > 0 || this.practiceWeek > 0) {
-    //   let obj = {
-    //     indexClass: this.countClass + 1,
-    //     theoryLeft: this.theoryWeek,
-    //     practiceLeft: this.practiceWeek
-    //   }
-
-    //   this.unfinished.push(obj);
-    //   this.theoryWeek = 0;
-    //   this.practiceWeek = 0;
-    // }
     this.getClassroomsData();
   }
 
   /**
    * GET, ACTION
    */
+
+  goBack() {
+    this.location.back();
+  }
 
   getYearSelected() {
     this.yearSelected = this.storageService.yearSelected;
@@ -528,13 +510,16 @@ export class ClassroomAddComponent implements OnInit {
       return;
     }
     else {
-      if (theory % 10 == 0) {
-        this.timeTotal.theory = this.theoryWeek = theory / 10;
+      if (theory % 9 == 0) {
+        this.timeTotal.theory = this.theoryWeek = theory / 9;
+        return;
+      }
+      else if ((theory/9 - theory%9) >= 0.4) {
+        this.timeTotal.theory = this.theoryWeek = theory%9 + 1;
         return;
       }
       else {
-        this.timeTotal.theory = this.theoryWeek = theory / 9;
-        return;
+        this.timeTotal.theory = this.theoryWeek = theory%9;
       }
     }
   }
@@ -545,12 +530,16 @@ export class ClassroomAddComponent implements OnInit {
       return;
     }
     else {
-      if (practice % 10 == 0) {
-        this.timeTotal.practice = this.practiceWeek = practice / 10;
+      if (practice % 9 == 0) {
+        this.timeTotal.practice = this.practiceWeek = practice / 9;
+        return;
+      }
+      else if ((practice/9 - practice%9) >= 0.4) {
+        this.timeTotal.practice = this.practiceWeek = practice%9 + 1;
         return;
       }
       else {
-        this.timeTotal.practice = this.practiceWeek = practice / 9;
+        this.timeTotal.practice = this.practiceWeek = practice%9;
         return;
       }
     }
@@ -561,13 +550,18 @@ export class ClassroomAddComponent implements OnInit {
       this.timeTotal.combined = this.combinedWeek = combined / 9;
       return;
     }
+    else if ((combined/9 - combined%9) >= 0.4) {
+      this.timeTotal.combined = this.combinedWeek = combined%9 + 1;
+      return;
+    }
     else {
-      this.timeTotal.combined = this.combinedWeek = combined / 10;
+      this.timeTotal.combined = this.combinedWeek = combined%9;
       return;
     }
   }
 
   checkShiftValid(index, shift) {
+
     let shiftObj = this.shiftTranform(shift);
 
     // Check Shift In Parent Class
@@ -734,6 +728,23 @@ export class ClassroomAddComponent implements OnInit {
     return true;
   }
 
+  genNameIfNeedEqual(index, type) {
+
+    let originName = genClassroomName(this.courseSelected.name) + `.${this.countClass}`;
+    let number = 1;
+
+    for (let i = 0; i < this.ELEMENT_DATA.length; i++) {
+
+      if (i != index) {
+        if (this.ELEMENT_DATA[i].type == type) {
+          this.ELEMENT_DATA[i].name = originName + `.${number}` + `_${type}`;
+          number++;
+        }
+      }
+    }
+    this.ELEMENT_DATA[index].name = originName + `.${number}` + `_${type}`;
+  }
+
   addChildClass() {
 
     this.isChildDone = false;
@@ -785,21 +796,17 @@ export class ClassroomAddComponent implements OnInit {
       let index = this.ELEMENT_DATA.length-1;
       if (this.checkStudentsEqual().studentsLT < this.checkStudentsEqual().studentsTH) {
         this.ELEMENT_DATA[index].type = 'LT';
-        this.ELEMENT_DATA.filter( result => {
-          if ( result.type == 'LT' ) {
-            this.ELEMENT_DATA[index].name = result.name;
-          }
-        })
+        this.genNameIfNeedEqual(index, 'LT');
       }
       else {
         this.ELEMENT_DATA.filter( result => {
           if ( result.type == 'TH' ) {
             this.ELEMENT_DATA[index].type = 'TH';
-            this.ELEMENT_DATA[index].name = result.name;
+            this.genNameIfNeedEqual(index, 'TH');
           }
           else if ( result.type == 'BT' ) {
             this.ELEMENT_DATA[index].type = 'BT';
-            this.ELEMENT_DATA[index].name = result.name;
+            this.genNameIfNeedEqual(index, 'BT');
           }
         })
       }
@@ -845,7 +852,7 @@ export class ClassroomAddComponent implements OnInit {
     }
 
     // Regen Class Name
-    if ( !this.maxStudents ) {
+    // if ( !this.maxStudents ) {
       if ( this.isCheckedCombine ) {
         if ( this.ELEMENT_DATA.length > 1 ) {
           for (let i = 0; i < this.ELEMENT_DATA.length; i++) {
@@ -880,7 +887,7 @@ export class ClassroomAddComponent implements OnInit {
           }
         }
       }
-    }
+    // }
 
     if ( (this.ELEMENT_DATA.length == 0) || (index == this.ELEMENT_DATA.length) ) {
       this.isChildDone = true;
@@ -1089,17 +1096,7 @@ export class ClassroomAddComponent implements OnInit {
       // ******************************************************************************************
       case 'students': {
 
-        let temp = false;
-        this.ELEMENT_DATA.filter((elm, index) => {
-          this.ELEMENT_DATA.findIndex( (result, indexT) => {
-            if ( indexT != index ) {
-              if ( result.name === elm.name ) {
-                temp = true;
-              }
-            }
-          })
-        })
-        if ( this.maxStudents && temp ) {
+        if ( this.maxStudents ) {
           let total = this.maxStudents;
           this.ELEMENT_DATA.filter( result => {
             if ( this.ELEMENT_DATA[index].type == result.type ) {
@@ -1157,6 +1154,7 @@ export class ClassroomAddComponent implements OnInit {
                                     this.ELEMENT_DATA[index].teacher._id);
         }
 
+        // Change Name Child Class
         let oldType = this.ELEMENT_DATA[index].type;
         this.ELEMENT_DATA[index].type = data;
 
@@ -1269,7 +1267,7 @@ export class ClassroomAddComponent implements OnInit {
 
           this.ELEMENT_DATA.filter( (result, i) => {
             if ( index != i ) {
-              if ( this.ELEMENT_DATA[index].name == result.name ) {
+              if ( this.ELEMENT_DATA[index].type == result.type ) {
                 this.shiftEqualClass = result.date.shift;
               }
             }
@@ -1508,6 +1506,25 @@ export class ClassroomAddComponent implements OnInit {
       this.roomChildClass[index] = {
         isLoadingRoom: false,
         roomList: result.data
+      }
+    }, error => {
+      console.log(error);
+
+    })
+  }
+
+  getNumberOfClass(name, group, semester, year) {
+    this.getFreeApi.getNumberOfClass(name, group, semester, year).subscribe( result => {
+      console.log(result, name, group, semester, year);
+
+      if ( result == -1 ) {
+        this.countClass = 1;
+      }
+      else {
+        this.countClass = result + 1;
+      }
+      if (this.countClass == this.numOfClass) {
+        this.isLastClass = true;
       }
     }, error => {
       console.log(error);

@@ -54,6 +54,14 @@ export class GetFreeApiService {
       )
   }
 
+  getNumberOfClass(name: string, group: string, semester: string, year: string): Observable<any> {
+    return this.http.get(this.apiURL + 'number-of-class' + `?name=${name}&group=${group}&semester=${semester}&year=${year}`)
+      .pipe(
+        retry(1),
+        catchError(this.handleError)
+      )
+  }
+
   // Error handling
   handleError(error) {
     let errorMessage = '';

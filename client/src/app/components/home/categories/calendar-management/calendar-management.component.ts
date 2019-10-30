@@ -174,13 +174,18 @@ export class CalendarManagementComponent implements OnInit {
         return;
       }
 
-      if (this.action == 'add') {
-        this.createCalendar(result.data);
-      } else if (this.action == 'edit') {
+      if (this.action == 'edit') {
         this.updateCalendar(result.data);
-      } else if (this.action == 'delete') {
-        this.deleteCalendar(result.data);
       }
+
+      // if (this.action == 'add') {
+      //   this.createCalendar(result.data);
+      // } else if (this.action == 'edit') {
+      //   this.updateCalendar(result.data);
+      // } else if (this.action == 'delete') {
+      //   this.deleteCalendar(result.data);
+      // }
+
     });
   }
 
@@ -202,7 +207,6 @@ export class CalendarManagementComponent implements OnInit {
 
   getCalendarsData(pageSize: number, pageIndex: number) {
     this.calendarApi.getCalendars(pageSize, pageIndex).subscribe(result => {
-
       this.ELEMENT_DATA = result.data;
       this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
@@ -289,6 +293,40 @@ export class CalendarManagementComponent implements OnInit {
       case 'Semester 2': return 'Kỳ 2';
       case 'Semester 3': return 'Kỳ 3';
     }
+  }
+
+  dateFormat(time) {
+    let date = new Date(time);
+    let year = date.getFullYear();
+    let month = date.getMonth();
+    let day = date.getDay();
+    let y = year.toString();
+    let m = month.toString();
+    let d = day.toString();
+
+    if ( year <= 1990 ) {
+      return null;
+    }
+
+    if ( day < 10 ) {
+      d = '0' + d;
+    }
+
+    if ( month < 10 ) {
+      m = '0' + m;
+    }
+
+    return d + '-' + m + '-' + y;
+  }
+
+  checkDateTime(time) {
+    let date = new Date(time);
+    let year = date.getFullYear();
+
+    if ( year > 1990 ) {
+      return true;
+    }
+    return false;
   }
 
 }
