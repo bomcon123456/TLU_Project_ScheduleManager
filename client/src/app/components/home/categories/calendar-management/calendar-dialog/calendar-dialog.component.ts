@@ -22,11 +22,13 @@ function roomCapacityValidator(control: FormControl) {
 export class CalendarDialogComponent implements OnInit {
 
   private action: string;
-  private local_data: RoomElement;
-  public roomForm: FormGroup;
-  // public nameFormControl = new FormControl('', [
+  private local_data: any;
+  // public calendarForm: FormGroup;
+  // public startFormControl = new FormControl('', [
   //   Validators.required,
-  //   Validators.minLength(4),
+  // ]);
+  // public endFormControl = new FormControl('', [
+  //   Validators.required,
   // ]);
   // public capacityFormControl = new FormControl('', [
   //   Validators.required,
@@ -49,10 +51,9 @@ export class CalendarDialogComponent implements OnInit {
 
     this.local_data = {}
 
-    // if (data._id) {
-    //   this.local_data = { ...data };
-    //   this.roomTypeFormControl.setValue(this.local_data.roomType);
-    // }
+      this.local_data = { ...data };
+      // this.roomTypeFormControl.setValue(this.local_data.roomType);
+
     // else {
     //   this.local_data.action = 'add'
     // }
@@ -61,36 +62,29 @@ export class CalendarDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.roomForm = new FormGroup({
+    // this.calendarForm = new FormGroup({
     //   // _id: this.idFormControl,
-    //   name: this.nameFormControl,
-    //   capacity: this.capacityFormControl,
-    //   building: this.buildingFormControl,
-    //   floor: this.floorFormControl,
-    //   roomType: this.roomTypeFormControl
+    //   startDate: this.startFormControl,
     // });
   }
 
-  public hasError = (controlName: string, errorName: string) => {
-    return this.roomForm.controls[controlName].hasError(errorName);
-  }
-
-  getDatePicker(data) {
-    console.log(data);
+  getDatePicker(data, type) {
+    if ( type == 'start' ) {
+      this.local_data.startDate = data.toISOString();
+    }
+    else {
+      this.local_data.endDate = data.toISOString();
+    }
+    console.log(data.toISOString());
 
   }
 
   doAction() {
 
     let newData = {
-      // id: this.local_data._id,
-      // name: this.local_data.name,
-      // capacity: this.local_data.capacity,
-      // location: {
-      //   building: this.local_data.location.building,
-      //   floor: this.local_data.location.floor
-      // },
-      // roomType: this.local_data.roomType,
+      id: this.local_data._id,
+      startDate: this.local_data.startDate,
+      endDate: this.local_data.endDate,
     }
 
     this.dialogRef.close({ event: this.action, data: newData });
@@ -100,12 +94,19 @@ export class CalendarDialogComponent implements OnInit {
     this.dialogRef.close({ event: 'cancel' });
   }
 
-  onChange(event) {
-    if (event.checked == 1) {
-      this.local_data.capacity = -1;
+  transformGroup(data) {
+    switch (data) {
+      case 'Group 1': return 'Nhóm 1';
+      case 'Group 2': return 'Nhóm 2';
+      case 'Group 3': return 'Nhóm 3';
     }
-    else {
-      this.local_data.capacity = 0;
+  }
+
+  transformSemester(data) {
+    switch (data) {
+      case 'Semester 1': return 'Kỳ 1';
+      case 'Semester 2': return 'Kỳ 2';
+      case 'Semester 3': return 'Kỳ 3';
     }
   }
 

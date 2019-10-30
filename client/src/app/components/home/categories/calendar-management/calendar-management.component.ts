@@ -152,7 +152,7 @@ export class CalendarManagementComponent implements OnInit {
 
     if (this.action != 'delete') {
       this.width = '780px';
-      this.height = '275px';
+      this.height = '310px';
     }
     else {
       this.width = '460px';
@@ -176,6 +176,8 @@ export class CalendarManagementComponent implements OnInit {
 
       if (this.action == 'edit') {
         this.updateCalendar(result.data);
+        // console.log(result.data);
+
       }
 
       // if (this.action == 'add') {
@@ -207,6 +209,8 @@ export class CalendarManagementComponent implements OnInit {
 
   getCalendarsData(pageSize: number, pageIndex: number) {
     this.calendarApi.getCalendars(pageSize, pageIndex).subscribe(result => {
+      console.log(result.data);
+
       this.ELEMENT_DATA = result.data;
       this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
@@ -238,7 +242,10 @@ export class CalendarManagementComponent implements OnInit {
 
   updateCalendar(row_obj) {
 
-    let data = { name: row_obj.name };
+    let data = {
+      startDate: row_obj.startDate,
+      endDate: row_obj.endDate,
+    };
 
     this.calendarApi.updateCalendar(row_obj.id, data).subscribe(result => {
 
@@ -298,8 +305,8 @@ export class CalendarManagementComponent implements OnInit {
   dateFormat(time) {
     let date = new Date(time);
     let year = date.getFullYear();
-    let month = date.getMonth();
-    let day = date.getDay();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
     let y = year.toString();
     let m = month.toString();
     let d = day.toString();
