@@ -4,8 +4,14 @@ const getAll = (req, res, next) => {
   const page = req.query.page || 1;
   const size = parseInt(req.query.size) || 5;
   let total = -1;
+  let { filter } = req.query;
   let query = {};
-  Calendar.find()
+  if (filter) {
+    if (filter.openForOffering) {
+      query["openForOffering"] = filter.openForOffering;
+    }
+  }
+  Calendar.find(query)
     .sort({ year: 1, semesters: 1, group: 1 })
     .skip((page - 1) * size)
     .limit(size)
@@ -45,20 +51,25 @@ const get = (req, res, next) => {
     });
 };
 
-// @TODO: support file
 const post = (req, res, next) => {
-  const { group, semester, year, startDate, endDate } = req.body;
-  calendar = new calendar({
-    group: group,
-    semester: semester,
+  const { openForOffering, year, semester, group } = req.body;
+  Calendar.findOne({
     year: year,
-    startDate: startDate,
-    endDate: endDate
-  });
-  Calendar.save()
+    semesters: semester,
+    group: group
+  })
+    .then(data => {
+      if (!data) {
+        const err = new Error("fetch_calendar_failed");
+        err.statusCode = 404;
+        throw err;
+      }
+      data.openForOffering = openForOffering;
+      return data.save();
+    })
     .then(data => {
       res.status(200).json({
-        message: "create_calendar_successfully",
+        message: "update_calendar_successfully",
         id: data._id
       });
     })
