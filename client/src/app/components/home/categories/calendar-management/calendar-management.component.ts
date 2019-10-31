@@ -24,7 +24,7 @@ import { DepartmentApiService } from '../../../../services/department-api.servic
 })
 export class CalendarManagementComponent implements OnInit {
 
-  public displayedColumns: string[] = ['position', 'group', 'semesters', 'year', 'start', 'end', 'actions'];
+  public displayedColumns: string[] = ['position', 'group', 'semesters', 'year', 'start', 'end', 'openOffer', 'actions'];
   // public dataSource = new MatTableDataSource(ELEMENT_DATA);
 
   public dataSource = null;
@@ -146,6 +146,18 @@ export class CalendarManagementComponent implements OnInit {
     this.getCalendarsData(this.pageSize, this.pageIndex)
   }
 
+  getOpenOffering(index, data) {
+    // console.log(data);
+    this.ELEMENT_DATA[index].openForOffering = data;
+    let obj = {
+      id: this.ELEMENT_DATA[index]._id,
+      openForOffering: data
+    }
+    console.log(this.ELEMENT_DATA);
+
+    this.updateCalendar(obj);
+  }
+
   openDialog(action, obj): void {
 
     this.action = obj.action = action;
@@ -241,17 +253,31 @@ export class CalendarManagementComponent implements OnInit {
   }
 
   updateCalendar(row_obj) {
+    console.log(row_obj);
 
-    let data = {
-      startDate: row_obj.startDate,
-      endDate: row_obj.endDate,
-    };
+    let data;
+    if ( !row_obj.startDate ) {
+      data = {
+        openForOffering: row_obj.openForOffering
+      }
+      console.log(row_obj);
+
+    }
+    else {
+      data = {
+        startDate: row_obj.startDate,
+        endDate: row_obj.endDate,
+      };
+      console.log(row_obj);
+
+    }
 
     this.calendarApi.updateCalendar(row_obj.id, data).subscribe(result => {
-
-      this.isLoading = true;
-      this.paginator.pageIndex = 0;
-      this.getCalendarsData(this.pageSize, this.pageIndex);
+      if ( row_obj.startDate ) {
+        this.isLoading = true;
+        this.paginator.pageIndex = 0;
+        this.getCalendarsData(this.pageSize, this.pageIndex);
+      }
       this.toastr.success(result.message);
     }, error => {
       this.toastr.error(error.message);

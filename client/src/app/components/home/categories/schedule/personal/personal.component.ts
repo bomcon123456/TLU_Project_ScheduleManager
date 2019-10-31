@@ -1,6 +1,12 @@
+import { TeacherElement } from './../../../interface/dialog-data';
+import { YEARS, SEMESTERS } from './../../../storage/data-storage';
+import { FormControl } from '@angular/forms';
+import { ReplaySubject } from 'rxjs';
 import { Component, OnInit, enableProdMode } from '@angular/core';
 import { GetFreeApiService } from '../../../../../services/get-free-api.service';
+import { TeacherApiService } from './../../../../../services/teacher-api.service';
 import * as jwt_decode from 'jwt-decode';
+import { tap, debounceTime, switchMap, filter } from 'rxjs/operators';
 
 enableProdMode();
 
@@ -11,29 +17,98 @@ enableProdMode();
 })
 export class PersonalComponent implements OnInit {
 
+  private teacherList: TeacherElement[];
+  private years = YEARS;
+  private semesters = SEMESTERS;
   private schedule: any;
-  private fakeData = ELEMENT_DATA;
   private classData: any;
   private isLoading: boolean;
   private height: string;
   private dataUser: any;
+  private searching: boolean;
+  private teacherSelected: string;
+  private semesterSelected: any;
+  private yearSelected: string;
+  private isTeacherFisrtTime: boolean;
 
-  constructor(private getFreeApi: GetFreeApiService) {
+  public ServerSideFilteringCtrl: FormControl = new FormControl();
+
+  constructor(private getFreeApi: GetFreeApiService,
+              private teacherApi: TeacherApiService) {
 
     let token = JSON.parse(localStorage.getItem('currentUser'));
     this.dataUser = jwt_decode(token.token);
   }
 
   ngOnInit() {
-    this.isLoading = true;
+    this.isLoading = false;
+    this.searching = false;
+    this.isTeacherFisrtTime = true;
 
-    this.getTeacherSchedule('2019-2020', 'Group 1', 'Semester 1', this.dataUser.username);
+    if ( this.dataUser.role != 0 ) {
+      if ( this.dataUser.department ) {
+        let filter = {
+          department: this.dataUser.department
+        }
+        this.getTeacherByDepartmentId(10, 1, filter);
+      }
+      else {
+        this.getTeacherByDepartmentId(10, 1);
+      }
+    }
+
+    this.ServerSideFilteringCtrl.valueChanges
+      .pipe(
+        filter(search => !!search),
+        tap(() => this.searching = true),
+        debounceTime(1000),
+        switchMap(async search => {
+          let filter;
+          if ( this.dataUser.department ) {
+            filter = {
+              department: this.dataUser.department,
+              name: search
+            }
+          }
+          else {
+            filter = {
+              name: search
+            }
+          }
+          let res = await this.getTeacherByDepartmentId(10, 1, filter);
+          return res;
+        }),
+        // delay(500)
+      )
+      .subscribe(filtered => {
+        this.searching = false;
+      }, error => {
+        this.searching = false;
+        console.log(error);
+
+      });
     this.classData = null;
   }
 
-  ngAfterViewInit() {
-
-    // this.cdRef.detectChanges();
+  getData() {
+    if (this.yearSelected && this.semesterSelected) {
+      if (this.dataUser.role == 0) {
+        this.isLoading = true;
+        this.getTeacherSchedule(this.yearSelected,
+                                this.semesterSelected.key.group,
+                                this.semesterSelected.key.semester,
+                                this.dataUser.username);
+      }
+      else {
+        if ( this.teacherSelected ) {
+          this.isLoading = true;
+          this.getTeacherSchedule(this.yearSelected,
+                                  this.semesterSelected.key.group,
+                                  this.semesterSelected.key.semester,
+                                  this.teacherSelected);
+        }
+      }
+    }
   }
 
   printTdNull(data: any, indexRow: number, currentShift: number): any[] {
@@ -98,6 +173,24 @@ export class PersonalComponent implements OnInit {
       // this.schedule = ELEMENT_DATA;
     }, error => {
       console.log(error);
+    })
+  }
+
+  getTeacherByDepartmentId(pageSize: number, pageIndex: number, filter?: any) {
+
+    return new Promise((resolve, reject) => {
+      this.teacherApi.getTeachers(pageSize, pageIndex, filter).subscribe(result => {
+
+        if (this.isTeacherFisrtTime) {
+          this.isTeacherFisrtTime = false;
+          // this.filteredTeachers.next(result.data);
+          this.teacherList = result.data;
+        }
+        this.teacherList = result.data;
+        resolve(result.data);
+      }, error => {
+        reject(error);
+      })
     })
   }
 
@@ -176,11 +269,6 @@ export class PersonalComponent implements OnInit {
     return height;
   }
 
-  getRandomColor() {
-    var color = Math.floor(0x1000000 * Math.random()).toString(16);
-    return '#' + ('000000' + color).slice(-6);
-  }
-
   randomColor(name) {
     console.log(name);
 
@@ -206,133 +294,3 @@ export class PersonalComponent implements OnInit {
   }
 
 }
-
-const ELEMENT_DATA: any[] = [
-  {
-    shift: 1,
-    data:
-      [
-        {
-          day: 2, class: {
-            name: 'Test 1',
-            shift: '1-2',
-            day: 'Monday'
-          }
-        },
-        {
-          day: 4, class: {
-            name: 'Test 2',
-            shift: '1-3',
-            day: 'Wednesday'
-          }
-        },
-        {
-          day: 5, class: {
-            name: 'Test 3',
-            shift: '1-4',
-            day: 'Thursday'
-          }
-        },
-        {
-          day: 7, class: {
-            name: 'Test 4',
-            shift: '1-2',
-            day: 'Saturday'
-          }
-        }
-      ]
-  },
-  {
-    shift: 2,
-    data:
-      [
-        {
-          day: 3, class: {
-            name: 'Test 5',
-            shift: '2-3',
-            day: 'Tuesday'
-          }
-        },
-        {
-          day: 6, class: {
-            name: 'Test 6',
-            shift: '2-4',
-            day: 'Friday'
-          }
-        },
-      ]
-  },
-  {
-    shift: 3,
-    data: []
-  },
-  {
-    shift: 4,
-    data: []
-  },
-  {
-    shift: 5,
-    data: []
-  },
-  {
-    shift: 6,
-    data: [
-      {
-        day: 2, class: {
-          name: 'Test 7',
-          shift: '6-8',
-          day: 'Monday'
-        }
-      },
-      {
-        day: 3, class: {
-          name: 'Test 8',
-          shift: '6-8',
-          day: 'Tuesday'
-        }
-      },
-      {
-        day: 6, class: {
-          name: 'Test 9',
-          shift: '6-9',
-          day: 'Friday'
-        }
-      },
-      {
-        day: 7, class: {
-          name: 'Test 10',
-          shift: '6-7',
-          day: 'Saturday'
-        }
-      },
-    ]
-  },
-  {
-    shift: 7,
-    data: []
-  },
-  {
-    shift: 8,
-    data: []
-  },
-  {
-    shift: 9,
-    data: []
-  },
-  {
-    shift: 10,
-    data: []
-  },
-  {
-    shift: 11,
-    data: []
-  },
-  {
-    shift: 12,
-    data: []
-  },
-  {
-    shift: 13,
-    data: []
-  }
-]

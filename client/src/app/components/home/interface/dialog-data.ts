@@ -82,9 +82,11 @@ export interface ClassroomElement {
 }
 
 export interface CalendarElement {
+  _id?: string;
   group?: string;
   semesters?: string;
   year?: string;
   startDate?: string;
   endDate?: string;
+  openForOffering?: boolean;
 }

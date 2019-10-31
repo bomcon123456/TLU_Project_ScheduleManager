@@ -1,3 +1,47 @@
+<div class="container-header" style="margin-top: 50px;">
+  <div class="select-action" style="max-width: 800px">
+
+    <!-- <mat-form-field style="margin: 0 20px" *ngIf="!dataUser.department || dataUser.role == 0">
+      <mat-label>Bộ môn</mat-label>
+      <mat-select [(value)]="departmentSelected" (selectionChange)="getData()">
+        <mat-option>
+          <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl" [searching]="searching" placeholderLabel=''>
+          </ngx-mat-select-search>
+        </mat-option>
+        <mat-option *ngFor="let department of filteredServerSide | async" [value]="department._id">
+          {{department.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> -->
+
+    <mat-form-field class="mg-rl-20px" *ngIf="dataUser.role != 0">
+      <mat-label>Giáo viên</mat-label>
+      <mat-select [(value)]="teacherSelected" (selectionChange)="getData()">
+        <mat-option>
+          <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl" [searching]="searching" placeholderLabel=''>
+          </ngx-mat-select-search>
+        </mat-option>
+        <mat-option *ngFor="let teacher of teacherList" [value]="teacher._id">
+          {{teacher.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="mg-rl-20px">
+      <mat-label>Học kỳ</mat-label>
+      <mat-select [(value)]="semesterSelected" (selectionChange)="getData()">
+        <mat-option *ngFor="let item of semesters" [value]="item">{{item.value}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="mg-rl-20px">
+      <mat-label>Năm học</mat-label>
+      <mat-select [(value)]="yearSelected" (selectionChange)="getData()">
+        <mat-option *ngFor="let item of years" [value]="item">{{item}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
 <div class="mat-elevation-z8 pos-relative w-100 mg-rl-auto">
   <div class="background-loading" *ngIf="isLoading">
     <div class="lds-ellipsis position-loading">
@@ -39,8 +83,8 @@
     <ng-template #default>
       <tbody>
         <tr *ngFor="let row of emptyArray(13); let i = index" class="row-height">
-          <td style="font-weight: bold; text-align: center;">{{i+1}}</td>
-          <td *ngFor="let col of emptyArray(7)"></td>
+          <td class="custom-td">{{i+1}}</td>
+          <td *ngFor="let col of emptyArray(7)" style="padding: 10px !important; height: inherit;"></td>
         </tr>
       </tbody>
     </ng-template>

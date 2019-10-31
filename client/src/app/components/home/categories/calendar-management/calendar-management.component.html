@@ -4,7 +4,7 @@
     <mat-form-field class="search">
       <input matInput (keyup)="applySearch($event.target.value)" placeholder="Search">
     </mat-form-field>
-    <div class="action-button">
+    <!-- <div class="action-button">
 
       <button mat-raised-button matTooltip="Lọc" [matMenuTriggerFor]="menu" color="primary" class="button">
         <mat-icon>filter_list</mat-icon>
@@ -50,7 +50,7 @@
       <button mat-raised-button (click)="openDialog('add',{})" color="primary" class="button">
         Thêm
       </button>
-    </div>
+    </div> -->
   </div>
 
   <div class="mat-elevation-z8 pos-relative">
@@ -99,6 +99,17 @@
         <td mat-cell *matCellDef="let element"> {{dateFormat(element.endDate)}} </td>
       </ng-container>
 
+      <ng-container matColumnDef="openOffer">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tình trạng mở lớp </th>
+        <td mat-cell *matCellDef="let element; let i = index" style="width: 12%;">
+          <mat-slide-toggle class="example-margin" [color]="warn"
+                            [checked]="element.openForOffering"
+                            (change)="getOpenOffering(i, $event.checked)"
+                            [matTooltip]="element.openForOffering ? 'Đang được mở lớp' : 'Chưa được mở lớp'"
+                            matTooltipPosition="after">
+          </mat-slide-toggle>
+        </td>
+      </ng-container>
 
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
@@ -106,9 +117,9 @@
           <button mat-button matTooltip="Chỉnh sửa" class="actions-icon" (click)="openDialog('edit', element)">
             <mat-icon class="edit-icon">edit</mat-icon>
           </button>
-          <button mat-button matTooltip="Xóa" class="actions-icon" (click)="openDialog('delete', element)">
+          <!-- <button mat-button matTooltip="Xóa" class="actions-icon" (click)="openDialog('delete', element)">
             <mat-icon class="delete-icon">delete</mat-icon>
-          </button>
+          </button> -->
         </td>
       </ng-container>
 

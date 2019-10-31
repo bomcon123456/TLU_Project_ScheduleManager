@@ -9,7 +9,7 @@
       <div mat-dialog-content *ngIf="action != 'delete'; else elseTemplate" style="overflow: unset">
         <div class="example-container">
 
-          {{transformSemester(local_data.semesters)}} {{transformGroup(local_data.group)}} Năm {{local_data.year}}
+          <mat-label style="font-size: 16px; font-weight: 500;">{{transformSemester(local_data.semesters)}} {{transformGroup(local_data.group)}} Năm {{local_data.year}}</mat-label>
           <br>
           <br>
           <mat-form-field color="accent">

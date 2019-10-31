@@ -65,6 +65,8 @@ export class CalendarApiService {
 
   // HttpClient API put() method => Update teacher
   updateCalendar(id, calendar): Observable<any> {
+    console.log(calendar);
+
     return this.http.put(this.apiURL + '/' + id, JSON.stringify(calendar), this.httpOptions)
       .pipe(
         retry(1),
