@@ -39,6 +39,7 @@ export class ClassroomManagementComponent implements OnInit {
 
   private isLoading: boolean;
   private isFirstTime: boolean;
+  private isOpenForOffering: boolean;
 
   private action: string;
   private width: string;
@@ -164,6 +165,7 @@ export class ClassroomManagementComponent implements OnInit {
       }
 
       this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
+      this.getCalendar(this.filter);
     }
   }
 
@@ -258,6 +260,18 @@ export class ClassroomManagementComponent implements OnInit {
     })
   }
 
+  getCalendar(filter) {
+
+    this.calendarApi.getCalendars(1, 1, this.filterCalendar(filter)).subscribe( result => {
+      console.log(result.data);
+
+      this.isOpenForOffering = result.data[0].openForOffering;
+
+    }, error => {
+      console.log(error);
+    })
+  }
+
   /**
    * TRANSFORM DATA
    */
@@ -276,6 +290,14 @@ export class ClassroomManagementComponent implements OnInit {
       }
     }
     return newData;
+  }
+
+  filterCalendar(filter) {
+    return {
+      year: filter.date.year,
+      group: filter.date.group,
+      semesters: filter.date.semesters
+    }
   }
 
   getFullText(data) {

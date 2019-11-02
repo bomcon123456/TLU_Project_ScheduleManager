@@ -30,14 +30,16 @@ export class CalendarApiService {
   // HttpClient API get() method => Fetch teacher list
   getCalendars(pageSize?: number, pageIndex?: number, filter?: any): Observable<any> {
 
-    // const options = filter ? { params: new HttpParams().set('filter', JSON.stringify(filter)) } : {};
+    const options = filter ? { params: new HttpParams().set('filter', JSON.stringify(filter)) } : {};
     if (!pageIndex) {
       pageIndex = 1;
     }
     if (!pageSize) {
       pageSize = 5;
     }
-    return this.http.get(this.apiURL + `?size=${pageSize}&page=${pageIndex}`) // this.apiURL+ '?page=23'
+    console.log(filter);
+
+    return this.http.get(this.apiURL + `?size=${pageSize}&page=${pageIndex}`, options) // this.apiURL+ '?page=23'
       .pipe(
         retry(1),
         catchError(this.handleError)

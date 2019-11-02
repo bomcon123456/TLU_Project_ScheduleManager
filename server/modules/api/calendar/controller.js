@@ -7,6 +7,7 @@ const getAll = (req, res, next) => {
   let { filter } = req.query;
   let query = {};
   if (filter) {
+    filter = JSON.parse(filter);
     if (filter.openForOffering) {
       query["openForOffering"] = filter.openForOffering;
     }
