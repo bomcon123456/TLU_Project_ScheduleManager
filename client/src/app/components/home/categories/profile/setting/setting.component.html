@@ -1,0 +1,59 @@
+<form [formGroup]="settingForm" autocomplete="off">
+  <div class="container">
+    <mat-card style="width: inherit;">
+      <mat-card-subtitle style="font-size: 20px; font-weight: 500;">
+        Thông tin người dùng
+      </mat-card-subtitle>
+      <mat-form-field style="width: 100%;">
+        <input matInput placeholder="Họ và tên"
+              [formControl]="nameControl" required>
+        <mat-error *ngIf="hasError('name', 'required')">Họ và tên không được để trống.</mat-error>
+      </mat-form-field>
+      <mat-form-field style="width: 100%;">
+        <input matInput [matDatepicker]="birthday"
+              placeholder="Ngày sinh" (click)="birthday.open()"
+              [formControl]="birthdayControl">
+        <mat-datepicker-toggle matSuffix [for]="birthday"></mat-datepicker-toggle>
+        <mat-datepicker #birthday></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field style="width: 100%;">
+        <mat-label>Giới tính</mat-label>
+        <mat-select [formControl]="genderControl">
+          <mat-option value="male">Nam</mat-option>
+          <mat-option value="female">Nữ</mat-option>
+          <mat-option value="unspecified">Không xác định</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-card>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="container">
+    <mat-card style="width: inherit;">
+      <mat-card-subtitle style="font-size: 20px; font-weight: 500;">
+        Thông tin liên hệ
+      </mat-card-subtitle>
+      <mat-form-field style="width: 100%;">
+        <input matInput placeholder="Email" required
+              [formControl]="emailControl">
+        <mat-error *ngIf="hasError('email', 'required')">Email không được để trống.</mat-error>
+        <mat-error *ngIf="hasError('email', 'email')">Email không đúng định dạng.</mat-error>
+      </mat-form-field>
+    </mat-card>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="container">
+    <mat-card style="width: inherit;">
+      <mat-card-subtitle style="font-size: 20px; font-weight: 500;">
+        Về bản thân
+      </mat-card-subtitle>
+      <mat-form-field style="width: 100%;">
+        <textarea matInput placeholder="Mô tả"
+                  [formControl]="descriptionControl"></textarea>
+      </mat-form-field>
+    </mat-card>
+  </div>
+  <button mat-raised-button color="primary"
+          style="float: right; margin: 10px;"
+          [disabled]="settingForm.invalid"
+          (click)="updateProfile()">Cập nhật</button>
+</form>

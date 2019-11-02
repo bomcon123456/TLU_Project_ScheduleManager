@@ -33,6 +33,10 @@ import { CalendarDialogComponent } from './categories/calendar-management/calend
 import { PersonalComponent } from './categories/schedule/personal/personal.component';
 import { DepartmentComponent } from './categories/schedule/department/department.component';
 import { SchoolComponent } from './categories/schedule/school/school.component';
+import { ProfileComponent } from './categories/profile/profile.component';
+import { OverviewComponent } from './categories/profile/overview/overview.component';
+import { SettingComponent } from './categories/profile/setting/setting.component';
+import { PasswordComponent } from './categories/profile/password/password.component';
 
 
 @NgModule({
@@ -69,7 +73,11 @@ import { SchoolComponent } from './categories/schedule/school/school.component';
     CalendarDialogComponent,
     PersonalComponent,
     DepartmentComponent,
-    SchoolComponent
+    SchoolComponent,
+    ProfileComponent,
+    OverviewComponent,
+    SettingComponent,
+    PasswordComponent
   ],
   entryComponents: [
     RoomDialogComponent,

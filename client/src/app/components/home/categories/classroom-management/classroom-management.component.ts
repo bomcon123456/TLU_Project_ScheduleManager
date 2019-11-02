@@ -11,6 +11,7 @@ import { ClassroomDialogComponent } from './classroom-dialog/classroom-dialog.co
 import { ClassroomElement } from '../../interface/dialog-data';
 import { RoomApiService } from './../../../../services/room-api.service';
 import { ClassroomApiService } from './../../../../services/classroom-api.service'
+import { CalendarApiService } from './../../../../services/calendar-api.service';
 import { StorageService } from '../../storage/storage.service';
 import { SEMESTERS, YEARS } from '../../storage/data-storage';
 
@@ -58,6 +59,7 @@ export class ClassroomManagementComponent implements OnInit {
               private classroomApi: ClassroomApiService,
               private toastr: ToastrService,
               private storageService: StorageService,
+              private calendarApi: CalendarApiService,
               private route: Router) {
 
     let token = JSON.parse(localStorage.getItem('currentUser'));

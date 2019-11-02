@@ -4,9 +4,9 @@
 
   <div class="user-menu">
     <button mat-button [matMenuTriggerFor]="menu" class="user-button">
-      <label style="margin: 10px">Thang Long University</label>
+      <label style="margin: 10px">{{getFullNameUser}}</label>
       <img class="jim"
-        src="https://a57.foxnews.com/media2.foxnews.com/BrightCove/694940094001/2018/06/21/931/524/694940094001_5800293009001_5800284148001-vs.jpg?ve=1&tl=1"
+        src="{{avatarUser}}"
         alt="">
     </button>
     <mat-menu #menu="matMenu" yPosition="below" xPosition="before">
@@ -14,7 +14,7 @@
         <mat-icon class="item-icon">eco</mat-icon>
         <span>Something</span>
       </button>
-      <button mat-menu-item class="item-menu">
+      <button mat-menu-item class="item-menu" (click)="goToProfile()">
         <mat-icon class="item-icon">account_circle</mat-icon>
         <span>Profile</span>
       </button>

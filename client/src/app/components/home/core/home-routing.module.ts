@@ -13,6 +13,7 @@ import { ClassroomAddComponent } from '../categories/classroom-management/classr
 import { ScheduleManagementComponent } from './../categories/schedule-management/schedule-management.component';
 import { ClassroomVerifiedComponent } from './../categories/schedule-management/classroom-verified/classroom-verified.component';
 import { ClassroomNotVerifiedComponent } from './../categories/schedule-management/classroom-not-verified/classroom-not-verified.component';
+import { ProfileComponent } from './../categories/profile/profile.component';
 import { RoleGuard } from '../../_helpers/role.guard'
 
 
@@ -20,6 +21,10 @@ const routes: Routes = [
   {
     path: 'schedule',
     component: ScheduleComponent
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent
   },
   {
     path: 'course-management',

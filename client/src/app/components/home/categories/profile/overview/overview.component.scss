@@ -1,0 +1,17 @@
+.container-1 {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+
+  ::ng-deep mat-card {
+    box-shadow: unset !important;
+  }
+}
+
+.container-2 {
+  padding: 20px 0;
+
+  ::ng-deep mat-card {
+    box-shadow: unset !important;
+  }
+}
