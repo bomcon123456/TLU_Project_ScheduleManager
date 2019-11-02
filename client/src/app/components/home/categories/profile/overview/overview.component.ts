@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-overview',
@@ -7,9 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OverviewComponent implements OnInit {
 
-  constructor() { }
+  @Input() userData: any;
+
+  constructor() {
+
+  }
 
   ngOnInit() {
+    console.log(this.userData);
   }
 
 }

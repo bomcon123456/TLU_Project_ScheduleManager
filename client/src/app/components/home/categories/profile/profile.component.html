@@ -1,17 +1,17 @@
 <p class="title-style" style="margin-bottom: 30px !important;">Thông tin cá nhân</p>
 <!-- <button mat-button (click)="click()">Click</button> -->
-<div style="position: relative; display: flex; justify-content: space-between;">
+<div style="position: relative; display: flex; justify-content: space-between;" *ngIf="department">
   <div style="width: 29%; float: left;">
     <mat-card>
       <mat-card-header style="padding: 40px 20px; text-align: center; display: block;">
-        <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+        <img mat-card-image [src]="userData.avatarUrl ? userData.avatarUrl : '../../../../../assets/1_0_100_v0.jpg'"
             style="width: 150px; height: 150px; margin: unset; border-radius: 50%;">
         <div style="margin-top: 10px;">
           <mat-card-subtitle style="font-size: 20px; font-weight: 500;">
             {{getFullNameUser}}
           </mat-card-subtitle>
           <mat-card-subtitle style="font-size: 16px;">
-            Bộ môn Tin
+            {{department.name}}
           </mat-card-subtitle>
         </div>
       </mat-card-header>
@@ -19,15 +19,17 @@
       <mat-card-content>
         <div style="padding: 40px 20px;">
           <div style="padding-top: 5px;">
-            <mat-card-subtitle>
+            <mat-card-subtitle style="display: flex;">
+              <mat-icon style="font-size: 16px; height: 16px;" color="accent">email</mat-icon>
               Email
             </mat-card-subtitle>
             <mat-card-subtitle style="font-size: 16px; font-weight: 500;">
-              nguyenquan24598@gmail.com
+              {{userData.username | lowercase}}@thanglong.edu.vn
             </mat-card-subtitle>
           </div>
           <div style="padding-top: 5px;">
-            <mat-card-subtitle>
+            <mat-card-subtitle style="display: flex;">
+              <mat-icon style="font-size: 16px; height: 16px;" color="accent">smartphone</mat-icon>
               Số điện thoại
             </mat-card-subtitle>
             <mat-card-subtitle style="font-size: 16px; font-weight: 500;">
@@ -35,7 +37,8 @@
             </mat-card-subtitle>
           </div>
           <div style="padding-top: 5px;">
-            <mat-card-subtitle>
+            <mat-card-subtitle style="display: flex;">
+              <mat-icon style="font-size: 16px; height: 16px;" color="accent">room</mat-icon>
               Địa chỉ
             </mat-card-subtitle>
             <mat-card-subtitle style="font-size: 16px; font-weight: 500;">
@@ -50,10 +53,10 @@
     <mat-card>
       <mat-tab-group color="accent">
         <mat-tab label="Tổng quan">
-          <app-overview></app-overview>
+          <app-overview [userData]="userData"></app-overview>
         </mat-tab>
         <mat-tab label="Chỉnh sửa">
-          <app-setting></app-setting>
+          <app-setting [userData]="userData" (update)="updateProfile($event)"></app-setting>
         </mat-tab>
         <mat-tab label="Mật khẩu">
           <app-password></app-password>

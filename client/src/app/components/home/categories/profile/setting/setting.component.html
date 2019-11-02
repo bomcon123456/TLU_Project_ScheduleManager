@@ -6,19 +6,22 @@
       </mat-card-subtitle>
       <mat-form-field style="width: 100%;">
         <input matInput placeholder="Họ và tên"
-              [formControl]="nameControl" required>
+              [formControl]="nameControl"
+              [value]="userData.name" required>
         <mat-error *ngIf="hasError('name', 'required')">Họ và tên không được để trống.</mat-error>
       </mat-form-field>
       <mat-form-field style="width: 100%;">
         <input matInput [matDatepicker]="birthday"
               placeholder="Ngày sinh" (click)="birthday.open()"
-              [formControl]="birthdayControl">
+              [formControl]="birthdayControl"
+              [value]="userData.birthday">
         <mat-datepicker-toggle matSuffix [for]="birthday"></mat-datepicker-toggle>
         <mat-datepicker #birthday></mat-datepicker>
       </mat-form-field>
       <mat-form-field style="width: 100%;">
         <mat-label>Giới tính</mat-label>
-        <mat-select [formControl]="genderControl">
+        <mat-select [formControl]="genderControl" [value]="userData.gender">
+          <mat-option>None</mat-option>
           <mat-option value="male">Nam</mat-option>
           <mat-option value="female">Nữ</mat-option>
           <mat-option value="unspecified">Không xác định</mat-option>
@@ -32,12 +35,12 @@
       <mat-card-subtitle style="font-size: 20px; font-weight: 500;">
         Thông tin liên hệ
       </mat-card-subtitle>
-      <mat-form-field style="width: 100%;">
+      <!-- <mat-form-field style="width: 100%;">
         <input matInput placeholder="Email" required
               [formControl]="emailControl">
         <mat-error *ngIf="hasError('email', 'required')">Email không được để trống.</mat-error>
         <mat-error *ngIf="hasError('email', 'email')">Email không đúng định dạng.</mat-error>
-      </mat-form-field>
+      </mat-form-field> -->
     </mat-card>
   </div>
   <mat-divider></mat-divider>
@@ -48,7 +51,8 @@
       </mat-card-subtitle>
       <mat-form-field style="width: 100%;">
         <textarea matInput placeholder="Mô tả"
-                  [formControl]="descriptionControl"></textarea>
+                  [formControl]="descriptionControl"
+                  [value]="userData.description"></textarea>
       </mat-form-field>
     </mat-card>
   </div>

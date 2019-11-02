@@ -30,6 +30,7 @@ export class LeftMenuComponent implements OnInit {
     { name: 'Quản lý bộ môn', link: '/department-management', icon: 'account_balance', role: 2 },
     { name: 'Quản lý kỳ học', link: '/calendar-management', icon: 'date_range', role: 2 },
     { name: 'Quản lý thời khóa biểu', link: '/schedule-management', icon: 'device_hub', role: 2 },
+    { name: 'Quản lý người dùng', link: '/user-management', icon: 'group', role: 2}
 
   ]
 

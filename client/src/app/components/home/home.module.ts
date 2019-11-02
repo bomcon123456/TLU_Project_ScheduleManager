@@ -37,6 +37,8 @@ import { ProfileComponent } from './categories/profile/profile.component';
 import { OverviewComponent } from './categories/profile/overview/overview.component';
 import { SettingComponent } from './categories/profile/setting/setting.component';
 import { PasswordComponent } from './categories/profile/password/password.component';
+import { UserManagementComponent } from './categories/user-management/user-management.component';
+import { UserDialogComponent } from './categories/user-management/user-dialog/user-dialog.component';
 
 
 @NgModule({
@@ -77,7 +79,9 @@ import { PasswordComponent } from './categories/profile/password/password.compon
     ProfileComponent,
     OverviewComponent,
     SettingComponent,
-    PasswordComponent
+    PasswordComponent,
+    UserManagementComponent,
+    UserDialogComponent,
   ],
   entryComponents: [
     RoomDialogComponent,

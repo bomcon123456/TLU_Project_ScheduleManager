@@ -32,12 +32,6 @@ export class DepartmentApiService {
 
     const options = filter ? { params: new HttpParams().set('filter', JSON.stringify(filter)) } : {};
 
-    if (!pageIndex) {
-      pageIndex = 1;
-    }
-    if (!pageSize) {
-      pageSize = 5;
-    }
     return this.http.get(this.apiURL + `?size=${pageSize}&page=${pageIndex}`, options) // this.apiURL+ '?page=23'
       .pipe(
         retry(1),

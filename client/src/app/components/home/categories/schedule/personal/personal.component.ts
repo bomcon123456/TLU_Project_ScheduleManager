@@ -270,7 +270,6 @@ export class PersonalComponent implements OnInit {
   }
 
   randomColor(name) {
-    console.log(name);
 
     if ( name.indexOf('_LT') != -1 ) {
       return 'primary';

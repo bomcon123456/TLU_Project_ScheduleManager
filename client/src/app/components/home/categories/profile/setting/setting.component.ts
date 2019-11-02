@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -15,12 +15,16 @@ export class SettingComponent implements OnInit {
   public birthdayControl = new FormControl('', []);
   public genderControl = new FormControl('', []);
   public emailControl = new FormControl('', [
-    Validators.required,
-    Validators.email
+    // Validators.required,
+    // Validators.email
   ]);
   public descriptionControl = new FormControl('', []);
 
-  constructor() { }
+  @Input() userData: any;
+  @Output() update = new EventEmitter<any>();
+
+  constructor() {
+  }
 
   ngOnInit() {
     this.settingForm = new FormGroup({
@@ -31,6 +35,11 @@ export class SettingComponent implements OnInit {
       email: this.emailControl,
       description: this.descriptionControl
     });
+
+    this.nameControl.setValue(this.userData.name);
+    this.birthdayControl.setValue(this.userData.birthday);
+    this.genderControl.setValue(this.userData.gender);
+    this.descriptionControl.setValue(this.userData.description);
   }
 
   public hasError = (controlName: string, errorName: string) => {
@@ -38,8 +47,13 @@ export class SettingComponent implements OnInit {
   }
 
   updateProfile() {
-    console.log(this.settingForm.get('email').value);
-
+    let newData = {
+      name: this.settingForm.get('name').value,
+      birthday: this.settingForm.get('birthday').value,
+      gender: this.settingForm.get('gender').value,
+      description: this.settingForm.get('description').value,
+    }
+    this.update.emit(newData);
   }
 
 }

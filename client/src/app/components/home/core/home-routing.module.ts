@@ -13,6 +13,7 @@ import { ClassroomAddComponent } from '../categories/classroom-management/classr
 import { ScheduleManagementComponent } from './../categories/schedule-management/schedule-management.component';
 import { ClassroomVerifiedComponent } from './../categories/schedule-management/classroom-verified/classroom-verified.component';
 import { ClassroomNotVerifiedComponent } from './../categories/schedule-management/classroom-not-verified/classroom-not-verified.component';
+import { UserManagementComponent } from './../categories/user-management/user-management.component';
 import { ProfileComponent } from './../categories/profile/profile.component';
 import { RoleGuard } from '../../_helpers/role.guard'
 
@@ -101,6 +102,14 @@ const routes: Routes = [
   {
     path: 'schedule-management/not-verified',
     component: ClassroomNotVerifiedComponent,
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: [2, 99]
+    }
+  },
+  {
+    path: 'user-management',
+    component: UserManagementComponent,
     canActivate: [RoleGuard],
     data: {
       expectedRole: [2, 99]

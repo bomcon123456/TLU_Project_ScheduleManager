@@ -4,7 +4,7 @@
       Họ và tên
     </mat-card-subtitle>
     <mat-card-subtitle>
-      Nguyễn Hồng Quân
+      {{userData.name}}
     </mat-card-subtitle>
   </mat-card>
   <mat-card style="width: 20%;">
@@ -20,7 +20,7 @@
       Email
     </mat-card-subtitle>
     <mat-card-subtitle>
-      nguyenquan24598@gmail.com
+      {{userData.username | lowercase}}@thanglong.edu.vn
     </mat-card-subtitle>
   </mat-card>
   <mat-card style="width: 20%;">
@@ -35,31 +35,11 @@
 <mat-divider></mat-divider>
 <div class="container-2">
   <mat-card>
-      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-      Accusantium placeat quas sit minus hic deserunt provident
-      quidem, fugit impedit ipsam nihil repudiandae voluptas soluta
-      perspiciatis neque inventore exercitationem ea recusandae.
-      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      Repellat harum fugiat cum ipsam repellendus inventore laborum?
-      Quis ipsam porro praesentium perferendis delectus. Rem mollitia
-      unde dignissimos quas? Minus, cum provident! Lorem ipsum dolor
-      sit amet consectetur adipisicing elit. Placeat eos nemo vel,
-      numquam reiciendis perspiciatis fuga recusandae iusto, eaque
-      pariatur fugit in porro asperiores consequuntur molestiae quas,
-      molestias corporis omnis!
-
-
-      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-      Accusantium placeat quas sit minus hic deserunt provident
-      quidem, fugit impedit ipsam nihil repudiandae voluptas soluta
-      perspiciatis neque inventore exercitationem ea recusandae.
-      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      Repellat harum fugiat cum ipsam repellendus inventore laborum?
-      Quis ipsam porro praesentium perferendis delectus. Rem mollitia
-      unde dignissimos quas? Minus, cum provident! Lorem ipsum dolor
-      sit amet consectetur adipisicing elit. Placeat eos nemo vel,
-      numquam reiciendis perspiciatis fuga recusandae iusto, eaque
-      pariatur fugit in porro asperiores consequuntur molestiae quas,
-      molestias corporis omnis!
+    <mat-card-subtitle style="font-size: 20px; font-weight: 500;">
+      Mô tả
+    </mat-card-subtitle>
+    <mat-card-content>
+      {{userData.description}}
+    </mat-card-content>
   </mat-card>
 </div>
