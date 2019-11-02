@@ -10,6 +10,15 @@ const getAll = (req, res, next) => {
     if (filter.openForOffering) {
       query["openForOffering"] = filter.openForOffering;
     }
+    if (filter.group) {
+      query["group"] = filter.group;
+    }
+    if (filter.semesters) {
+      query["semesters"] = filter.semesters;
+    }
+    if (filter.year) {
+      query["year"] = filter.year;
+    }
   }
   Calendar.find(query)
     .sort({ year: 1, semesters: 1, group: 1 })
