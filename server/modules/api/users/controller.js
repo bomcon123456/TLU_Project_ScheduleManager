@@ -12,7 +12,6 @@ const getAll = (req, res, next) => {
           username: each.username,
           name: each.name,
           gender: each.gender,
-          description: each.description,
           role: each.role,
           department: each.department,
           birthday: each.birthday
