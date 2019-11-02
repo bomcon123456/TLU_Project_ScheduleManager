@@ -17,6 +17,7 @@ const authRoutes = require("./modules/api/auth/routes");
 const classroomRoutes = require("./modules/api/classrooms/routes");
 const queryRoutes = require("./modules/api/query/routes");
 const calendarRoutes = require("./modules/api/calendar/routes");
+const userRoutes = require("./modules/api/users/routes");
 
 // const teacherRoutes = require("./modules/api/teachers/routes");
 
@@ -59,6 +60,7 @@ app.use("/api/departments", departmentRoutes);
 app.use("/api/classrooms", classroomRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/query", queryRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/calendar", calendarRoutes);
 
 // Error-handling Middleware

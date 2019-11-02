@@ -94,12 +94,11 @@ const put = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
-      const { email, name, description, gender, avatarURL } = req.body;
+      const { email, name, description, gender } = req.body;
       user.email = email || user.email;
       user.name = name || user.name;
       user.description = description || user.description;
       user.gender = gender || user.gender;
-      user.avatarURL = avatarURL || user.avatarURL;
       return user.save();
     })
     .then(data => {
