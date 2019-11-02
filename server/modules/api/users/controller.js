@@ -8,7 +8,15 @@ const getAll = (req, res, next) => {
   return User.find()
     .then(data => {
       let usernames = data.map(each => {
-        each.username, each._id;
+        return {
+          username: each.username,
+          name: each.name,
+          gender: each.gender,
+          description: each.description,
+          role: each.role,
+          department: each.department,
+          birthday: each.birthday
+        };
       });
       res.status(200).json(usernames);
     })
