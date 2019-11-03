@@ -90,6 +90,7 @@ import { UserDialogComponent } from './categories/user-management/user-dialog/us
     DepartmentDialogComponent,
     ClassroomDialogComponent,
     CalendarDialogComponent,
+    UserDialogComponent,
     RoomManagementComponent,
     CourseManagementComponent,
     ScheduleComponent,
@@ -97,6 +98,7 @@ import { UserDialogComponent } from './categories/user-management/user-dialog/us
     ClassroomManagementComponent,
     DepartmentManagementComponent,
     CalendarManagementComponent,
+    UserManagementComponent
   ],
   providers: [
     SidenavService,

@@ -99,46 +99,44 @@ export class UserManagementComponent implements OnInit {
     this.getUsersData(this.pageSize, this.pageIndex, this.filter);
   }
 
-  getFilter() {
-    console.log(this.filter);
+  // getFilter() {
+  //   console.log(this.filter);
 
-    // CHECK CAPACITY
+  //   // CHECK CAPACITY
 
-    if (!this.filter.capacity || !this.filter.capacity.min || !this.filter.capacity.max) {
+  //   if (!this.filter.capacity || !this.filter.capacity.min || !this.filter.capacity.max) {
 
-      delete this.filter.capacity;
-      this.minCapacity.nativeElement.value = null;
-      this.maxCapacity.nativeElement.value = null;
-    }
+  //     delete this.filter.capacity;
+  //     this.minCapacity.nativeElement.value = null;
+  //     this.maxCapacity.nativeElement.value = null;
+  //   }
 
-    // CHECK LOCATION
+  //   // CHECK LOCATION
 
-    if (!this.filter.location) {
+  //   if (!this.filter.location) {
 
-      delete this.filter.location;
-    }
-    else {
-      if (this.filter.location.building) {
+  //     delete this.filter.location;
+  //   }
+  //   else {
+  //     if (this.filter.location.building) {
 
-        this.filter.location.building = this.filter.location.building.toUpperCase();
-      }
-    }
+  //       this.filter.location.building = this.filter.location.building.toUpperCase();
+  //     }
+  //   }
 
-    this.isLoading = true;
-    this.paginator.pageIndex = 0;
-    this.pageSize = 10;
-    this.pageIndex = 1;
-    this.getUsersData(this.pageSize, this.pageIndex, this.filter);
-  }
+  //   this.isLoading = true;
+  //   this.paginator.pageIndex = 0;
+  //   this.pageSize = 10;
+  //   this.pageIndex = 1;
+  //   this.getUsersData(this.pageSize, this.pageIndex, this.filter);
+  // }
 
   openDialog(action, obj): void {
-    console.log(obj);
-
     this.action = obj.action = action;
 
     if (this.action != 'delete') {
       this.width = '780px';
-      this.height = '465px';
+      this.height = '350px';
     }
     else {
       this.width = '460px';
@@ -177,7 +175,6 @@ export class UserManagementComponent implements OnInit {
   getUsersData(pageSize: number, pageIndex: number, filter?: any) {
 
     this.userApi.getUsers(pageSize, pageIndex, filter).subscribe(result => {
-      console.log(result);
 
       this.ELEMENT_DATA = result;
       // this.dataLength = result.size;
@@ -211,37 +208,38 @@ export class UserManagementComponent implements OnInit {
 
   updateUser(row_obj) {
 
-    this.userApi.updateUser(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
+    console.log(row_obj);
 
-      this.isLoading = true;
-      this.paginator.pageIndex = 0;
-      this.getUsersData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
-    }, error => {
-      this.toastr.error(error.message);
-    })
+    // this.userApi.updateUser(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
+
+    //   this.isLoading = true;
+    //   this.paginator.pageIndex = 0;
+    //   this.getUsersData(this.pageSize, this.pageIndex, this.filter);
+    //   this.toastr.success(result.message);
+    // }, error => {
+    //   this.toastr.error(error.message);
+    // })
 
   }
 
   deleteUser(row_obj) {
+    console.log(row_obj);
 
-    this.userApi.deleteUser(row_obj._id).subscribe(result => {
+    // this.userApi.deleteUser(row_obj._id).subscribe(result => {
 
-      this.isLoading = true;
-      this.setDefault();
-      this.getUsersData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
-    }, error => {
-      this.toastr.error(error.message);
-    })
+    //   this.isLoading = true;
+    //   this.setDefault();
+    //   this.getUsersData(this.pageSize, this.pageIndex, this.filter);
+    //   this.toastr.success(result.message);
+    // }, error => {
+    //   this.toastr.error(error.message);
+    // })
   }
 
   getDepartments() {
     let size = 50;
     let page = 1;
     this.departmentApi.getDepartments(size, page).subscribe( result => {
-      console.log(result.data);
-
       this.departmentList = result.data;
       this.toastr.success(result.message);
     }, error => {

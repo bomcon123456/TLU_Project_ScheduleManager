@@ -90,3 +90,14 @@ export interface CalendarElement {
   endDate?: string;
   openForOffering?: boolean;
 }
+
+export interface UserElement {
+  _id?: string;
+  username?: string;
+  name?: string;
+  role?: number;
+  department?: string;
+  birthday?: string;
+  gender?: string;
+  description?: string;
+}

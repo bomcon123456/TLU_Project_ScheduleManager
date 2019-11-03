@@ -1,1 +1,61 @@
-<p>user-dialog works!</p>
+<h1 mat-dialog-title>
+  <strong *ngIf="action == 'add'">Thêm người dùng mới</strong>
+  <strong *ngIf="action == 'edit'">Chỉnh sửa thông tin người dùng</strong>
+  <strong *ngIf="action == 'delete'">Xoá người dùng</strong>
+</h1>
+<form [formGroup]="userForm" autocomplete="off">
+  <mat-card>
+    <mat-card-content>
+      <div mat-dialog-content *ngIf="action != 'delete'; else elseTemplate" style="overflow: unset">
+        <div class="example-container">
+          <mat-form-field>
+            <input placeholder="Họ và tên" matInput [(ngModel)]="local_data.name" [formControl]="nameFormControl"
+              required>
+            <mat-error *ngIf="hasError('name', 'required')">Họ và tên không được để trống.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input placeholder="Tên đăng nhập" matInput [(ngModel)]="local_data.username"
+                  [formControl]="usernameFormControl" required>
+            <mat-error *ngIf="hasError('username', 'required')">Tên đăng nhập không được để trống.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Chọn quyền</mat-label>
+            <mat-select [(value)]="local_data.role" [formControl]="roleFormControl" required>
+              <mat-option *ngFor="let role of roles" [value]="role.role">{{role.name}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="hasError('role', 'required')">Quyền không được để trống.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Bộ môn</mat-label>
+            <mat-select [value]="local_data.department" (selectionChange)="setDepartmentId($event.value)"
+                        [formControl]="departmentFormControl"
+                        [disabled]="local_data.role == 99 || local_data.role == 2 ? true : false">
+              <mat-option *ngFor="let item of departments" [value]="item._id">{{item.name}}</mat-option>
+            </mat-select>
+            <!-- <mat-hint align="end">Not more then 60 characters long.</mat-hint> -->
+            <!-- <mat-error *ngIf="hasError('department', 'required')">Bộ môn không được để trống.</mat-error> -->
+          </mat-form-field>
+        </div>
+      </div>
+      <div mat-dialog-content>
+        <ng-template #elseTemplate>
+          <label>Bạn chắc chắn muốn xóa người dùng này?</label><br>
+          <b>{{local_data.name}}</b>
+        </ng-template>
+      </div>
+    </mat-card-content>
+    <mat-card-actions style="height: 3rem;">
+      <div style="float: right;">
+        <button mat-stroked-button *ngIf="action == 'add'" color="primary" (click)="doAction()"
+          [disabled]="userForm.invalid">Thêm</button>
+        <button mat-stroked-button *ngIf="action == 'edit'" color="primary" (click)="doAction()"
+          [disabled]="userForm.invalid">Sửa</button>
+        <button mat-stroked-button *ngIf="action == 'delete'" color="warn" (click)="doAction()">Xóa</button>
+        <button mat-stroked-button (click)="closeDialog()" mat-flat-button>Hủy bỏ</button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</form>

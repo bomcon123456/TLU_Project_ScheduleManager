@@ -37,7 +37,6 @@ export class CalendarApiService {
     if (!pageSize) {
       pageSize = 5;
     }
-    console.log(filter);
 
     return this.http.get(this.apiURL + `?size=${pageSize}&page=${pageIndex}`, options) // this.apiURL+ '?page=23'
       .pipe(
