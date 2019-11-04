@@ -5,8 +5,11 @@ import { Subject, Observable, BehaviorSubject } from 'rxjs';
 
 export class StorageService {
   yearSelected: string;
+  yearSelectedAdd: string;
   semesterSelected: any;
+  semesterSelectedAdd: any;
   departmentSelected: any;
+  filter: any;
   filterVerified: any;
   filterNotVerified: any;
   userId: string;

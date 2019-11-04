@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
@@ -43,37 +44,56 @@ export class ClassroomVerifiedComponent implements OnInit {
   constructor(private storageApi: StorageService,
               private departmentApi: DepartmentApiService,
               private classroomApi: ClassroomApiService,
-              private toastr: ToastrService) {
+              private toastr: ToastrService,
+              private location: Location,) {
 
+
+    this.setVerifiedDefault();
     this.isFirstTime = true;
-    this.yearSelected = YEARS[0];
-    this.semesterSelected = SEMESTERS[0];
-
-    this.departmentApi.getDepartments(1, 1).subscribe( result => {
-      this.isFirstTime = false;
-      if ( !this.departmentSelected ) {
-        this.departmentSelected = result.data[0];
-        this.filter = {
-          date: {
-            group: this.semesterSelected.key.group,
-            semesters: this.semesterSelected.key.semester,
-            year: this.yearSelected
-          },
-          department: this.departmentSelected._id,
-          verified: true
-        };
-      }
-    }, error => {
-      console.log(error);
-    })
-
     if (this.storageApi.departmentSelected &&
         this.storageApi.semesterSelected &&
         this.storageApi.yearSelected) {
 
-        this.departmentSelected = this.storageApi.departmentSelected;
+        this.departmentApi.getDepartment(this.storageApi.departmentSelected).subscribe( result => {
+          this.departmentSelected = result.data
+
+          if (this.storageApi.filterVerified) {
+            this.filter = this.storageApi.filterVerified;
+          }
+
+          if (this.departmentSelected) {
+            this.getClassroomsData(this.pageSizeVerified, this.pageIndexVerified, this.filter);
+          }
+
+        })
+        // this.departmentSelected = this.storageApi.departmentSelected;
         this.semesterSelected = this.storageApi.semesterSelected;
         this.yearSelected = this.storageApi.yearSelected;
+    }
+    else {
+      this.yearSelected = YEARS[0];
+      this.semesterSelected = SEMESTERS[0].value;
+
+      this.departmentApi.getDepartments(1, 1).subscribe(result => {
+        if (!this.departmentSelected) {
+          this.departmentSelected = result.data[0];
+          this.filter = {
+            date: {
+              group: SEMESTERS[0].key.group,
+              semesters: SEMESTERS[0].key.semester,
+              year: this.yearSelected
+            },
+            department: this.departmentSelected._id,
+            verified: true
+          };
+
+          if (this.departmentSelected) {
+            this.getClassroomsData(this.pageSizeVerified, this.pageIndexVerified, this.filter);
+          }
+        }
+      }, error => {
+        console.log(error);
+      })
     }
   }
 
@@ -84,9 +104,6 @@ export class ClassroomVerifiedComponent implements OnInit {
     this.isVerifiedLoading = false;
     this.indexVerified = 0;
     this.dataLengthVerified = 0;
-    this.setVerifiedDefault();
-    console.log(this.storageApi.filterVerified);
-
     if (this.storageApi.filterVerified) {
       this.filter = this.storageApi.filterVerified;
     }
@@ -131,14 +148,15 @@ export class ClassroomVerifiedComponent implements OnInit {
     // this.indexVerified -= 1;
   }
 
+  goBack() {
+    this.location.back();
+  }
+
   /**
    * CRUD
    */
 
   getClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
-    console.log(pageSize, pageIndex, filter);
-
-
     this.classroomApi.getClassrooms(pageSize, pageIndex, filter).subscribe(result => {
 
       this.ELEMENT_DATA_VERIFIED = result.data;

@@ -66,6 +66,8 @@ export class UserApiService {
 
   // HttpClient API put() method => Update teacher
   updateUser(id, user): Observable<any> {
+    console.log(id, user);
+
     return this.http.put(this.apiURL + '/' + id, JSON.stringify(user), this.httpOptions)
       .pipe(
         retry(1),

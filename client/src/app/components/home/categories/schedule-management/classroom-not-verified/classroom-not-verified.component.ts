@@ -1,4 +1,6 @@
+import { MatDialog } from '@angular/material/dialog';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
@@ -8,6 +10,7 @@ import { DepartmentApiService } from '../../../../../services/department-api.ser
 import { ClassroomApiService } from '../../../../../services/classroom-api.service';
 import { SEMESTERS, YEARS } from '../../../storage/data-storage';
 import { ClassroomElement } from './../../../interface/dialog-data';
+import { NotVerifiedDialogComponent } from './not-verified-dialog/not-verified-dialog.component';
 
 @Component({
   selector: 'app-classroom-not-verified',
@@ -35,44 +38,66 @@ export class ClassroomNotVerifiedComponent implements OnInit {
   private filter: any;
 
   private yearSelected: string;
+  private action: string;
+  private width: string;
+  private height: string;
 
   private isFirstTime: boolean;
 
   @ViewChild("notVerified", { static: true }) paginatorNotVerified: MatPaginator;
 
-  constructor(private storageApi: StorageService,
+  constructor(public dialog: MatDialog,
+              private storageApi: StorageService,
               private departmentApi: DepartmentApiService,
               private classroomApi: ClassroomApiService,
-              private toastr: ToastrService) {
+              private toastr: ToastrService,
+              private location: Location,) {
 
-    this.semesterSelected = SEMESTERS[0];
-    this.yearSelected = YEARS[0];
 
-    this.departmentApi.getDepartments(1, 1).subscribe(result => {
-      this.isFirstTime = false;
-      if ( !this.departmentSelected ) {
-        this.departmentSelected = result.data[0];
-        this.filter = {
-          date: {
-            group: this.semesterSelected.key.group,
-            semesters: this.semesterSelected.key.semester,
-            year: this.yearSelected
-          },
-          department: this.departmentSelected._id,
-          verified: false
-        };
-      }
-    }, error => {
-      console.log(error);
-    })
-
+    this.isFirstTime = true;
+    this.setNotVerifiedDefault();
     if (this.storageApi.departmentSelected &&
       this.storageApi.semesterSelected &&
       this.storageApi.yearSelected) {
 
+      this.departmentApi.getDepartment(this.storageApi.departmentSelected).subscribe(result => {
+        this.departmentSelected = result.data
+
+        if (this.storageApi.filterVerified) {
+          this.filter = this.storageApi.filterVerified;
+        }
+
+        if (this.departmentSelected) {
+          this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
+        }
+
+      })
+
       this.departmentSelected = this.storageApi.departmentSelected;
       this.semesterSelected = this.storageApi.semesterSelected;
       this.yearSelected = this.storageApi.yearSelected;
+    }
+    else {
+      this.semesterSelected = SEMESTERS[0];
+      this.yearSelected = YEARS[0];
+
+      this.departmentApi.getDepartments(1, 1).subscribe(result => {
+        this.isFirstTime = false;
+        if (!this.departmentSelected) {
+          this.departmentSelected = result.data[0];
+          this.filter = {
+            date: {
+              group: this.semesterSelected.key.group,
+              semesters: this.semesterSelected.key.semester,
+              year: this.yearSelected
+            },
+            department: this.departmentSelected._id,
+            verified: false
+          };
+        }
+      }, error => {
+        console.log(error);
+      })
     }
   }
 
@@ -83,8 +108,6 @@ export class ClassroomNotVerifiedComponent implements OnInit {
     this.isNotVerifiedLoading = false;
     this.indexNotVerified = 0;
     this.dataLengthNotVerified = 0;
-    this.setNotVerifiedDefault();
-
     if ( this.storageApi.filterNotVerified ) {
       this.filter = this.storageApi.filterNotVerified;
     }
@@ -129,13 +152,52 @@ export class ClassroomNotVerifiedComponent implements OnInit {
     // this.indexNotVerified -= 1;
   }
 
+  openDialog(action, obj): void {
+
+    this.action = obj.action = action;
+
+    if (this.action != 'delete') {
+      this.width = '780px';
+      this.height = '580px';
+    }
+    else {
+      this.width = '460px';
+      this.height = '230px';
+    }
+
+    const dialogRef = this.dialog.open(NotVerifiedDialogComponent, {
+      width: this.width,
+      height: this.height,
+      data: obj
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result || result.event == 'cancel') {
+
+        this.isNotVerifiedLoading = true;
+        // this.paginatorNotVerified.pageIndex = 0;
+        this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
+        return;
+      }
+
+      if (this.action == 'edit') {
+        this.updateClassroom(result.data);
+      }
+      else {
+        this.deleteRoom(result.data);
+      }
+    });
+  }
+
+  goBack() {
+    this.location.back();
+  }
+
   /**
    * CRUD
    */
 
   getClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
-    console.log(pageSize, pageIndex, filter);
-
 
     this.classroomApi.getClassrooms(pageSize, pageIndex, filter).subscribe(result => {
 
@@ -161,6 +223,19 @@ export class ClassroomNotVerifiedComponent implements OnInit {
 
       this.isNotVerifiedLoading = true;
       this.paginatorNotVerified.pageIndex = 0;
+      this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
+      this.toastr.success(result.message);
+    }, error => {
+      this.toastr.error(error.message);
+    })
+  }
+
+  deleteRoom(row_obj) {
+
+    this.classroomApi.deleteClassroom(row_obj._id).subscribe(result => {
+
+      this.isNotVerifiedLoading = true;
+      this.setNotVerifiedDefault();
       this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
       this.toastr.success(result.message);
     }, error => {

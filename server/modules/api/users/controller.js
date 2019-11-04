@@ -9,6 +9,7 @@ const getAll = (req, res, next) => {
     .then(data => {
       let usernames = data.map(each => {
         return {
+          _id: each._id,
           username: each.username,
           name: each.name,
           gender: each.gender,
@@ -101,11 +102,14 @@ const put = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
-      const { email, name, description, gender } = req.body;
-      user.email = email || user.email;
+      const { name, description, gender, birthday, username, role, department } = req.body;
       user.name = name || user.name;
       user.description = description || user.description;
       user.gender = gender || user.gender;
+      user.birthday = birthday || user.birthday;
+      user.username = username || user.username;
+      user.role = role || user.role;
+      user.department = department || user.department;
       return user.save();
     })
     .then(data => {

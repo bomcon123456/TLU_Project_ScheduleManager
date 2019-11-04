@@ -65,8 +65,6 @@ export class ClassroomManagementComponent implements OnInit {
 
     let token = JSON.parse(localStorage.getItem('currentUser'));
     this.dataUser = jwt_decode(token.token);
-    console.log(this.dataUser);
-
   }
 
   ngOnInit() {
@@ -76,19 +74,10 @@ export class ClassroomManagementComponent implements OnInit {
     this.dataLength = 0;
     this.setDefault();
 
-    if ( this.storageService.yearSelected && this.storageService.semesterSelected ) {
-      this.isLoading = true;
-      this.yearSelected = this.storageService.yearSelected;
-      this.semesterSelected = this.storageService.semesterSelected;
-      this.filter = {
-        date: {
-          year: this.yearSelected,
-          group: this.semesterSelected.key.group,
-          semesters: this.semesterSelected.key.semester
-        },
-        department: this.dataUser.department
-      }
-      this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
+    if ( this.storageService.yearSelectedAdd && this.storageService.semesterSelectedAdd ) {
+      this.yearSelected = this.storageService.yearSelectedAdd;
+      this.semesterSelected = this.storageService.semesterSelectedAdd;
+      this.getData();
     }
     else {
       this.yearSelected = null;
@@ -103,16 +92,14 @@ export class ClassroomManagementComponent implements OnInit {
    */
 
   setYearSelected(value: string) {
-    console.log(value);
     this.yearSelected = value;
-    this.storageService.yearSelected = value;
+    this.storageService.yearSelectedAdd = value;
     this.getData();
   }
 
   setSemesterSelected(value: any) {
-    console.log(value);
     this.semesterSelected = value;
-    this.storageService.semesterSelected = value;
+    this.storageService.semesterSelectedAdd = value;
     this.getData();
   }
 
@@ -212,8 +199,6 @@ export class ClassroomManagementComponent implements OnInit {
    */
 
   getClassroomsData(pageSize: number, pageIndex: number, filter?: any) {
-    console.log(filter);
-
 
     this.classroomApi.getClassrooms(pageSize, pageIndex, filter).subscribe( result => {
 
@@ -263,8 +248,6 @@ export class ClassroomManagementComponent implements OnInit {
   getCalendar(filter) {
 
     this.calendarApi.getCalendars(1, 1, this.filterCalendar(filter)).subscribe( result => {
-      console.log(result.data);
-
       this.isOpenForOffering = result.data[0].openForOffering;
 
     }, error => {

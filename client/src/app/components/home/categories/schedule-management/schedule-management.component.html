@@ -10,8 +10,11 @@
             <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl" [searching]="searching" placeholderLabel=''>
             </ngx-mat-select-search>
           </mat-option>
-          <mat-option *ngFor="let department of filteredServerSide | async" [value]="department">
+          <mat-option *ngFor="let department of filteredServerSide | async" [value]="department._id">
             {{department.name}}
+          </mat-option>
+          <mat-option *ngIf="departmentLast" [value]="departmentLast._id">
+            {{departmentLast.name}}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -19,7 +22,7 @@
       <mat-form-field class="mg-rl-20px">
         <mat-label>Học kỳ</mat-label>
         <mat-select [(value)]="semesterSelected" (selectionChange)="getData()">
-          <mat-option *ngFor="let item of semesters" [value]="item">{{item.value}}</mat-option>
+          <mat-option *ngFor="let item of semesters" [value]="item.value">{{item.value}}</mat-option>
         </mat-select>
       </mat-form-field>
 

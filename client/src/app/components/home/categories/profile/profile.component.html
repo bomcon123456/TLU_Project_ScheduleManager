@@ -20,26 +20,26 @@
         <div style="padding: 40px 20px;">
           <div style="padding-top: 5px;">
             <mat-card-subtitle style="display: flex;">
-              <mat-icon style="font-size: 16px; height: 16px;" color="accent">email</mat-icon>
-              Email
+              <mat-icon style="font-size: 16px; height: 16px;" color="accent">cake</mat-icon>
+              Ngày sinh
             </mat-card-subtitle>
             <mat-card-subtitle style="font-size: 16px; font-weight: 500;">
-              {{userData.username | lowercase}}@thanglong.edu.vn
+              {{transformDate(userData.birthday)}}
             </mat-card-subtitle>
           </div>
           <div style="padding-top: 5px;">
             <mat-card-subtitle style="display: flex;">
-              <mat-icon style="font-size: 16px; height: 16px;" color="accent">smartphone</mat-icon>
-              Số điện thoại
+              <mat-icon style="font-size: 16px; height: 16px;" color="accent">wc</mat-icon>
+              Giới tính
             </mat-card-subtitle>
             <mat-card-subtitle style="font-size: 16px; font-weight: 500;">
-              0123456789
+              {{transformGender(userData.gender)}}
             </mat-card-subtitle>
           </div>
           <div style="padding-top: 5px;">
             <mat-card-subtitle style="display: flex;">
               <mat-icon style="font-size: 16px; height: 16px;" color="accent">room</mat-icon>
-              Địa chỉ
+              Trường
             </mat-card-subtitle>
             <mat-card-subtitle style="font-size: 16px; font-weight: 500;">
               Đại học Thăng Long

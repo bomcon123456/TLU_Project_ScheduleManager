@@ -9,23 +9,23 @@
   </mat-card>
   <mat-card style="width: 20%;">
     <mat-card-subtitle style="font-size: 16px; font-weight: 500;">
-      Số điện thoại
+      Ngày sinh
     </mat-card-subtitle>
     <mat-card-subtitle>
-      0123456789
+      {{transformDate(userData.birthday)}}
     </mat-card-subtitle>
   </mat-card>
   <mat-card style="width: 20%;">
     <mat-card-subtitle style="font-size: 16px; font-weight: 500;">
-      Email
+      Giới tính
     </mat-card-subtitle>
     <mat-card-subtitle>
-      {{userData.username | lowercase}}@thanglong.edu.vn
+      {{transformGender(userData.gender)}}
     </mat-card-subtitle>
   </mat-card>
   <mat-card style="width: 20%;">
     <mat-card-subtitle style="font-size: 16px; font-weight: 500;">
-      Địa chỉ
+      Trường
     </mat-card-subtitle>
     <mat-card-subtitle>
       Đại học Thăng Long

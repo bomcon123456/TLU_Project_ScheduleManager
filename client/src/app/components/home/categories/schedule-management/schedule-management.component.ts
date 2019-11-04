@@ -58,6 +58,7 @@ export class ScheduleManagementComponent implements OnInit {
    */
   private semesterSelected: any;
   private filter: any;
+  private departmentLast: any;
 
   private departmentSelected: DepartmentElement;
 
@@ -65,7 +66,6 @@ export class ScheduleManagementComponent implements OnInit {
   private semesters = SEMESTERS;
 
   private yearSelected: string;
-
 
   public searching: boolean;
   private isFirstTime: boolean;
@@ -81,7 +81,9 @@ export class ScheduleManagementComponent implements OnInit {
               private classroomApi: ClassroomApiService,
               private storageApi: StorageService,
               private toastr: ToastrService,
-              private route: Router) { }
+              private route: Router) {
+
+  }
 
   ngOnInit() {
 
@@ -123,7 +125,21 @@ export class ScheduleManagementComponent implements OnInit {
 
       });
 
-    this.getDepartments(5,1,{});
+    this.getDepartments(5, 1, {});
+
+    if (this.storageApi.filter) {
+      this.yearSelected = this.storageApi.filter.year;
+      this.semesterSelected = this.storageApi.filter.semester;
+      this.departmentSelected = this.storageApi.filter.department;
+
+      this.departmentApi.getDepartment(this.departmentSelected).subscribe(result => {
+        this.departmentLast = result.data;
+      }, error => {
+        console.log(error);
+      })
+
+      this.getData();
+    }
   }
 
   setVerifiedTable() {
@@ -142,8 +158,6 @@ export class ScheduleManagementComponent implements OnInit {
   }
 
   setNotVerifiedDefault() {
-    console.log(this.paginatorNotVerified);
-
     this.paginatorNotVerified.pageIndex = 0;
     this.pageIndexNotVerified = 1;
     this.pageSizeNotVerified = 5;
@@ -157,14 +171,22 @@ export class ScheduleManagementComponent implements OnInit {
     if ( this.departmentSelected && this.yearSelected && this.semesterSelected ) {
       this.isVerifiedLoading = true;
       this.isNotVerifiedLoading = true;
+      let semester;
+      for ( let i = 0; i < this.semesters.length; i++ ) {
+
+        if ( this.semesterSelected == this.semesters[i].value ) {
+          semester = this.semesters[i];
+        }
+      }
       this.filter = {
         date: {
-          group: this.semesterSelected.key.group,
-          semesters: this.semesterSelected.key.semester,
+          group: semester.key.group,
+          semesters: semester.key.semester,
           year: this.yearSelected
         },
-        department: this.departmentSelected._id,
+        department: this.departmentSelected,
       }
+
       // this.isFirstTime = true;
       this.isVerifiedLoading = true;
       this.isNotVerifiedLoading = true;
@@ -192,6 +214,11 @@ export class ScheduleManagementComponent implements OnInit {
   goToVerifiedPage() {
     if (this.departmentSelected && this.yearSelected && this.semesterSelected ) {
       this.storageApi.filterVerified = { ...this.filter, verified: true };
+      this.storageApi.filter = {
+        year: this.yearSelected,
+        semester: this.semesterSelected,
+        department: this.departmentSelected
+      }
       this.route.navigate(['/schedule-management/verified']);
     }
     else {
@@ -202,6 +229,11 @@ export class ScheduleManagementComponent implements OnInit {
   goToNotVerifiedPage() {
     if (this.departmentSelected && this.yearSelected && this.semesterSelected) {
       this.storageApi.filterNotVerified = { ...this.filter, verified: false };
+      this.storageApi.filter = {
+        year: this.yearSelected,
+        semester: this.semesterSelected,
+        department: this.departmentSelected
+      }
       this.route.navigate(['/schedule-management/not-verified']);
     }
     else {

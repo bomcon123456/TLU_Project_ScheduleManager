@@ -132,6 +132,7 @@ export class UserManagementComponent implements OnInit {
   // }
 
   openDialog(action, obj): void {
+
     this.action = obj.action = action;
 
     if (this.action != 'delete') {
@@ -207,33 +208,31 @@ export class UserManagementComponent implements OnInit {
   }
 
   updateUser(row_obj) {
-
     console.log(row_obj);
 
-    // this.userApi.updateUser(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
+    this.userApi.updateUser(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
 
-    //   this.isLoading = true;
-    //   this.paginator.pageIndex = 0;
-    //   this.getUsersData(this.pageSize, this.pageIndex, this.filter);
-    //   this.toastr.success(result.message);
-    // }, error => {
-    //   this.toastr.error(error.message);
-    // })
+      this.isLoading = true;
+      this.paginator.pageIndex = 0;
+      this.getUsersData(this.pageSize, this.pageIndex, this.filter);
+      this.toastr.success(result.message);
+    }, error => {
+      this.toastr.error(error.message);
+    })
 
   }
 
   deleteUser(row_obj) {
-    console.log(row_obj);
 
-    // this.userApi.deleteUser(row_obj._id).subscribe(result => {
+    this.userApi.deleteUser(row_obj._id).subscribe(result => {
 
-    //   this.isLoading = true;
-    //   this.setDefault();
-    //   this.getUsersData(this.pageSize, this.pageIndex, this.filter);
-    //   this.toastr.success(result.message);
-    // }, error => {
-    //   this.toastr.error(error.message);
-    // })
+      this.isLoading = true;
+      this.setDefault();
+      this.getUsersData(this.pageSize, this.pageIndex, this.filter);
+      this.toastr.success(result.message);
+    }, error => {
+      this.toastr.error(error.message);
+    })
   }
 
   getDepartments() {
@@ -252,14 +251,18 @@ export class UserManagementComponent implements OnInit {
    */
 
   dataTranform(data) {
-    let newData = {
+    let newData;
+    let obj = {
       name: data.name,
-      capacity: data.capacity,
-      location: {
-        building: data.location.building,
-        floor: data.location.floor
-      },
-      roomType: data.roomType
+      username: data.username,
+      role: data.role,
+    }
+
+    if ( data.department ) {
+      newData = { ...obj, department: data.department };
+    }
+    else {
+      newData = obj;
     }
     return newData;
   }

@@ -71,6 +71,7 @@ export class UserDialogComponent implements OnInit {
   doAction() {
 
     let data = {
+      _id: this.local_data._id,
       name: this.local_data.name,
       username: this.local_data.username,
       role: this.local_data.role,

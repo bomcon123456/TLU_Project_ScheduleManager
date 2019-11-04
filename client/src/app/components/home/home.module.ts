@@ -39,6 +39,7 @@ import { SettingComponent } from './categories/profile/setting/setting.component
 import { PasswordComponent } from './categories/profile/password/password.component';
 import { UserManagementComponent } from './categories/user-management/user-management.component';
 import { UserDialogComponent } from './categories/user-management/user-dialog/user-dialog.component';
+import { NotVerifiedDialogComponent } from './categories/schedule-management/classroom-not-verified/not-verified-dialog/not-verified-dialog.component';
 
 
 @NgModule({
@@ -82,6 +83,7 @@ import { UserDialogComponent } from './categories/user-management/user-dialog/us
     PasswordComponent,
     UserManagementComponent,
     UserDialogComponent,
+    NotVerifiedDialogComponent,
   ],
   entryComponents: [
     RoomDialogComponent,
@@ -91,6 +93,7 @@ import { UserDialogComponent } from './categories/user-management/user-dialog/us
     ClassroomDialogComponent,
     CalendarDialogComponent,
     UserDialogComponent,
+    NotVerifiedDialogComponent,
     RoomManagementComponent,
     CourseManagementComponent,
     ScheduleComponent,
@@ -98,7 +101,8 @@ import { UserDialogComponent } from './categories/user-management/user-dialog/us
     ClassroomManagementComponent,
     DepartmentManagementComponent,
     CalendarManagementComponent,
-    UserManagementComponent
+    UserManagementComponent,
+    ClassroomNotVerifiedComponent,
   ],
   providers: [
     SidenavService,

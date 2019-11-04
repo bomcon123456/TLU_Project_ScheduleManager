@@ -111,7 +111,7 @@ export class ClassroomAddComponent implements OnInit {
         value: "Học kì I Nhóm 1"
       }
 
-      if ( this.storageService.yearSelected ) {
+      if ( this.storageService.yearSelectedAdd ) {
 
         this.getYearSelected();
         this.getSemesterSelected();
@@ -486,11 +486,11 @@ export class ClassroomAddComponent implements OnInit {
   }
 
   getYearSelected() {
-    this.yearSelected = this.storageService.yearSelected;
+    this.yearSelected = this.storageService.yearSelectedAdd;
   }
 
   getSemesterSelected() {
-    this.semesterSelected = this.storageService.semesterSelected;
+    this.semesterSelected = this.storageService.semesterSelectedAdd;
   }
 
   getHoursOfWeek(length: any) {
