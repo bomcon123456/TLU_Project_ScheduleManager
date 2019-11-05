@@ -26,59 +26,63 @@
             <mat-form-field appearance="outline" class="item-filter w-6rem" >
               <mat-label>Từ: (Số tín chỉ)</mat-label>
               <input matTooltip="Từ: (Số tín chỉ)" matInput placeholder=""
-                    (change)="setCredits($event.target.valueAsNumber, 'min')"
-                    type="number" #minCredits>
+              (change)="setCredits($event.target.valueAsNumber, 'min')"
+              type="number" #minCredits>
             </mat-form-field>
             <mat-form-field appearance="outline" class="item-filter w-6rem">
               <mat-label>Đến: (Số tín chỉ)</mat-label>
               <input matTooltip="Đến: (Số tín chỉ)" matInput placeholder=""
                     (change)="setCredits($event.target.valueAsNumber, 'max')"
                     type="number" #maxCredits>
-            </mat-form-field>
-            <mat-divider [vertical]="true"></mat-divider>
-            <mat-form-field appearance="outline" class="item-filter">
-              <mat-label>Bộ môn</mat-label>
-              <mat-select [formControl]="ServerSideCtrl" (selectionChange)="setDepartmentId($event.value)">
-                <mat-option>
-                  <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl"
-                  [searching]="searching"
-                  placeholderLabel = ''>
-                </ngx-mat-select-search>
-              </mat-option>
+                  </mat-form-field>
+                  <mat-divider [vertical]="true"></mat-divider>
+                  <mat-form-field appearance="outline" class="item-filter">
+                    <mat-label>Bộ môn</mat-label>
+                    <mat-select [formControl]="ServerSideCtrl" (selectionChange)="setDepartmentId($event.value)">
+                      <mat-option>
+                        <ngx-mat-select-search [formControl]="ServerSideFilteringCtrl"
+                        [searching]="searching"
+                        placeholderLabel = ''>
+                      </ngx-mat-select-search>
+                    </mat-option>
               <mat-option>Tất cả</mat-option>
-                <mat-option *ngFor="let department of filteredServerSide | async" [value]="department">
-                  {{department.name}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-divider [vertical]="true"></mat-divider>
-            <mat-form-field appearance="outline" class="item-filter w-6rem">
-              <mat-label>Từ: (Số tín chỉ bắt buộc)</mat-label>
-              <input matTooltip="Từ: (Số tín chỉ bắt buộc)" matInput placeholder=""
-                    (change)="setCreditPrerequisites($event.target.valueAsNumber, 'min')"
-                    type="number" #minCreditPrerequisites>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="item-filter w-6rem">
-              <mat-label>Đến: (Số tín chỉ bắt buộc)</mat-label>
-              <input matTooltip="Đến: (Số tín chỉ bắt buộc)" matInput placeholder=""
-                    (change)="setCreditPrerequisites($event.target.valueAsNumber, 'max')"
-                    type="number" #maxCreditPrerequisites>
-            </mat-form-field>
-          </div>
+              <mat-option *ngFor="let department of filteredServerSide | async" [value]="department">
+                {{department.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-divider [vertical]="true"></mat-divider>
+          <mat-form-field appearance="outline" class="item-filter w-6rem">
+            <mat-label>Từ: (Số tín chỉ bắt buộc)</mat-label>
+            <input matTooltip="Từ: (Số tín chỉ bắt buộc)" matInput placeholder=""
+            (change)="setCreditPrerequisites($event.target.valueAsNumber, 'min')"
+            type="number" #minCreditPrerequisites>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="item-filter w-6rem">
+            <mat-label>Đến: (Số tín chỉ bắt buộc)</mat-label>
+            <input matTooltip="Đến: (Số tín chỉ bắt buộc)" matInput placeholder=""
+            (change)="setCreditPrerequisites($event.target.valueAsNumber, 'max')"
+            type="number" #maxCreditPrerequisites>
+          </mat-form-field>
         </div>
-        <mat-divider [vertical]="true"></mat-divider>
-        <div class="action-filter">
-          <button mat-raised-button color="primary" class="button" (click)="getFilter()">
-            Lọc
-          </button>
-        </div>
-      </mat-menu>
+      </div>
+      <mat-divider [vertical]="true"></mat-divider>
+      <div class="action-filter">
+        <button mat-raised-button color="primary" class="button" (click)="getFilter()">
+          Lọc
+        </button>
+      </div>
+    </mat-menu>
 
-      <button mat-raised-button (click)="openDialog('add',{})" color="primary" class="button">
-        Thêm
-      </button>
-    </div>
+    <button mat-raised-button (click)="openDialog('add',{})" color="primary" class="button">
+      Thêm
+    </button>
+
+    <button mat-raised-button color="primary" class="button" [disabled]="dataLength<0" (click)="exportToExcel()">
+      Xuất Excel
+    </button>
   </div>
+</div>
 
   <div class="mat-elevation-z8 pos-relative">
     <div class="background-loading" *ngIf="isLoading">

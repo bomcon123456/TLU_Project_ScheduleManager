@@ -6,6 +6,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { IgxExcelExporterService } from "igniteui-angular";
 
 import { AngularMaterialModule } from './core/angular-material.module';
 import { AppRoutingModule } from './core/app-routing.module';
@@ -37,6 +38,7 @@ import { StorageService } from './components/home/storage/storage.service';
     ToastrModule.forRoot()
   ],
   providers: [
+    IgxExcelExporterService,
     StorageService,
     AuthGuard,
     RoleGuard,

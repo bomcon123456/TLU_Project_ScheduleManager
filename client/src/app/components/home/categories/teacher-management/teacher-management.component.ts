@@ -7,6 +7,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { IgxExcelExporterService, IgxExcelExporterOptions } from "igniteui-angular";
 
 import { TeacherDialogComponent } from './teacher-dialog/teacher-dialog.component';
 import { TeacherElement, DepartmentElement } from '../../interface/dialog-data';
@@ -53,7 +54,8 @@ export class TeacherManagementComponent implements OnInit {
   constructor(public dialog: MatDialog,
     private teacherApi: TeacherApiService,
     private departmentApi: DepartmentApiService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    private excelExportService: IgxExcelExporterService) { }
 
   ngOnInit() {
     this.isFirstTime = true;
@@ -260,6 +262,15 @@ export class TeacherManagementComponent implements OnInit {
     })
   }
 
+  exportToExcel() {
+    if (this.dataLength) {
+      this.teacherApi.getTeachers(this.dataLength, 1).subscribe(result => {
+        let data = this.getDataExcel(result.data);
+        this.excelExportService.exportData(data, new IgxExcelExporterOptions("Danh sách giáo viên"));
+      })
+    }
+  }
+
   /**
    * TRANSFORM DATA
    */
@@ -270,6 +281,20 @@ export class TeacherManagementComponent implements OnInit {
       department: data.department.id,
     }
     return newData;
+  }
+
+  getDataExcel(arr) {
+    // console.log(arr);
+    let newArr = [];
+    for (let i = 0; i < arr.length; i++) {
+      let newData = {
+        TenGiaoVien: arr[i].name,
+        MaGiaoVien: arr[i]._id,
+        BoMon: arr[i].department.name,
+      }
+      newArr.push(newData);
+    }
+    return newArr;
   }
 
 }

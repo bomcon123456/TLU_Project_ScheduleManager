@@ -37,6 +37,10 @@
               disabled="true">
         Thêm
       </button>
+
+      <button mat-raised-button color="primary" class="button" [disabled]="dataLength<0" (click)="exportToExcel()">
+        Xuất Excel
+      </button>
     </div>
   </div>
 

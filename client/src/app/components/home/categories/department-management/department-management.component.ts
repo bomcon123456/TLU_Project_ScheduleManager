@@ -4,6 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { IgxExcelExporterService, IgxExcelExporterOptions } from "igniteui-angular";
 
 import { DepartmentDialogComponent } from './department-dialog/department-dialog.component';
 import { DepartmentElement } from '../../interface/dialog-data';
@@ -42,7 +43,8 @@ export class DepartmentManagementComponent implements OnInit {
 
   constructor(public dialog: MatDialog,
     private departmentApi: DepartmentApiService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    private excelExportService: IgxExcelExporterService) { }
 
   ngOnInit() {
     this.isFisrtTime = true;
@@ -143,6 +145,15 @@ export class DepartmentManagementComponent implements OnInit {
     })
   }
 
+  exportToExcel() {
+    if ( this.dataLength ) {
+      this.departmentApi.getDepartments(this.dataLength, 1).subscribe( result => {
+        let data = this.getDataExcel(result.data);
+        this.excelExportService.exportData(data, new IgxExcelExporterOptions("Danh sách bộ môn"));
+      })
+    }
+  }
+
   // createDepartment(row_obj) {
   //   console.log(row_obj);
 
@@ -190,15 +201,17 @@ export class DepartmentManagementComponent implements OnInit {
    * TRANSFORM DATA
    */
 
-  // dataTranform(data) {
-  //   console.log(data);
-
-  //   let newData = {
-  //     schoolId: data.schoolId,
-  //     name: data.name,
-  //   }
-  //   return newData;
-  // }
-
+  getDataExcel(arr) {
+    console.log(arr);
+    let newArr = [];
+    for ( let i = 0; i < arr.length; i++ ) {
+      let newData = {
+        TenBoMon: arr[i].name,
+        MaBoMon: arr[i].schoolId,
+      }
+      newArr.push(newData);
+    }
+    return newArr;
+  }
 
 }

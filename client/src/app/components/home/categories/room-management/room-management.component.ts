@@ -4,6 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { IgxExcelExporterService, IgxExcelExporterOptions } from "igniteui-angular";
 
 import { RoomDialogComponent } from './room-dialog/room-dialog.component';
 import { RoomElement } from '../../interface/dialog-data';
@@ -48,7 +49,8 @@ export class RoomManagementComponent implements OnInit {
 
   constructor(public dialog: MatDialog,
               private roomApi: RoomApiService,
-              private toastr: ToastrService) { }
+              private toastr: ToastrService,
+              private excelExportService: IgxExcelExporterService) { }
 
   ngOnInit() {
     this.isFirstTime = true;
@@ -279,6 +281,15 @@ export class RoomManagementComponent implements OnInit {
     })
   }
 
+  exportToExcel() {
+    if (this.dataLength) {
+      this.roomApi.getRooms(this.dataLength, 1).subscribe(result => {
+        let data = this.getDataExcel(result.data);
+        this.excelExportService.exportData(data, new IgxExcelExporterOptions("Danh sách phòng"));
+      })
+    }
+  }
+
   /**
    * TRANSFORM DATA
    */
@@ -306,6 +317,21 @@ export class RoomManagementComponent implements OnInit {
     if (data == "TC") {
       return "Thể chất";
     }
+  }
+
+  getDataExcel(arr) {
+    // console.log(arr);
+    let newArr = [];
+    for (let i = 0; i < arr.length; i++) {
+      let newData = {
+        TenPhong: arr[i].name,
+        SoLuongSinhVien: arr[i].capacity,
+        DiaDiem: `Tầng ${arr[i].location.floor} Tòa ${arr[i].location.building}`,
+        DangPhong: this.getFullText(arr[i].roomType),
+      }
+      newArr.push(newData);
+    }
+    return newArr;
   }
 
 

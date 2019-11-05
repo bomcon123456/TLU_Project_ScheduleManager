@@ -1,4 +1,4 @@
-<div class="container-header" style="margin-top: 50px;">
+<div class="container-header" style="margin-top: 50px; display: flex; justify-content: space-between;">
   <div class="select-action" style="max-width: 800px">
 
     <!-- <mat-form-field style="margin: 0 20px" *ngIf="!dataUser.department || dataUser.role == 0">
@@ -40,6 +40,11 @@
         <mat-option *ngFor="let item of years" [value]="item">{{item}}</mat-option>
       </mat-select>
     </mat-form-field>
+  </div>
+  <div style="margin-bottom: 50px; align-self: center;">
+    <button mat-raised-button color="primary" class="button" [disabled]="!schedule" (click)="exportToExcel()">
+      Xuất Excel
+    </button>
   </div>
 </div>
 <div class="mat-elevation-z8 pos-relative w-100 mg-rl-auto">

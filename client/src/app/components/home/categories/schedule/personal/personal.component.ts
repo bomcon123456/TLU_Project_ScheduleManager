@@ -1,12 +1,14 @@
-import { TeacherElement } from './../../../interface/dialog-data';
-import { YEARS, SEMESTERS } from './../../../storage/data-storage';
 import { FormControl } from '@angular/forms';
 import { ReplaySubject } from 'rxjs';
 import { Component, OnInit, enableProdMode } from '@angular/core';
-import { GetFreeApiService } from '../../../../../services/get-free-api.service';
-import { TeacherApiService } from './../../../../../services/teacher-api.service';
 import * as jwt_decode from 'jwt-decode';
 import { tap, debounceTime, switchMap, filter } from 'rxjs/operators';
+import { IgxExcelExporterService, IgxExcelExporterOptions } from "igniteui-angular";
+
+import { GetFreeApiService } from '../../../../../services/get-free-api.service';
+import { TeacherApiService } from './../../../../../services/teacher-api.service';
+import { TeacherElement } from './../../../interface/dialog-data';
+import { YEARS, SEMESTERS } from './../../../storage/data-storage';
 
 enableProdMode();
 
@@ -34,7 +36,8 @@ export class PersonalComponent implements OnInit {
   public ServerSideFilteringCtrl: FormControl = new FormControl();
 
   constructor(private getFreeApi: GetFreeApiService,
-              private teacherApi: TeacherApiService) {
+              private teacherApi: TeacherApiService,
+              private excelExportService: IgxExcelExporterService) {
 
     let token = JSON.parse(localStorage.getItem('currentUser'));
     this.dataUser = jwt_decode(token.token);
@@ -194,6 +197,23 @@ export class PersonalComponent implements OnInit {
     })
   }
 
+  exportToExcel() {
+    if (this.schedule) {
+      let id = this.dataUser.username;
+      if ( this.teacherSelected ) {
+        id = this.teacherSelected;
+      }
+      this.getFreeApi.getTeacherSchedule(this.yearSelected,
+                                        this.semesterSelected.key.group,
+                                        this.semesterSelected.key.semester,
+                                        id)
+      .subscribe(result => {
+        let data = this.getDataExcel(result.data);
+        this.excelExportService.exportData(data, new IgxExcelExporterOptions(`Thời khóa biểu`));
+      })
+    }
+  }
+
   /**
    * TRANSFORM DATA
    */
@@ -290,6 +310,33 @@ export class PersonalComponent implements OnInit {
     //   case 2: return 'accent';
     //   case 3: return 'warn';
     // }
+  }
+
+  getDataExcel(arr) {
+    console.log(arr);
+    let newArr = [];
+    for (let i = 0; i < arr.length; i++) {
+      let newData = {
+        TenLop: arr[i].name,
+        PhongHoc: arr[i].room,
+        NgayHoc: this.getDayVn(arr[i].day),
+        CaHoc: arr[i].shift,
+      }
+      newArr.push(newData);
+    }
+    return newArr;
+  }
+
+  getDayVn(day) {
+    switch (day) {
+      case 'Monday': return 'Thứ hai';
+      case 'Tuesday': return 'Thứ ba';
+      case 'Wednesday': return 'Thứ tư';
+      case 'Thursday': return 'Thứ năm';
+      case 'Friday': return 'Thứ sáu';
+      case 'Saturday': return 'Thứ bảy';
+      case 'Sunday': return 'Chủ nhật';
+    }
   }
 
 }

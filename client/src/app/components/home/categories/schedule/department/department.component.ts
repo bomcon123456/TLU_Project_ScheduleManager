@@ -1,13 +1,15 @@
-import { DepartmentApiService } from './../../../../../services/department-api.service';
 import { filter, tap, debounceTime, switchMap } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { DepartmentElement } from './../../../interface/dialog-data';
-import { YEARS, SEMESTERS } from './../../../storage/data-storage';
 import * as jwt_decode from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
+import { IgxExcelExporterService, IgxExcelExporterOptions } from "igniteui-angular";
+
 import { ScheduleApiService } from 'src/app/services/schedule-api.service';
+import { DepartmentApiService } from './../../../../../services/department-api.service';
+import { DepartmentElement } from './../../../interface/dialog-data';
+import { YEARS, SEMESTERS } from './../../../storage/data-storage';
 
 @Component({
   selector: 'app-schedule-department',
@@ -40,7 +42,8 @@ export class DepartmentComponent implements OnInit {
 
   constructor(private scheduleApi: ScheduleApiService,
               private departmentApi: DepartmentApiService,
-              private toastr: ToastrService) {
+              private toastr: ToastrService,
+              private excelExportService: IgxExcelExporterService) {
     let token = JSON.parse(localStorage.getItem('currentUser'));
     this.dataUser = jwt_decode(token.token);
   }
@@ -84,13 +87,9 @@ export class DepartmentComponent implements OnInit {
         },
       }
       if ( this.dataUser.department ) {
-        console.log(this.dataUser);
-
         this.filter.department = this.dataUser.department;
       }
       else {
-        console.log(this.departmentSelected);
-
         this.filter.department = this.departmentSelected;
       }
       this.getClassroomsData(this.filter.date.year, this.filter.date.group, this.filter.date.semesters, this.filter.department);
@@ -112,13 +111,6 @@ export class DepartmentComponent implements OnInit {
 
       this.isLoading = false;
       this.schedule = this.transformDepartmentScheduleData(result.data);
-      // this.schedule = ELEMENT_DATA;
-      console.log(this.schedule);
-
-      // if (this.isFirstTime) {
-      //   this.isFirstTime = false;
-      //   this.toastr.success(result.message);
-      // }
     }, error => {
       this.toastr.error(error.message)
     })
@@ -135,6 +127,19 @@ export class DepartmentComponent implements OnInit {
 
       })
     })
+  }
+
+  exportToExcel() {
+    if (this.schedule) {
+      this.scheduleApi.getDepartmentSchedule(this.filter.date.year,
+                                            this.filter.date.group,
+                                            this.filter.date.semesters,
+                                            this.filter.department)
+        .subscribe(result => {
+          let data = this.getDataExcel(result.data);
+          this.excelExportService.exportData(data, new IgxExcelExporterOptions(`Thời khóa biểu bộ môn`));
+        })
+    }
   }
 
   /**
@@ -172,8 +177,6 @@ export class DepartmentComponent implements OnInit {
   }
 
   randomColor(name) {
-    console.log(name);
-
     if (name.indexOf('_LT') != -1) {
       return 'primary';
     }
@@ -195,139 +198,32 @@ export class DepartmentComponent implements OnInit {
     // }
   }
 
+  getDataExcel(arr) {
+    // console.log(arr);
+    let newArr = [];
+    for (let i = 0; i < arr.length; i++) {
+      let newData = {
+        TenLop: arr[i].name,
+        GiaoVien: arr[i].teacher,
+        PhongHoc: arr[i].room,
+        NgayHoc: this.getDayVn(arr[i].day),
+        CaHoc: arr[i].shift,
+      }
+      newArr.push(newData);
+    }
+    return newArr;
+  }
+
+  getDayVn(day) {
+    switch (day) {
+      case 'Monday': return 'Thứ hai';
+      case 'Tuesday': return 'Thứ ba';
+      case 'Wednesday': return 'Thứ tư';
+      case 'Thursday': return 'Thứ năm';
+      case 'Friday': return 'Thứ sáu';
+      case 'Saturday': return 'Thứ bảy';
+      case 'Sunday': return 'Chủ nhật';
+    }
+  }
+
 }
-
-const ELEMENT_DATA: any[] = [
-  {
-    day: 2,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Monday'
-
-        },
-        {
-          name: 'Test 2',
-          shift: '1-3',
-          day: 'Monday'
-        },
-        {
-          name: 'Test 3',
-          shift: '1-4',
-          day: 'Monday'
-        },
-        {
-          name: 'Test 4',
-          shift: '1-2',
-          day: 'Monday'
-        }
-      ]
-  },
-  {
-    day: 3,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Tuesday'
-
-        },
-        {
-          name: 'Test 2',
-          shift: '1-3',
-          day: 'Tuesday'
-        },
-        {
-          name: 'Test 4',
-          shift: '1-2',
-          day: 'Tuesday'
-        }
-      ]
-  },
-  {
-    day: 4,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Wednesday'
-
-        },
-        {
-          name: 'Test 2',
-          shift: '1-3',
-          day: 'Wednesday'
-        },
-        {
-          name: 'Test 3',
-          shift: '1-4',
-          day: 'Wednesday'
-        },
-        {
-          name: 'Test 4',
-          shift: '1-2',
-          day: 'Wednesday'
-        }
-      ]
-  },
-  {
-    day: 5,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Thursday'
-
-        },
-        {
-          name: 'Test 2',
-          shift: '1-3',
-          day: 'Thursday'
-        },
-      ]
-  },
-  {
-    day: 6,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Friday'
-
-        },
-      ]
-  },
-  {
-    day: 7,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Saturday'
-
-        },
-        {
-          name: 'Test 2',
-          shift: '1-3',
-          day: 'Saturday'
-        },
-        {
-          name: 'Test 3',
-          shift: '1-4',
-          day: 'Saturday'
-        },
-      ]
-  },
-  {
-    day: 8,
-    data: []
-  },
-
-]

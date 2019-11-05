@@ -1,13 +1,15 @@
-import { DepartmentApiService } from './../../../../../services/department-api.service';
 import { filter, tap, debounceTime, switchMap } from 'rxjs/operators';
 import { ReplaySubject } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { DepartmentElement } from './../../../interface/dialog-data';
-import { YEARS, SEMESTERS } from './../../../storage/data-storage';
 import * as jwt_decode from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
+import { IgxExcelExporterService, IgxExcelExporterOptions } from "igniteui-angular";
+
 import { ScheduleApiService } from 'src/app/services/schedule-api.service';
+import { DepartmentApiService } from './../../../../../services/department-api.service';
+import { DepartmentElement } from './../../../interface/dialog-data';
+import { YEARS, SEMESTERS } from './../../../storage/data-storage';
 
 @Component({
   selector: 'app-schedule-school',
@@ -40,7 +42,8 @@ export class SchoolComponent implements OnInit {
 
   constructor(private scheduleApi: ScheduleApiService,
     private departmentApi: DepartmentApiService,
-    private toastr: ToastrService) {
+    private toastr: ToastrService,
+    private excelExportService: IgxExcelExporterService) {
     let token = JSON.parse(localStorage.getItem('currentUser'));
     this.dataUser = jwt_decode(token.token);
   }
@@ -98,16 +101,7 @@ export class SchoolComponent implements OnInit {
     this.scheduleApi.getSchedule(year, group, semester).subscribe(result => {
 
       this.isLoading = false;
-      console.log(result);
-
       this.schedule = this.transformScheduleData(result.data);
-      // this.schedule = ELEMENT_DATA;
-      console.log(this.schedule);
-
-      // if (this.isFirstTime) {
-      //   this.isFirstTime = false;
-      //   this.toastr.success(result.message);
-      // }
     }, error => {
       this.toastr.error(error.message)
     })
@@ -124,6 +118,18 @@ export class SchoolComponent implements OnInit {
 
       })
     })
+  }
+
+  exportToExcel() {
+    if (this.schedule) {
+      this.scheduleApi.getSchedule(this.filter.year,
+                                  this.filter.group,
+                                  this.filter.semesters)
+        .subscribe(result => {
+          let data = this.getDataExcel(result.data);
+          this.excelExportService.exportData(data, new IgxExcelExporterOptions(`Thời khóa biểu toàn trường`));
+        })
+    }
   }
 
   /**
@@ -183,139 +189,35 @@ export class SchoolComponent implements OnInit {
     // }
   }
 
+  getDataExcel(arr) {
+    console.log(arr);
+    let newArr = [];
+    for (let i = 0; i < arr.length; i++) {
+      let newData = {
+        MaHocPhan: arr[i].courseId._id,
+        TenHocPhan: arr[i].courseId.name,
+        TenLop: arr[i].name,
+        NgayHoc: this.getDayVn(arr[i].date.day),
+        CaHoc: arr[i].date.shift,
+        PhongHoc: arr[i].roomId.name,
+        SoLuongSinhVien: arr[i].students,
+        GiaoVien: arr[i].teacherId.name + `(${arr[i].teacherId._id})`,
+      }
+      newArr.push(newData);
+    }
+    return newArr;
+  }
+
+  getDayVn(day) {
+    switch (day) {
+      case 'Monday': return 'Thứ hai';
+      case 'Tuesday': return 'Thứ ba';
+      case 'Wednesday': return 'Thứ tư';
+      case 'Thursday': return 'Thứ năm';
+      case 'Friday': return 'Thứ sáu';
+      case 'Saturday': return 'Thứ bảy';
+      case 'Sunday': return 'Chủ nhật';
+    }
+  }
+
 }
-
-const ELEMENT_DATA: any[] = [
-  {
-    day: 2,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Monday'
-
-        },
-        {
-          name: 'Test 2',
-          shift: '1-3',
-          day: 'Monday'
-        },
-        {
-          name: 'Test 3',
-          shift: '1-4',
-          day: 'Monday'
-        },
-        {
-          name: 'Test 4',
-          shift: '1-2',
-          day: 'Monday'
-        }
-      ]
-  },
-  {
-    day: 3,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Tuesday'
-
-        },
-        {
-          name: 'Test 2',
-          shift: '1-3',
-          day: 'Tuesday'
-        },
-        {
-          name: 'Test 4',
-          shift: '1-2',
-          day: 'Tuesday'
-        }
-      ]
-  },
-  {
-    day: 4,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Wednesday'
-
-        },
-        {
-          name: 'Test 2',
-          shift: '1-3',
-          day: 'Wednesday'
-        },
-        {
-          name: 'Test 3',
-          shift: '1-4',
-          day: 'Wednesday'
-        },
-        {
-          name: 'Test 4',
-          shift: '1-2',
-          day: 'Wednesday'
-        }
-      ]
-  },
-  {
-    day: 5,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Thursday'
-
-        },
-        {
-          name: 'Test 2',
-          shift: '1-3',
-          day: 'Thursday'
-        },
-      ]
-  },
-  {
-    day: 6,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Friday'
-
-        },
-      ]
-  },
-  {
-    day: 7,
-    data:
-      [
-        {
-          name: 'Test 1',
-          shift: '1-2',
-          day: 'Saturday'
-
-        },
-        {
-          name: 'Test 2',
-          shift: '1-3',
-          day: 'Saturday'
-        },
-        {
-          name: 'Test 3',
-          shift: '1-4',
-          day: 'Saturday'
-        },
-      ]
-  },
-  {
-    day: 8,
-    data: []
-  },
-
-]

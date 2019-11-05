@@ -34,8 +34,8 @@ export class HomeComponent implements OnInit {
       console.log(this.storage.avatarUser);
 
       this.storage.avatarUser = 'https://a57.foxnews.com/media2.foxnews.com/BrightCove/694940094001/2018/06/21/931/524/694940094001_5800293009001_5800284148001-vs.jpg?ve=1&tl=1';
-      this.getUser(dataUser.userId);
     }
+    this.getUser(dataUser.userId);
 
     this._sidenavService.sideNavState$.subscribe(res => {
       console.log(res)

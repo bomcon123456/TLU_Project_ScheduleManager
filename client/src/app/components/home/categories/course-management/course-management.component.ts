@@ -7,6 +7,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { IgxExcelExporterService, IgxExcelExporterOptions } from "igniteui-angular";
 
 import { CourseDialogComponent } from './course-dialog/course-dialog.component';
 import { CourseElement, DepartmentElement } from '../../interface/dialog-data';
@@ -59,7 +60,8 @@ export class CourseManagementComponent implements OnInit {
   constructor(public dialog: MatDialog,
               private courseApi: CourseApiService,
               private departmentApi: DepartmentApiService,
-              private toastr: ToastrService) { }
+              private toastr: ToastrService,
+              private excelExportService: IgxExcelExporterService) { }
 
   ngOnInit() {
     this.isFirstTime = true;
@@ -320,6 +322,15 @@ export class CourseManagementComponent implements OnInit {
     })
   }
 
+  exportToExcel() {
+    if (this.dataLength) {
+      this.courseApi.getCourses(this.dataLength, 1).subscribe(result => {
+        let data = this.getDataExcel(result.data);
+        this.excelExportService.exportData(data, new IgxExcelExporterOptions("Danh sách học phần"));
+      })
+    }
+  }
+
   /**
    * TRANSFORM DATA
    */
@@ -354,6 +365,39 @@ export class CourseManagementComponent implements OnInit {
         return length;
       }
     }
+  }
+
+  getDataExcel(arr) {
+    // console.log(arr);
+    let newArr = [];
+    for (let i = 0; i < arr.length; i++) {
+      let newData = {
+        TenHocPhan: arr[i].name,
+        MaHocPhan: arr[i]._id,
+        SoTinChi: arr[i].credits,
+        BoMon: arr[i].department.name,
+        SoGioLyThuyet: arr[i].length.theory,
+        SoGioThucHanh: arr[i].length.practice,
+        TongSoGio: arr[i].length.combined,
+        HocPhanBatBuoc: this.transformCoursePrerequisites(arr[i].coursePrerequisites),
+        TinChiBatBuoc: arr[i].creditPrerequisites,
+      }
+      newArr.push(newData);
+    }
+    return newArr;
+  }
+
+  transformCoursePrerequisites(arr) {
+    let string;
+    for ( let i = 0; i < arr.length; i++ ) {
+      if ( i == 0 ) {
+        string = arr[i];
+      }
+      else {
+        string += ', ' + arr[i];
+      }
+    }
+    return string;
   }
 
 }

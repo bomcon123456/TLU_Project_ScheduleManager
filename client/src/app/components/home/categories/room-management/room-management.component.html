@@ -52,6 +52,10 @@
       <button mat-raised-button (click)="openDialog('add',{})" color="primary" class="button">
         Thêm
       </button>
+
+      <button mat-raised-button color="primary" class="button" [disabled]="dataLength<0" (click)="exportToExcel()">
+        Xuất Excel
+      </button>
     </div>
   </div>
 
