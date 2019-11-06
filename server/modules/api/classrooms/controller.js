@@ -30,6 +30,7 @@ const getAll = (req, res, next) => {
   let classrooms = [];
   console.log(query);
   Classroom.find(query)
+    .sort({ verified: 0, createdAt: -1 })
     .skip((page - 1) * size)
     .limit(size)
     .populate("courseId", "name")
@@ -114,26 +115,6 @@ const put = (req, res, next) => {
         message: "update_classroom_successfully",
         id: id
       });
-      return Schedule.findOne({
-        group: group,
-        semeseters: semesters,
-        year: year
-      });
-    })
-    .then(schedule => {
-      if (!schedule && verified == true) {
-        schedule = new Schedule({
-          group: group,
-          semesters: semesters,
-          year: year,
-          timetable: [id]
-        });
-      } else if (schedule && verified == true) {
-        schedule.timetable.push(id);
-      } else if (schedule && verified == false) {
-        schedule.timtable.filter(x => x != id);
-      }
-      return schedule.save();
     })
     .catch(err => {
       next(err);

@@ -5,9 +5,15 @@ const jwt = require("jsonwebtoken");
 const User = require("./model");
 
 const getAll = (req, res, next) => {
-  return User.find()
+  const page = req.query.page || 1;
+  const size = parseInt(req.query.size) || 5;
+  let total = -1;
+  let users = [];
+  return User.find(query)
+    .skip((page - 1) * size)
+    .limit(size)
     .then(data => {
-      let usernames = data.map(each => {
+      users = data.map(each => {
         return {
           _id: each._id,
           username: each.username,
@@ -18,7 +24,14 @@ const getAll = (req, res, next) => {
           birthday: each.birthday
         };
       });
-      res.status(200).json(usernames);
+      return User.count(query);
+    })
+    .then(data => {
+      res.status(200).json({
+        message: "fetched_rooms_successfully",
+        data: users,
+        size: data
+      });
     })
     .catch(err => {
       next(err);
@@ -102,7 +115,15 @@ const put = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
-      const { name, description, gender, birthday, username, role, department } = req.body;
+      const {
+        name,
+        description,
+        gender,
+        birthday,
+        username,
+        role,
+        department
+      } = req.body;
       user.name = name || user.name;
       user.description = description || user.description;
       user.gender = gender || user.gender;
