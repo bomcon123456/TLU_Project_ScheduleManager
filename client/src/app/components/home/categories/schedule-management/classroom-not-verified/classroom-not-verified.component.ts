@@ -44,7 +44,7 @@ export class ClassroomNotVerifiedComponent implements OnInit {
 
   private isFirstTime: boolean;
 
-  @ViewChild("notVerified", { static: true }) paginatorNotVerified: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginatorNotVerified: MatPaginator;
 
   constructor(public dialog: MatDialog,
               private storageApi: StorageService,
@@ -222,7 +222,7 @@ export class ClassroomNotVerifiedComponent implements OnInit {
     this.classroomApi.updateClassroom(row_obj._id, this.dataTranform(row_obj)).subscribe(result => {
 
       this.isNotVerifiedLoading = true;
-      this.paginatorNotVerified.pageIndex = 0;
+      // this.paginatorNotVerified.pageIndex = 0;
       this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
       this.toastr.success(result.message);
     }, error => {

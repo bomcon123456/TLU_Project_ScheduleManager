@@ -100,6 +100,8 @@ exports.update = (req, res, next) => {
 };
 
 exports.changePassword = (req, res, next) => {
+  console.log(123);
+  
   const { currentPassword, newPassword } = req.body;
   let id = req.user.id;
   let loadedUser;

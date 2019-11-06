@@ -116,7 +116,7 @@ const ROLE = [
     role: 2
   },
   {
-    name: 'Phòng bộ môn',
+    name: 'Người phụ trách bộ môn',
     role: 1
   },
   {

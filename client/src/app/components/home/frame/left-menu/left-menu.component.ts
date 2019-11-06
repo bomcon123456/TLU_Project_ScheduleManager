@@ -30,7 +30,7 @@ export class LeftMenuComponent implements OnInit {
     { name: 'Quản lý bộ môn', link: '/department-management', icon: 'account_balance', role: 2 },
     { name: 'Quản lý kỳ học', link: '/calendar-management', icon: 'date_range', role: 2 },
     { name: 'Quản lý thời khóa biểu', link: '/schedule-management', icon: 'device_hub', role: 2 },
-    { name: 'Quản lý người dùng', link: '/user-management', icon: 'group', role: 2}
+    { name: 'Quản lý người dùng', link: '/user-management', icon: 'group', role: 99}
 
   ]
 
@@ -43,7 +43,7 @@ export class LeftMenuComponent implements OnInit {
     const token = JSON.parse(localStorage.getItem('currentUser'));
     const tokenPayload = jwt_decode(token.token);
 
-    if ( role == -1 || tokenPayload.role == 99 ) {
+    if ( role == -1 ) {
       return true;
     }
 

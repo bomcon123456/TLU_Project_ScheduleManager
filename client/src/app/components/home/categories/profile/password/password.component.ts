@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { AuthenticationService } from '../../../../_services/authentication.service';
 
 @Component({
   selector: 'app-password',
@@ -21,7 +23,8 @@ export class PasswordComponent implements OnInit {
     Validators.required
   ]);
 
-  constructor() { }
+  constructor(private toastr: ToastrService,
+              private auth: AuthenticationService) { }
 
   ngOnInit() {
     this.passwordForm = new FormGroup({
@@ -37,8 +40,30 @@ export class PasswordComponent implements OnInit {
   }
 
   changePassword() {
-    console.log(this.passwordForm.get('current').value);
+    let currentP = this.passwordForm.get('current').value;
+    let newP = this.passwordForm.get('new').value;
+    let confirmP = this.passwordForm.get('confirm').value;
+    let check = this.checkPassword(currentP, newP, confirmP);
 
+    console.log(check);
+
+    if ( check ) {
+      this.auth.changePassword(currentP, newP).subscribe( result => {
+        this.toastr.success(result.message)
+      });
+    }
+  }
+
+  checkPassword(currentP, newP, confirmP) {
+    if ( newP != confirmP ) {
+      this.toastr.error('Xác nhận mật khẩu mới chưa chính xác.');
+      return false;
+    }
+    if ( currentP == newP ) {
+      this.toastr.error('Mật khẩu mới không được giống mật khẩu hiện tại.');
+      return false;
+    }
+    return true;
   }
 
 }

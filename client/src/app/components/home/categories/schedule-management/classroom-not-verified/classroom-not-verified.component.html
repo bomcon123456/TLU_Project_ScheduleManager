@@ -118,7 +118,7 @@
           <tr mat-row *matRowDef="let row; columns: notVerifiedColumns;"></tr>
         </table>
 
-        <mat-paginator #notVerified [length]="dataLengthNotVerified"
+        <mat-paginator [length]="dataLengthNotVerified"
                       [pageSize]="pageSizeNotVerified"
                       [pageSizeOptions]="[10, 25, 50, 100]"
                       (page)="getNotVerifiedPageEvent($event)">

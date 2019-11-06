@@ -279,7 +279,7 @@ export class UserManagementComponent implements OnInit {
     switch (role) {
       case 99: return 'Admin';
       case 2: return 'Phòng đào tạo';
-      case 1: return 'Phòng bộ môn';
+      case 1: return 'Người phụ trách bộ môn';
       case 0: return 'Giáo viên';
     }
   }

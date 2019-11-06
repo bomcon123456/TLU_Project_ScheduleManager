@@ -32,7 +32,7 @@ const routes: Routes = [
     component: CourseManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [2, 99]
+      expectedRole: [2]
     }
   },
   {
@@ -40,7 +40,7 @@ const routes: Routes = [
     component: RoomManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [2, 99]
+      expectedRole: [2]
     }
   },
   {
@@ -48,7 +48,7 @@ const routes: Routes = [
     component: TeacherManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [2, 99]
+      expectedRole: [2]
     }
   },
   {
@@ -56,7 +56,7 @@ const routes: Routes = [
     component: DepartmentManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [2, 99]
+      expectedRole: [2]
     }
   },
   {
@@ -64,7 +64,7 @@ const routes: Routes = [
     component: CalendarManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [2, 99]
+      expectedRole: [2]
     }
   },
   {
@@ -72,7 +72,7 @@ const routes: Routes = [
     component: ClassroomManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [1, 99]
+      expectedRole: [1]
     }
   },
   {
@@ -80,7 +80,7 @@ const routes: Routes = [
     component: ClassroomAddComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [1, 99]
+      expectedRole: [1]
     }
   },
   {
@@ -88,7 +88,7 @@ const routes: Routes = [
     component: ScheduleManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [2, 99]
+      expectedRole: [2]
     }
   },
   {
@@ -96,7 +96,7 @@ const routes: Routes = [
     component: ClassroomVerifiedComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [2, 99]
+      expectedRole: [2]
     }
   },
   {
@@ -104,7 +104,7 @@ const routes: Routes = [
     component: ClassroomNotVerifiedComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [2, 99]
+      expectedRole: [2]
     }
   },
   {
@@ -112,7 +112,7 @@ const routes: Routes = [
     component: UserManagementComponent,
     canActivate: [RoleGuard],
     data: {
-      expectedRole: [2, 99]
+      expectedRole: [99]
     }
   }
 ];
