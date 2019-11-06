@@ -30,6 +30,7 @@ const getAll = (req, res, next) => {
   let classrooms = [];
   console.log(query);
   Classroom.find(query)
+    .sort({ verified: 0, createdAt: -1 })
     .skip((page - 1) * size)
     .limit(size)
     .populate("courseId", "name")
