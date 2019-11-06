@@ -8,6 +8,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
+const path = require("path");
 
 const teacherRoutes = require("./modules/api/teachers/routes");
 const roomRoutes = require("./modules/api/rooms/routes");
@@ -50,6 +51,11 @@ app.use(
     fileFilter: fileFilter,
     fileStorage: fileStorage
   }).single("file")
+);
+
+app.use(
+  "/uploads/assets",
+  express.static(path.join(__dirname, "/uploads/assets"))
 );
 
 // Routes
