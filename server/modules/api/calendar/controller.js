@@ -95,8 +95,9 @@ const put = (req, res, next) => {
     .then(thecalendar => {
       thecalendar.startDate = startDate || thecalendar.startDate;
       thecalendar.endDate = endDate || thecalendar.endDate;
-      thecalendar.openForOffering =
-        openForOffering || thecalendar.openForOffering;
+      if (openForOffering !== null) {
+        thecalendar.openForOffering = openForOffering;
+      }
       thecalendar.save();
     })
     .then(data => {
