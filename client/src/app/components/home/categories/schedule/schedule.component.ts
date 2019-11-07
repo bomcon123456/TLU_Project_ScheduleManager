@@ -17,8 +17,6 @@ export class ScheduleComponent implements OnInit {
 
     let token = JSON.parse(localStorage.getItem('currentUser'));
     this.dataUser = jwt_decode(token.token);
-    console.log(this.dataUser);
-
   }
 
   ngOnInit() {

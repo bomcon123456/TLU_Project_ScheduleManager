@@ -258,10 +258,10 @@ export class ScheduleManagementComponent implements OnInit {
 
         if (this.isFirstTime) {
           this.isFirstTime = false;
-          this.toastr.success(result.message);
+          this.toastr.success('Lấy danh sách lớp đã duyệt thành công.');
         }
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy danh sách lớp đã duyệt thất bại')
     })
   }
 
@@ -277,10 +277,10 @@ export class ScheduleManagementComponent implements OnInit {
 
       if (this.isFirstTime) {
         this.isFirstTime = false;
-        this.toastr.success(result.message);
+        this.toastr.success('Lấy danh sách lớp chưa duyệt thành công.');
       }
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy danh sách lớp chưa duyệt thất bại.');
     })
   }
 

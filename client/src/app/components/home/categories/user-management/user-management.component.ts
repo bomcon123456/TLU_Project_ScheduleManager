@@ -80,7 +80,7 @@ export class UserManagementComponent implements OnInit {
   setDefault() {
     this.paginator.pageIndex = 0;
     this.pageIndex = 1;
-    this.pageSize = 297;
+    this.pageSize = 10;
     this.filter = {};
   }
 
@@ -179,7 +179,7 @@ export class UserManagementComponent implements OnInit {
 
       this.ELEMENT_DATA = result;
       // this.dataLength = result.size;
-      this.dataLength = 297;
+      this.dataLength = result.size;
       this.dataSource = new MatTableDataSource(this.ELEMENT_DATA)
       this.setTable();
       this.index = pageSize * (pageIndex - 1);
@@ -187,10 +187,14 @@ export class UserManagementComponent implements OnInit {
 
       if (this.isFirstTime) {
         this.isFirstTime = false;
-        this.toastr.success(result.message);
+        this.toastr.success('Lấy danh sách tài khoản người dùng thành công.');
+        console.log(result.message);
+
       }
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy danh sách tài khoản người dùng thất bại.');
+      console.log(error.message);
+
     })
   }
 
@@ -201,9 +205,13 @@ export class UserManagementComponent implements OnInit {
       this.isLoading = true;
       this.setDefault();
       this.getUsersData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message)
+      this.toastr.success('Tạo tài khoản mới thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Tạo tài khoản thất bại.');
+      console.log(error.message);
+
     })
   }
 
@@ -215,9 +223,13 @@ export class UserManagementComponent implements OnInit {
       this.isLoading = true;
       this.paginator.pageIndex = 0;
       this.getUsersData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Thay đổi thông tin người dùng thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Thay đổi thông tin người dùng thất bại.');
+        console.log(error.message);
+
     })
 
   }
@@ -229,9 +241,13 @@ export class UserManagementComponent implements OnInit {
       this.isLoading = true;
       this.setDefault();
       this.getUsersData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Xóa tài khoản người dùng thành công.mf');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Xóa tài khoản người dùng thất bại.');
+        console.log(error.message);
+
     })
   }
 
@@ -240,7 +256,7 @@ export class UserManagementComponent implements OnInit {
     let page = 1;
     this.departmentApi.getDepartments(size, page).subscribe( result => {
       this.departmentList = result.data;
-      this.toastr.success(result.message);
+      console.log(result.message);
     }, error => {
       console.log(error);
     })

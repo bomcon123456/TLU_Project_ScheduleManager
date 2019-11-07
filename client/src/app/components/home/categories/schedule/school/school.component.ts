@@ -102,8 +102,9 @@ export class SchoolComponent implements OnInit {
 
       this.isLoading = false;
       this.schedule = this.transformScheduleData(result.data);
+      this.toastr.success('Lấy thời khóa biểu toàn trường thành công.');
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy thời khóa biểu toàn trường thất bại.')
     })
   }
 

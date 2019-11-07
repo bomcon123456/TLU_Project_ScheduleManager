@@ -214,10 +214,10 @@ export class TeacherManagementComponent implements OnInit {
 
       if (this.isFirstTime) {
         this.isFirstTime = false;
-        this.toastr.success(result.message);
+        this.toastr.success('Lấy danh sách giáo viên thành công.');
       }
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy danh sách giáo viên thất bại.')
     })
   }
 
@@ -228,9 +228,9 @@ export class TeacherManagementComponent implements OnInit {
       this.isLoading = true;
       this.setDefault();
       this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message)
+      this.toastr.success('Tạo giáo viên mới thành công.');
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Tạo giáo viên mới thất bại.')
     })
   }
 
@@ -243,9 +243,9 @@ export class TeacherManagementComponent implements OnInit {
       this.isLoading = true;
       this.paginator.pageIndex = 0;
       this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Thay đổi thông tin giáo viên thành công.');
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Thay đổi thông tin giáo viên thất bại.');
     })
 
   }
@@ -256,9 +256,9 @@ export class TeacherManagementComponent implements OnInit {
       this.isLoading = true;
       this.setDefault();
       this.getTeachersData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Xóa giáo viên thành công.');
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Xóa giáo viên thất bại.');
     })
   }
 

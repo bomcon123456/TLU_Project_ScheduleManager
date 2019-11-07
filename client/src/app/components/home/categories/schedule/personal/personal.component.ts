@@ -4,6 +4,7 @@ import { Component, OnInit, enableProdMode } from '@angular/core';
 import * as jwt_decode from 'jwt-decode';
 import { tap, debounceTime, switchMap, filter } from 'rxjs/operators';
 import { IgxExcelExporterService, IgxExcelExporterOptions } from "igniteui-angular";
+import { ToastrService } from 'ngx-toastr';
 
 import { GetFreeApiService } from '../../../../../services/get-free-api.service';
 import { TeacherApiService } from './../../../../../services/teacher-api.service';
@@ -37,7 +38,8 @@ export class PersonalComponent implements OnInit {
 
   constructor(private getFreeApi: GetFreeApiService,
               private teacherApi: TeacherApiService,
-              private excelExportService: IgxExcelExporterService) {
+              private excelExportService: IgxExcelExporterService,
+              private toastr: ToastrService) {
 
     let token = JSON.parse(localStorage.getItem('currentUser'));
     this.dataUser = jwt_decode(token.token);
@@ -169,12 +171,10 @@ export class PersonalComponent implements OnInit {
 
     this.getFreeApi.getTeacherSchedule(year, group, semester, id).subscribe(result => {
       this.isLoading = false;
-      console.log(result.data);
-
       this.schedule = this.transformTeacherScheduleData(result.data);
-      // Fake Data
-      // this.schedule = ELEMENT_DATA;
+      this.toastr.success('Lấy thời khóa biểu thành công.')
     }, error => {
+      this.toastr.error('Lấy thời biểu thất bại.')
       console.log(error);
     })
   }

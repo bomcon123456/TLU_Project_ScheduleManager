@@ -273,10 +273,10 @@ export class CourseManagementComponent implements OnInit {
 
       if (this.isFirstTime) {
         this.isFirstTime = false;
-        this.toastr.success(result.message);
+        this.toastr.success('Lấy danh sách môn học thành công.');
       }
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy danh sách môn học thất bại.')
     })
   }
 
@@ -289,9 +289,9 @@ export class CourseManagementComponent implements OnInit {
       this.isLoading = true
       this.setDefault();
       this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message)
+      this.toastr.success('Tạo môn học mới thành công.')
     }, error => {
-      this.toastr.error(error.message)
+        this.toastr.error('Tạo môn học mới thất bại.')
     })
   }
 
@@ -304,9 +304,9 @@ export class CourseManagementComponent implements OnInit {
       this.isLoading = true;
       this.paginator.pageIndex = 0;
       this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Thay đổi thông tin môn học thành công.');
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Thay đổi thông tin môn học thất bại.');
     })
 
   }
@@ -316,9 +316,9 @@ export class CourseManagementComponent implements OnInit {
 
       this.setDefault();
       this.getCoursesData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Xóa môn học thành công.');
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Xóa môn học thất bại.');
     })
   }
 

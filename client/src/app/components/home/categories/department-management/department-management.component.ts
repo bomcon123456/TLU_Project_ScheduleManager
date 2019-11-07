@@ -138,10 +138,13 @@ export class DepartmentManagementComponent implements OnInit {
 
       if (this.isFisrtTime) {
         this.isFisrtTime = false;
-        this.toastr.success(result.message);
+        this.toastr.success('Lấy danh sách bộ môn thành công.');
+        console.log(result.message);
+
       }
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy danh sách bộ môn thất bại.');
+      console.log(error.message);
     })
   }
 

@@ -234,10 +234,14 @@ export class RoomManagementComponent implements OnInit {
 
       if (this.isFirstTime) {
         this.isFirstTime = false;
-        this.toastr.success(result.message);
+        this.toastr.success('Lấy danh sách phòng thành công.');
+        console.log(result.message);
+
       }
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy danh sách phòng thất bại.');
+        console.log(error.message);
+
     })
   }
 
@@ -248,9 +252,13 @@ export class RoomManagementComponent implements OnInit {
       this.isLoading = true;
       this.setDefault();
       this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message)
+      this.toastr.success('Tạo phòng mới thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Tạo phòng mới thất bại.');
+        console.log(error.message);
+
     })
   }
 
@@ -261,9 +269,13 @@ export class RoomManagementComponent implements OnInit {
       this.isLoading = true;
       this.paginator.pageIndex = 0;
       this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Thay đổi thông tin phòng thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Thay đổi thông tin phòng thất bại.');
+        console.log(error.message);
+
     })
 
   }
@@ -275,9 +287,13 @@ export class RoomManagementComponent implements OnInit {
       this.isLoading = true;
       this.setDefault();
       this.getRoomsData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Xóa phòng thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Xóa phòng thất bại.');
+        console.log(error.message);
+
     })
   }
 

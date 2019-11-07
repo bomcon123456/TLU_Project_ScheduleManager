@@ -53,8 +53,6 @@ export class AuthenticationService {
       currentPassword: currentP,
       newPassword: newP
     };
-    console.log(this.apiURL + '/change-password');
-    console.log(this.token)
 
     return this.http.post(this.apiURL + '/change-password', JSON.stringify(obj), {
       headers: new HttpHeaders({

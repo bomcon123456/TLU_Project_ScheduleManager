@@ -1535,9 +1535,13 @@ export class ClassroomAddComponent implements OnInit {
   createClassroom(data) {
     this.classroomApi.createClassroom(data).subscribe(result => {
 
-      this.toastr.success(result.message)
+      this.toastr.success('Tạo lớp học thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Tạo lớp học thất bại.');
+        console.log(error.message);
+
     })
   }
 

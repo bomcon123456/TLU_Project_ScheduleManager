@@ -60,8 +60,11 @@ export class ProfileComponent implements OnInit {
         }
       }
       this.storage.setFullUserName(this.userData.name);
-      this.toastr.success(result.message);
+      this.toastr.success('Lấy thông tin người dùng thành công.');
+      console.log(result.message);
+
     }, error => {
+      this.toastr.error('Lấy thông tin người dùng thất bại.');
       console.log(error);
     })
   }
@@ -69,9 +72,12 @@ export class ProfileComponent implements OnInit {
   updateUserData(id, data) {
     this.userApi.updateUser(id, data).subscribe( result => {
       this.getUserData(id);
-      this.toastr.success(result.message);
+      this.toastr.success('Thay đổi thông tin người dùng thành công.');
+      console.log(result.message);
+
     }, error => {
-      console.log(error);
+      this.toastr.error('Thay đổi thông tin người dùng thất bại.');
+      console.log(error.message);
     })
   }
 

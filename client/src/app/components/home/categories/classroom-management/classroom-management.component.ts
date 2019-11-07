@@ -211,10 +211,14 @@ export class ClassroomManagementComponent implements OnInit {
 
       if (this.isFirstTime) {
         this.isFirstTime = false;
-        this.toastr.success(result.message);
+        this.toastr.success('Lấy danh sách lớp học thành công.');
+        console.log(result.message);
+
       }
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy danh sách lớp học thất bại.');
+        console.log(error.message);
+
     })
   }
 
@@ -225,9 +229,13 @@ export class ClassroomManagementComponent implements OnInit {
       this.isLoading = true;
       this.paginator.pageIndex = 0;
       this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Thay đổi thông tin lớp học thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Thay đổi thông tin lớp học thất bại.');
+        console.log(error.message);
+
     })
 
   }
@@ -239,9 +247,13 @@ export class ClassroomManagementComponent implements OnInit {
       this.isLoading = true;
       this.setDefault();
       this.getClassroomsData(this.pageSize, this.pageIndex, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Xóa lớp học thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Xóa lớp học thất bại.');
+        console.log(error.message);
+
     })
   }
 

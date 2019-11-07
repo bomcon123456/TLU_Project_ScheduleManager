@@ -168,16 +168,18 @@ export class ClassroomVerifiedComponent implements OnInit {
 
       if (this.isFirstTime) {
         this.isFirstTime = false;
-        this.toastr.success(result.message);
+        this.toastr.success('Lấy danh sách lớp đã duyệt thành công.');
       }
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy danh sách lớp đã duyệt thất bại.');
     })
   }
 
   cancelClassroom(id) {
     this.classroomApi.updateClassroom(id, { verified: false }).subscribe(result => {
-      this.toastr.success(result.message)
+      this.toastr.success('Hủy lớp học thành công.')
+    }, error => {
+      this.toastr.error('Hủy lớp học thất bại.');
     })
   }
 

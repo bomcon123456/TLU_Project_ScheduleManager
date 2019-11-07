@@ -45,11 +45,10 @@ export class PasswordComponent implements OnInit {
     let confirmP = this.passwordForm.get('confirm').value;
     let check = this.checkPassword(currentP, newP, confirmP);
 
-    console.log(check);
-
     if ( check ) {
       this.auth.changePassword(currentP, newP).subscribe( result => {
-        this.toastr.success(result.message)
+        this.toastr.success('Đổi mật khẩu thành công.')
+        console.log(result.message)
       });
     }
   }

@@ -111,8 +111,9 @@ export class DepartmentComponent implements OnInit {
 
       this.isLoading = false;
       this.schedule = this.transformDepartmentScheduleData(result.data);
+      this.toastr.success('Lấy danh thời khóa biểu bộ môn thành công.');
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy thời khóa biểu bộ môn thất bại.')
     })
   }
 

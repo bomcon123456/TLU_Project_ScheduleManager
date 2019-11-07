@@ -210,10 +210,14 @@ export class ClassroomNotVerifiedComponent implements OnInit {
 
       if (this.isFirstTime) {
         this.isFirstTime = false;
-        this.toastr.success(result.message);
+        this.toastr.success('Lấy danh sách lớp học chưa được duyệt thành công.');
+        console.log(result.message);
+
       }
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy danh sách lớp học chưa được duyệt thất bại.');
+      console.log(error.message);
+
     })
   }
 
@@ -224,9 +228,13 @@ export class ClassroomNotVerifiedComponent implements OnInit {
       this.isNotVerifiedLoading = true;
       // this.paginatorNotVerified.pageIndex = 0;
       this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Thay đổi thông tin lớp học thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Thay đổi thông tin lớp học thất bại.');
+        console.log(error.message);
+
     })
   }
 
@@ -237,15 +245,21 @@ export class ClassroomNotVerifiedComponent implements OnInit {
       this.isNotVerifiedLoading = true;
       this.setNotVerifiedDefault();
       this.getClassroomsData(this.pageSizeNotVerified, this.pageIndexNotVerified, this.filter);
-      this.toastr.success(result.message);
+      this.toastr.success('Xóa lớp học thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Xóa lớp học thất bại.');
+        console.log(error.message);
+
     })
   }
 
   verifiedClassroom(id) {
     this.classroomApi.updateClassroom(id, { verified: true }).subscribe( result => {
-      this.toastr.success(result.message)
+      this.toastr.success('Duyệt lớp học thành công.');
+      console.log(result.message);
+
     })
   }
 

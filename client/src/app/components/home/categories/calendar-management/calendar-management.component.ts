@@ -232,10 +232,14 @@ export class CalendarManagementComponent implements OnInit {
 
       if (this.isFirstTime) {
         this.isFirstTime = false;
-        this.toastr.success(result.message);
+        this.toastr.success('Lấy danh sách kỳ học thành công.');
+        console.log(result.message);
+
       }
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Lấy danh sách kỳ học thất bại.');
+        console.log(error.message);
+
     })
   }
 
@@ -246,9 +250,13 @@ export class CalendarManagementComponent implements OnInit {
       this.isLoading = true;
       this.setDefault();
       this.getCalendarsData(this.pageSize, this.pageIndex);
-      this.toastr.success(result.message)
+      this.toastr.success('Tạo kỳ học mới thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message)
+      this.toastr.error('Tạo kỳ học mới thất bại.');
+        console.log(error.message);
+
     })
   }
 
@@ -278,9 +286,13 @@ export class CalendarManagementComponent implements OnInit {
         this.paginator.pageIndex = 0;
         this.getCalendarsData(this.pageSize, this.pageIndex);
       }
-      this.toastr.success(result.message);
+      this.toastr.success('Thay đổi thông tin kỳ học thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Thay đổi thông tin kỳ học thất bại.');
+        console.log(error.message);
+
     })
 
   }
@@ -291,9 +303,13 @@ export class CalendarManagementComponent implements OnInit {
       this.isLoading = true;
       this.setDefault();
       this.getCalendarsData(this.pageSize, this.pageIndex);
-      this.toastr.success(result.message);
+      this.toastr.success('Xóa kỳ học thành công.');
+      console.log(result.message);
+
     }, error => {
-      this.toastr.error(error.message);
+      this.toastr.error('Xóa kỳ học thất bại.');
+        console.log(error.message);
+
     })
   }
 
