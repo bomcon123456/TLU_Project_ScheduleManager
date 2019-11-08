@@ -9,7 +9,7 @@ const getAll = (req, res, next) => {
   const size = parseInt(req.query.size) || 5;
   let total = -1;
   let users = [];
-  return User.find(query)
+  return User.find()
     .skip((page - 1) * size)
     .limit(size)
     .then(data => {
@@ -24,11 +24,11 @@ const getAll = (req, res, next) => {
           birthday: each.birthday
         };
       });
-      return User.count(query);
+      return User.count();
     })
     .then(data => {
       res.status(200).json({
-        message: "fetched_rooms_successfully",
+        message: "fetched_users_successfully",
         data: users,
         size: data
       });
